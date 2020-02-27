@@ -22,21 +22,82 @@ struct Move {
     action: Action
 }
 
-fn main() {
-    let _args: Vec<String> = env::args().collect();
+struct Cubicube {
+    name: u32, // 0 1 2 3 4 5 6 7 8
+    orientation: char // x y z
+}
 
+struct Cubiface {
+    cubicubes: [Cubicube; 9]
+}
+
+struct Cube {
+    faces: [Cubiface; 6] // F R U B L D
+}
+
+impl Cube {
+    fn initialize_cube() -> Cube {
+        Cube{
+            faces: [
+                Cubiface{
+                    cubicubes: [
+                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
+                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
+                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
+                },
+                Cubiface{
+                    cubicubes: [
+                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
+                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
+                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
+                },
+                Cubiface{
+                    cubicubes: [
+                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
+                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
+                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
+                },
+                Cubiface{
+                    cubicubes: [
+                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
+                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
+                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
+                },
+                Cubiface{
+                    cubicubes: [
+                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
+                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
+                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
+                },
+                Cubiface{
+                    cubicubes: [
+                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
+                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
+                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
+                },
+            ]
+        }
+    }
+}
+
+fn main() {
+    let mut _cube: Cube = Cube::initialize_cube();
+
+    // Getting arguments
+    let _args: Vec<String> = env::args().collect();
     if _args.len() != 2 {
         println!("[!] Error, Rubik should receive one argument");
         return ;
     }
 
+    // Make a list of Moves based on arguments
     let _moves: Vec<Move> = match get_moves_list(&_args) {
         Some(value) => value,
         None => return
     };
 
     // [!] Debug : Display given Moves
-    for _move in _moves {
+    for _move in _moves.iter() {
         match _move.face {
             Face::Front => print!("Front"),
             Face::Right => print!("Right"),
@@ -52,6 +113,9 @@ fn main() {
             Action::DoubleRot => println!("DoubleRot"),
         }
     }
+
+    // Shuffle the cube
+    cube_shuffle(&mut _cube, &_moves);
 }
 
 fn get_moves_list(_args: &Vec<String>) -> Option<Vec<Move>> {
@@ -85,3 +149,25 @@ fn get_moves_list(_args: &Vec<String>) -> Option<Vec<Move>> {
     }
     Some(_moves)
 }
+
+fn cube_shuffle(mut _cube: &mut Cube, _moves: &Vec<Move>) {
+    for _move in _moves.iter() {
+        apply_move(&mut _cube, &_move);
+    }
+}
+
+fn apply_move(_cube: &mut Cube, _move: &Move) {
+    // apply matrix
+}
+
+/*
+face_rotation()
+
+1 2 3           7 4 1
+4 5 6 = f() ->  8 5 2
+7 8 9           9 6 3
+
+A A A           ? ? ?
+A A A -> f() -> ? ? ?
+A A A           ? ? ?
+*/
