@@ -1,1 +1,1 @@
-/Users/sgalasso/Documents/rubik/target/debug/rubik: /Users/sgalasso/Documents/rubik/src/main.rs
+/Users/admin/Documents/sgalasso/rubik/target/debug/rubik: /Users/admin/Documents/sgalasso/rubik/src/main.rs

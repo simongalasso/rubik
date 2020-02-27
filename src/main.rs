@@ -1,9 +1,14 @@
-fn another_function() {
-    println!("another_function");
-}
+use std::io;
 
 fn main() {
-    println!("Guess the number!");
+    let mut input = String::new();
 
-    another_function();
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => {
+            println!("Ok to continue !");
+        },
+        Err(e) => {
+            println!("Oups, something went wrong: {}", e);
+        }
+    }
 }
