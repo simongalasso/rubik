@@ -1,8 +1,5 @@
 #![allow(dead_code)]
 
-mod cube_solver;
-mod cube_transform;
-
 use std::env;
 
 enum Action {
@@ -133,6 +130,7 @@ fn main() {
             Face::Down => print!("D"),
         }
         match _move.action {
+            Action::RotRight => print!(""),
             Action::RotLeft => print!("'"),
             Action::DoubleRot => print!("2"),
         }
@@ -170,4 +168,19 @@ fn get_moves_list(_args: &Vec<String>) -> Option<Vec<Move>> {
         })
     }
     Some(_moves)
+}
+
+fn cube_shuffle(mut _cube: &mut Cube, _moves: &Vec<Move>) {
+    for _move in _moves.iter() {
+        apply_move(&mut _cube, &_move);
+    }
+}
+
+fn apply_move(_cube: &mut Cube, _move: &Move) {
+    // apply matrix
+}
+
+fn cube_solver(_cube: &mut Cube) -> Vec<Move> {
+    let _solution: Vec<Move> = Vec::new();
+    _solution
 }
