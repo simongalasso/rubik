@@ -184,3 +184,40 @@ fn cube_solver(_cube: &mut Cube) -> Vec<Move> {
     let _solution: Vec<Move> = Vec::new();
     _solution
 }
+
+/* [!] This is currently a DFS */
+fn graph_iterate(_current_state: &Cube, _solution: &mut Vec<Move>) -> bool {
+    for _faceIdx in 0..5 {
+        for _actionIdx in 0..3 {
+            /*if (graph_iterate() == true) {
+                return true
+            }*/
+        }
+    }
+    false
+}
+
+// TEST ALGO
+
+struct Node {
+    visited: bool = false,
+}
+
+impl Default for Node {
+    fn default() -> Node {
+        Node {
+            visited: false,
+        }
+    }
+}
+
+fn solver_algo(_frontier: &mut Vec<Location>) {
+    for (_node_idx, _node) in _frontier.enumerate() {
+        for (_neighbour_idx, _neighbour) in _node.enumerate() {
+            if (_neighbour.visited == false) {
+                _neighbour.visited = true;
+                _frontier.push(_neighbour);
+            }
+        }
+    }
+}
