@@ -187,8 +187,8 @@ fn cube_solver(_cube: &mut Cube) -> Vec<Move> {
 
 /* [!] This is currently a DFS */
 fn graph_iterate(_current_state: &Cube, _solution: &mut Vec<Move>) -> bool {
-    for _faceIdx in 0..5 {
-        for _actionIdx in 0..3 {
+    for _face_idx in 0..5 {
+        for _action_idx in 0..3 {
             /*if (graph_iterate() == true) {
                 return true
             }*/
@@ -197,10 +197,16 @@ fn graph_iterate(_current_state: &Cube, _solution: &mut Vec<Move>) -> bool {
     false
 }
 
+
+
 // TEST ALGO
 
+// Possible optimisations :
+//  _path could be type of &Node pointing on _frontier element
+
+#[derive(Copy, Clone)]
 struct Node {
-    visited: bool = false,
+    visited: bool,
 }
 
 impl Default for Node {
@@ -211,13 +217,47 @@ impl Default for Node {
     }
 }
 
-fn solver_algo(_frontier: &mut Vec<Location>) {
-    for (_node_idx, _node) in _frontier.enumerate() {
-        for (_neighbour_idx, _neighbour) in _node.enumerate() {
-            if (_neighbour.visited == false) {
-                _neighbour.visited = true;
-                _frontier.push(_neighbour);
+fn solver_algo(_start: &Node, _goal: &Node) -> Vec<Node> {
+    let mut _frontier: Vec<Node> = Vec::new();
+    let mut _path: Vec<Node> = Vec::new();
+
+    _path.push(*_start);
+
+    for _node in _frontier.iter() {
+
+        if /*_node == _goal*/false { // check if current node reached the goal node [!] To recode !!!
+            break ;
+        }
+
+        for _neighbour in find_neighbors(&_node).iter() {
+            if _neighbour.visited == false {
+                _frontier.push(*_neighbour);
             }
         }
+
+        _path.push(*_node);
     }
+
+    /*for _node_index in 0.._frontier.len() {
+        let _node: &Node = &_frontier[_node_index];
+        let _neighbors: Vec<Node> = find_neighbors(_node);
+        for _neighbour_index in 0.._neighbors.len() {
+            let _neighbour: &Node = &_neighbors[_neighbour_index];
+            /*if _frontier[_neighbour.visited == false {
+                _neighbour.visited = true;
+                _frontier.push(_neighbour);
+            }*/
+        }
+        _path.push(_frontier[_node_index]);
+    }*/
+
+    return _path
+}
+
+fn find_neighbors(_current_node: &Node) -> Vec<Node> {
+    let mut _neighbors: Vec<Node> = Vec::new();
+
+    // code here
+
+    return _neighbors
 }
