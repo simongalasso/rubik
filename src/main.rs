@@ -204,6 +204,8 @@ fn graph_iterate(_current_state: &Cube, _solution: &mut Vec<Move>) -> bool {
 // Possible optimisations :
 //  _path could be type of &Node pointing on _frontier element
 
+use std::collections::VecDeque;
+
 #[derive(Copy, Clone)]
 struct Node {
     visited: bool,
@@ -217,29 +219,27 @@ impl Default for Node {
     }
 }
 
-fn solver_algo(_start: &Node, _goal: &Node) -> Vec<Node> {
-    let mut _frontier: Vec<Node> = Vec::new();
-    let mut _path: Vec<Node> = Vec::new();
+fn solver_algo(start: &Node, _goal: &Node) -> Vec<Node> {
+    let mut frontier: VecDeque<Node> = VecDeque::new();
+    let mut visited: Vec<Node> = Vec::new();
+    let path: Vec<Node> = Vec::new();
 
-    _frontier.push(*_start);
+    frontier.push_back(*start);
 
-    for _node in _frontier.iter() {
+    while !frontier.is_empty() {
+        let current_node = frontier.pop_front().unwrap();
 
         // if goal reached
             // break ;
 
-        for _neighbour in find_neighbors(&_node).iter_mut() {
-
-            if _neighbour.visited == false {
-                (*_neighbour).visited = true;
-                _frontier.push(*_neighbour);
+        for neighbour in &mut find_neighbors(&current_node) {
+            if neighbour.visited == false {
+                visited.push(*neighbour);
+                frontier.push_back(*neighbour);
             }
         }
-
-        _path.push(*_node);
     }
-
-    return _path
+    return path
 }
 
 fn find_neighbors(_current_node: &Node) -> Vec<Node> {
