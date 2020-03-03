@@ -197,7 +197,7 @@ fn graph_iterate(_current_state: &Cube, _solution: &mut Vec<Move>) -> bool {
     false
 }
 
-
+/*
 
 // TEST ALGO
 
@@ -208,15 +208,7 @@ use std::collections::VecDeque;
 
 #[derive(Copy, Clone)]
 struct Node {
-    visited: bool,
-}
-
-impl Default for Node {
-    fn default() -> Node {
-        Node {
-            visited: false,
-        }
-    }
+    //code here   
 }
 
 fn solver_algo(start: &Node, _goal: &Node) -> Vec<Node> {
@@ -233,7 +225,7 @@ fn solver_algo(start: &Node, _goal: &Node) -> Vec<Node> {
             // break ;
 
         for neighbour in &mut find_neighbors(&current_node) {
-            if neighbour.visited == false {
+            if /* !visited.contains(*neighbour) */ {
                 visited.push(*neighbour);
                 frontier.push_back(*neighbour);
             }
@@ -243,9 +235,17 @@ fn solver_algo(start: &Node, _goal: &Node) -> Vec<Node> {
 }
 
 fn find_neighbors(_current_node: &Node) -> Vec<Node> {
-    let mut _neighbors: Vec<Node> = Vec::new();
+    let mut neighbors: Vec<Node> = Vec::new();
 
-    // code here
+    /*
+    for move in Move {
+        if (move != last_move) {
+            neighbors.push(apply_move(_current_node, move));
+        }
+    }
+    */
 
-    return _neighbors
+    return neighbors
 }
+
+*/
