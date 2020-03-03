@@ -2,6 +2,8 @@
 
 use std::env;
 
+/* Moves */
+
 enum Action {
     RotLeft,
     RotRight,
@@ -22,60 +24,31 @@ struct Move {
     action: Action
 }
 
-struct Cubicube {
-    name: u32, // 0 1 2 3 4 5 6 7 8
-    orientation: char // x y z
+/* Cube simulation */
+
+enum Corner {
+    URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB,
 }
 
-struct Cubiface {
-    cubicubes: [Cubicube; 9]
+enum Edge {
+    UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR,
 }
 
+/* [c : corner] [cdir : corner dir] [e : edge] [edir : edge dir] */
 struct Cube {
-    faces: [Cubiface; 6] // F R U B L D
+    c: [Corner; 8],
+    cdir: [u32; 8],
+    e: [Edge; 12],
+    edir: [u32; 12],
 }
 
 impl Cube {
     fn initialize_cube() -> Cube {
-        Cube{
-            faces: [
-                Cubiface{
-                    cubicubes: [
-                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
-                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
-                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
-                },
-                Cubiface{
-                    cubicubes: [
-                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
-                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
-                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
-                },
-                Cubiface{
-                    cubicubes: [
-                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
-                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
-                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
-                },
-                Cubiface{
-                    cubicubes: [
-                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
-                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
-                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
-                },
-                Cubiface{
-                    cubicubes: [
-                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
-                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
-                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
-                },
-                Cubiface{
-                    cubicubes: [
-                        Cubicube{name: 0, orientation: 'x'}, Cubicube{name: 1, orientation: 'x'}, Cubicube{name: 2, orientation: 'x'},
-                        Cubicube{name: 3, orientation: 'x'}, Cubicube{name: 4, orientation: 'x'}, Cubicube{name: 5, orientation: 'x'},
-                        Cubicube{name: 6, orientation: 'x'}, Cubicube{name: 7, orientation: 'x'}, Cubicube{name: 8, orientation: 'x'}]
-                },
-            ]
+        Cube {
+            c: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
+            cdir: [0, 0, 0, 0, 0, 0, 0, 0],
+            e: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
+            edir: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         }
     }
 }
