@@ -2,21 +2,16 @@
 
 use std::env;
 
-/* Moves */
+/* - MOVES ------------------------------------ */
 
+// Left, Right, Double
 enum Action {
-    RotLeft,
-    RotRight,
-    DoubleRot
+    L, R, D,
 }
 
+// Front, Right, Up, Bot, Left, Down
 enum Face {
-    Front,
-    Right,
-    Up,
-    Bot,
-    Left,
-    Down
+    F, R, U, B, L, D,
 }
 
 struct Move {
@@ -24,17 +19,18 @@ struct Move {
     action: Action
 }
 
-/* Cube simulation */
+/* - CUBE SIMULATION -------------------------- */
 
+// UpRightFront, UpFrontLeft, ...
 enum Corner {
     URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB,
 }
 
+// UpRigt, UpFront, UpLeft, ...
 enum Edge {
     UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR,
 }
 
-/* [c : corner] [cdir : corner dir] [e : edge] [edir : edge dir] */
 struct Cube {
     c: [Corner; 8],
     cdir: [u32; 8],
@@ -53,63 +49,19 @@ impl Cube {
     }
 }
 
-fn main() {
-    let mut _cube: Cube = Cube::initialize_cube();
+/* - PERMUTATIONS FUNCTIONS ------------------- */
 
-    // Getting arguments
-    let _args: Vec<String> = env::args().collect();
-    if _args.len() != 2 {
-        println!("[!] Error, Rubik should receive one argument");
-        return ;
-    }
+fn apply_move(_cube: &mut Cube, _move: &Move) {
+    // apply matrix
+}
 
-    // Make a list of Moves based on arguments
-    let _moves: Vec<Move> = match get_moves_list(&_args) {
-        Some(value) => value,
-        None => return
-    };
-
-    // [!] Debug : Display given Moves
+fn cube_shuffle(mut _cube: &mut Cube, _moves: &Vec<Move>) {
     for _move in _moves.iter() {
-        match _move.face {
-            Face::Front => print!("Front"),
-            Face::Right => print!("Right"),
-            Face::Up => print!("Up"),
-            Face::Bot => print!("Bot"),
-            Face::Left => print!("Left"),
-            Face::Down => print!("Down"),
-        }
-        print!(" | ");
-        match _move.action {
-            Action::RotLeft => println!("RotLeft"),
-            Action::RotRight => println!("RotRight"),
-            Action::DoubleRot => println!("DoubleRot"),
-        }
-    }
-
-    // Shuffle the cube
-    cube_shuffle(&mut _cube, &_moves);
-
-    // Cube solver
-    let _solution: Vec<Move> = cube_solver(&mut _cube);
-
-    for _move in _solution.iter() {
-        match _move.face {
-            Face::Front => print!("F"),
-            Face::Right => print!("R"),
-            Face::Up => print!("U"),
-            Face::Bot => print!("B"),
-            Face::Left => print!("L"),
-            Face::Down => print!("D"),
-        }
-        match _move.action {
-            Action::RotRight => print!(""),
-            Action::RotLeft => print!("'"),
-            Action::DoubleRot => print!("2"),
-        }
-        print!(" ");
+        apply_move(&mut _cube, &_move);
     }
 }
+
+/* - ARGUMENT PARSING ------------------------- */
 
 fn get_moves_list(_args: &Vec<String>) -> Option<Vec<Move>> {
     let _arg_list: Vec<&str> = _args[1].trim().split_whitespace().collect();
@@ -118,21 +70,21 @@ fn get_moves_list(_args: &Vec<String>) -> Option<Vec<Move>> {
     for index in 0.._arg_list.len() {
         _moves.push(Move {
             face: match _arg_list[index].chars().next().unwrap() {
-                'F' => Face::Front,
-                'R' => Face::Right,
-                'U' => Face::Up,
-                'B' => Face::Bot,
-                'L' => Face::Left,
-                'D' => Face::Down,
+                'F' => Face::F,
+                'R' => Face::R,
+                'U' => Face::U,
+                'B' => Face::B,
+                'L' => Face::L,
+                'D' => Face::D,
                 _ => {
                     println!("[!] Error, Patern does not match: {}", _arg_list[index]);
                     return None;
                 },
             },
             action: match &_arg_list[index][1..] {
-                "" => Action::RotRight,
-                "'" => Action::RotLeft,
-                "2" => Action::DoubleRot,
+                "" => Action::R,
+                "'" => Action::L,
+                "2" => Action::D,
                 _ => {
                     println!("[!] Error, Patern does not match: {}", _arg_list[index]);
                     return None;
@@ -143,15 +95,7 @@ fn get_moves_list(_args: &Vec<String>) -> Option<Vec<Move>> {
     Some(_moves)
 }
 
-fn cube_shuffle(mut _cube: &mut Cube, _moves: &Vec<Move>) {
-    for _move in _moves.iter() {
-        apply_move(&mut _cube, &_move);
-    }
-}
-
-fn apply_move(_cube: &mut Cube, _move: &Move) {
-    // apply matrix
-}
+/* - RUBIK'S SOLVER --------------------------- */
 
 fn cube_solver(_cube: &mut Cube) -> Vec<Move> {
     let _solution: Vec<Move> = Vec::new();
@@ -222,3 +166,61 @@ fn find_neighbors(_current_node: &Node) -> Vec<Node> {
 }
 
 */
+
+fn main() {
+    let mut _cube: Cube = Cube::initialize_cube();
+
+    // Getting arguments
+    let _args: Vec<String> = env::args().collect();
+    if _args.len() != 2 {
+        println!("[!] Error, Rubik should receive one argument");
+        return ;
+    }
+
+    // Make a list of Moves based on arguments
+    let _moves: Vec<Move> = match get_moves_list(&_args) {
+        Some(value) => value,
+        None => return
+    };
+
+    // [!] Debug : Display given Moves
+    for _move in _moves.iter() {
+        match _move.face {
+            Face::F => print!("Front"),
+            Face::R => print!("Right"),
+            Face::U => print!("Up"),
+            Face::B => print!("Bot"),
+            Face::L => print!("Left"),
+            Face::D => print!("Down"),
+        }
+        print!(" | ");
+        match _move.action {
+            Action::L => println!("RotLeft"),
+            Action::R => println!("RotRight"),
+            Action::D => println!("DoubleRot"),
+        }
+    }
+
+    // Shuffle the cube
+    cube_shuffle(&mut _cube, &_moves);
+
+    // Cube solver
+    let _solution: Vec<Move> = cube_solver(&mut _cube);
+
+    for _move in _solution.iter() {
+        match _move.face {
+            Face::F => print!("F"),
+            Face::R => print!("R"),
+            Face::U => print!("U"),
+            Face::B => print!("B"),
+            Face::L => print!("L"),
+            Face::D => print!("D"),
+        }
+        match _move.action {
+            Action::R => print!(""),
+            Action::L => print!("'"),
+            Action::D => print!("2"),
+        }
+        print!(" ");
+    }
+}
