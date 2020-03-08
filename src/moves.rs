@@ -51,25 +51,76 @@ impl Move {
     }
 
     pub fn cube_shuffle(mut _cube: &mut Cube, _moves: &Vec<Move>) {
-        /*for _move in _moves.iter() {
-            apply_move(&mut _cube, &_move);
-        }*/
-    }
-
-    /* FR corner */
-    /* Ex:
-    [T, T, T, T, D, D, D, D] -> []
-    */
-    /*fn front_rot_r_corner{
-
-    }
-
-    /* FR edge */
-    fn front_rot_r_edge{
-
+        for _move in _moves.iter() {
+            Move::apply_move(&mut _cube, &_move);
+        }
     }
 
     fn apply_move(_cube: &mut Cube, _move: &Move) {
-        // apply matrix
-    }*/
+        // code here
+    }
+
+    /*
+    [A, B, C, D, E, F, G, H],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [A, B, C, D, E, F, G, H, I, J, K, L],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    =
+    [B, F, C, D, A, E, G, H],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [A, J, C, D, E, I, G, H, B, F, K, L],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    */
+    fn front_rot_r() {
+        cube.c[0] = cube.c[1];
+        cube.c[1] = cube.c[5];
+        cube.c[4] = cube.c[0];
+        cube.c[5] = cube.c[4];
+
+        cube.e[1] = cube.e[9];
+        cube.e[5] = cube.e[8];
+        cube.e[8] = cube.e[1];
+        cube.e[9] = cube.e[5];
+    }
+
+    /*
+    [A, B, C, D, E, F, G, H],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [A, B, C, D, E, F, G, H, I, J, K, L],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    =
+    [E, A, C, D, F, B, G, H],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [A, I, C, D, E, J, G, H, F, B, K, L],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    */
+    fn front_rot_l() {
+        cube.c[0] = cube.c[4];
+        cube.c[1] = cube.c[0];
+        cube.c[4] = cube.c[5];
+        cube.c[5] = cube.c[1];
+
+        cube.e[1] = cube.e[8];
+        cube.e[5] = cube.e[9];
+        cube.e[8] = cube.e[5];
+        cube.e[9] = cube.e[1];
+    }
+
+    /*
+    [A, B, C, D, E, F, G, H],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [A, B, C, D, E, F, G, H, I, J, K, L],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    =
+    [F, E, C, D, B, A, G, H],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [A, B, C, D, E, F, G, H, I, J, K, L],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    */
+    fn front_rot_d() {
+        cube.c[0] = cube.c[5];
+        cube.c[1] = cube.c[4];
+        cube.c[4] = cube.c[1];
+        cube.c[5] = cube.c[0];
+    }
 }
