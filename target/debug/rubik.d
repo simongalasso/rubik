@@ -1,1 +1,1 @@
-/Volumes/Storage/goinfre/sgalasso/rubik/target/debug/rubik: /Volumes/Storage/goinfre/sgalasso/rubik/src/main.rs
+/Users/admin/Documents/sgalasso/rubik/target/debug/rubik: /Users/admin/Documents/sgalasso/rubik/src/cube.rs /Users/admin/Documents/sgalasso/rubik/src/display.rs /Users/admin/Documents/sgalasso/rubik/src/main.rs /Users/admin/Documents/sgalasso/rubik/src/moves.rs /Users/admin/Documents/sgalasso/rubik/src/search.rs
