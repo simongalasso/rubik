@@ -18,11 +18,29 @@ Then you can build the project
 ```
 > ./target/release/rubik <sequence>
 ```
+
 ### Flags
 ```
 -h, --help       Prints help information
 -V, --version    Prints version information
 ```
+
+---
+## Sequence format
+An action is defined by a face and a rotation
+```
+F -> front
+R -> right
+U -> up
+B -> back
+L -> left
+D -> down
+
+nothing -> turn right
+' -> turn left
+2 -> half rotation
+```
+For example: ```F U2 B' L' D'``` means "turn front to right, half rotation on up face..."
 
 ---
 ## Contributors
