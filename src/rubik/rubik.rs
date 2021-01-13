@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+use crate::parsing::parse::*;
 
 // UpRightFront, UpFrontLeft, ...
 enum Corner {
@@ -10,11 +10,38 @@ enum Edge {
     UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR,
 }
 
-pub struct Cube {
+pub struct Rubik {
     c: [Corner; 8],
     cdir: [u32; 8],
     e: [Edge; 12],
     edir: [u32; 12],
+}
+
+impl Rubik {
+    pub fn new() -> Rubik {
+        return Rubik {
+            c: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
+            cdir: [0, 0, 0, 0, 0, 0, 0, 0],
+            e: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
+            edir: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        }
+    }
+
+    pub fn shuffle(&mut self, sequence: Vec<Action>) {
+        for action in sequence.iter() {
+            self.apply_action(action);
+        }
+    }
+
+    pub fn apply_action(&mut self, action: &Action) {
+        // do stuff
+    }
+
+    pub fn solve(&mut self) -> Vec<Action> {
+        let mut output_sequence: Vec<Action> = Vec::new();
+        // do stuff
+        return output_sequence;
+    }
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -30,13 +57,3 @@ pub struct Cube {
     * * *                           6 * 4                           D D D
     6 * 7                           * 7 *                           D D D   
 --------------------------------------------------------------------------------------------- */
-impl Cube {
-    pub fn new() -> Cube {
-        Cube {
-            c: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
-            cdir: [0, 0, 0, 0, 0, 0, 0, 0],
-            e: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
-            edir: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        }
-    }
-}
