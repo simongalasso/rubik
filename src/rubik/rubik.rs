@@ -10,6 +10,22 @@ enum Edge {
     UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR,
 }
 
+// enum Cubie {
+//     Corner, Edge
+// }
+
+// impl Cubie {
+//     fn new(id: &str, c: u8, o: u8) -> Cubie {
+//         return Cubie {
+//             id, c, o
+//         }
+//     }
+// }
+
+// fn test {
+//     let cubie: Cubie = Cubie::Corner::new("URF", 0, 2);
+// }
+
 pub struct Rubik {
     c: [Corner; 8],
     cdir: [u32; 8],
@@ -21,26 +37,32 @@ impl Rubik {
     pub fn new() -> Rubik {
         return Rubik {
             c: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
-            cdir: [0, 0, 0, 0, 0, 0, 0, 0],
+            cdir: [0, 0, 0, 0, 0, 0, 0, 0], // 0 (ref), 1 (twisted clockwise) or 2 twisted anticlockwise
             e: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
-            edir: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            edir: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 0 (ref) or 1 (flipped)
         }
     }
 
     pub fn shuffle(&mut self, sequence: Vec<Action>) {
         for action in sequence.iter() {
-            self.apply_action(action);
+            self.permutate(action);
         }
     }
 
-    pub fn apply_action(&mut self, action: &Action) {
-        // do stuff
+    pub fn permutate(&mut self, action: &Action) {
+        // corner permutation: (from, to)
+        // (URF, UFL), (UFL, DLF), ()
     }
 
     pub fn solve(&mut self) -> Vec<Action> {
         let mut output_sequence: Vec<Action> = Vec::new();
         // do stuff
         return output_sequence;
+    }
+
+    pub fn get_cubies(&self) {
+        // convert cubies to visualisator format
+
     }
 }
 
