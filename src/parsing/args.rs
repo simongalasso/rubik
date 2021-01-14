@@ -3,6 +3,7 @@ use clap::{Arg, App};
 #[derive(Debug, PartialEq)]
 pub struct Config {
     pub input: String,
+    pub visualisator: bool
 }
 
 impl Config {
@@ -15,9 +16,16 @@ impl Config {
                 .required(true)
                 .index(1)
                 .help("The sequence to shuffle a rubik"))
+            .arg(Arg::with_name("visualisator")
+                .required(false)
+                .short("v")
+                .long("visualisator")
+                .takes_value(false)
+                .help("enable the visualisator"))
             .get_matches();
         return Config {
             input: matches.value_of("input_sequence").unwrap_or("").to_string(),
+            visualisator: matches.is_present("visualisator")
         };
     }
 }

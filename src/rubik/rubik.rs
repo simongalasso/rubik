@@ -14,18 +14,27 @@ impl Property {
     }
 }
 
-enum Cubie {
+pub enum Cubie {
     URF(Property), UFL, ULB, UBR, DFR, DLF, DBL, DRB, UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR
 }
 
 pub struct Rubik {
-
+    pub edges: [Cubie; 12],
+    pub corners: [Cubie; 8]
 }
 
 impl Rubik {
     pub fn new() -> Rubik {
         return Rubik {
-            //
+            edges: [
+                Cubie::UR, Cubie::UF, Cubie::UL, Cubie::UB,
+                Cubie::DR, Cubie::DF, Cubie::DL, Cubie::DB,
+                Cubie::FR, Cubie::FL, Cubie::BL, Cubie::BR
+            ],
+            corners: [
+                Cubie::URF(Property::new()), Cubie::UFL, Cubie::ULB, Cubie::UBR,
+                Cubie::DFR, Cubie::DLF, Cubie::DBL, Cubie::DRB
+            ]
         }
     }
 
