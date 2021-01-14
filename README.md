@@ -16,13 +16,19 @@ Then you can build the project
 ---
 ## Usage
 ```
-> ./target/release/rubik <sequence>
+> ./target/release/rubik [FLAGS] <input_sequence>
 ```
 
 ### Flags
 ```
--h, --help       Prints help information
--V, --version    Prints version information
+-h, --help            Prints help information
+-V, --version         Prints version information
+-v, --visualisator    enable the visualisator
+```
+
+### Args
+```
+<input_sequence>      The sequence to shuffle a rubik
 ```
 
 ---
