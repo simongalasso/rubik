@@ -1,100 +1,120 @@
 extern crate kiss3d;
 extern crate nalgebra;
 
-use nalgebra::{Translation3, Vector3, UnitQuaternion};
+use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion};
 use kiss3d::window::Window;
 use kiss3d::light::Light;
+use kiss3d::scene::SceneNode;
 
 mod parsing;
 mod display;
+mod action;
 mod rubik;
 
 use parsing::args::*;
-use parsing::parse::*;
-use display::output::*;
-use rubik::rubik::*;
+// use parsing::parse::*;
+// use display::output::*;
+// use action::action::*;
+// use rubik::rubik::*;
+
+const C_GREY: (f32, f32, f32) = (0.11, 0.11, 0.11);
+
+struct Vec3 {
+    x: f32,
+    y: f32,
+    z: f32
+}
+
+impl Vec3 {
+    fn from(x: f32, y: f32, z: f32) -> Vec3 {
+        return Vec3 {
+            x, y, z
+        }
+    }
+}
 
 fn main() {
     let config: Config = Config::new();
-    let input_sequence: Vec<Action> = parse(&config);
-    display_sequence("shuffle: ", &input_sequence);
+    // let input_sequence: Vec<Action> = parse(&config);
+    // display_sequence("shuffle: ", &input_sequence);
 
-    let mut rubik: Rubik = Rubik::new();
-    // println!("{}", rubik.edges[0].c);
-    rubik.shuffle(input_sequence);
+    // let mut rubik: Rubik = Rubik::new();
+    // rubik.shuffle(input_sequence);
 
-    let output_sequence: Vec<Action> = rubik.solve();
-    display_sequence("solution: ", &output_sequence);
+    // let output_sequence: Vec<Action> = rubik.solve();
+    // display_sequence("solution: ", &output_sequence);
 
     if config.visualisator {
         let mut window: Window = Window::new("Rubik");
+        window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
         let mut rubik = window.add_group();
-        // for cubie in rubik.ges_cubies().iter() {
-        //     let mut cubie1 = g1.add_cube(1.0, 1.0, 1.0);
-        //     // calc color
-        //     g1.set_color(1.0, 0.0, 0.0);
-        //     // calc translation
-        //     cubie1.append_translation(&Translation3::new(2.0f32, 0.0, 0.0));
-        // }
-        let mut g0 = rubik.add_group();
-        let mut c_0_1 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_1.append_translation(&Translation3::new(-2.0, -2.0, -2.0));
-        let mut c_0_2 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_2.append_translation(&Translation3::new(0.0, -2.0, -2.0));
-        let mut c_0_3 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_3.append_translation(&Translation3::new(2.0, -2.0, -2.0));
-        let mut c_0_4 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_4.append_translation(&Translation3::new(-2.0, 0.0, -2.0));
-        let mut c_0_5 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_5.append_translation(&Translation3::new(0.0, 0.0, -2.0));
-        let mut c_0_6 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_6.append_translation(&Translation3::new(2.0, 0.0, -2.0));
-        let mut c_0_7 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_7.append_translation(&Translation3::new(-2.0, 2.0, -2.0));
-        let mut c_0_8 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_8.append_translation(&Translation3::new(0.0, 2.0, -2.0));
-        let mut c_0_9 = g0.add_cube(1.0, 1.0, 1.0);
-        c_0_9.append_translation(&Translation3::new(2.0, 2.0, -2.0));
-        
-        let mut g1 = rubik.add_group();
-        let mut c_1_1 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_1.append_translation(&Translation3::new(-2.0, -2.0, 0.0));
-        let mut c_1_2 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_2.append_translation(&Translation3::new(0.0, -2.0, 0.0));
-        let mut c_1_3 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_3.append_translation(&Translation3::new(2.0, -2.0, 0.0));
-        let mut c_1_4 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_4.append_translation(&Translation3::new(-2.0, 0.0, 0.0));
-        let mut c_1_6 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_6.append_translation(&Translation3::new(2.0, 0.0, 0.0));
-        let mut c_1_7 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_7.append_translation(&Translation3::new(-2.0, 2.0, 0.0));
-        let mut c_1_8 = g1.add_cube(1.0, 1.0, 1.0);
-        c_1_8.append_translation(&Translation3::new(0.0, 2.0, 0.0));
-        let mut c_0_9 = g1.add_cube(1.0, 1.0, 1.0);
-        c_0_9.append_translation(&Translation3::new(2.0, 2.0, 0.0));
 
-        let mut g2 = rubik.add_group();
-        let mut c_2_1 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_1.append_translation(&Translation3::new(-2.0, -2.0, 2.0));
-        let mut c_2_2 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_2.append_translation(&Translation3::new(0.0, -2.0, 2.0));
-        let mut c_2_3 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_3.append_translation(&Translation3::new(2.0, -2.0, 2.0));
-        let mut c_2_4 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_4.append_translation(&Translation3::new(-2.0, 0.0, 2.0));
-        let mut c_2_5 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_5.append_translation(&Translation3::new(0.0, 0.0, 2.0));
-        let mut c_2_6 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_6.append_translation(&Translation3::new(2.0, 0.0, 2.0));
-        let mut c_2_7 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_7.append_translation(&Translation3::new(-2.0, 2.0, 2.0));
-        let mut c_2_8 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_8.append_translation(&Translation3::new(0.0, 2.0, 2.0));
-        let mut c_2_9 = g2.add_cube(1.0, 1.0, 1.0);
-        c_2_9.append_translation(&Translation3::new(2.0, 2.0, 2.0));
+        let rubik_size: f32 = 10.0;
+        let cubie_size: f32 = rubik_size;
+
+        for z in 0..3 {
+            for y in 0..3 {
+                for x in 0..3 {
+                    let offset: f32 = (3.0 - 1.0) * cubie_size / 2.0;
+                    let pos: Vec3 = Vec3::from(
+                        x as f32 * cubie_size - offset,
+                        y as f32 * cubie_size - offset,
+                        z as f32 * cubie_size - offset);
+                    let cubie: SceneNode = add_cubie(&mut rubik, pos, cubie_size);
+                }
+            }
+        }
 
         window.set_light(Light::StickToCamera);
         while window.render() {}
     }
+}
+
+fn add_cubie(rubik: &mut SceneNode, pos: Vec3, cubie_size: f32) -> SceneNode {
+    let color_u = (1.0, 1.0, 1.0);
+    let color_f = (0.0, 1.0, 0.0);
+    let color_l = (1.0, 0.647, 0.0);
+    let color_d = (0.0, 0.0, 1.0);
+    let color_r = (1.0, 0.0, 0.0);
+    let color_b = (1.0, 1.0, 0.0);
+
+    let r: f32 = cubie_size / 2.0;
+    let mut cubie: SceneNode = rubik.add_group();
+
+    // cubie U
+    let mut quad = cubie.add_quad(cubie_size, cubie_size, 1, 1);
+    quad.append_rotation(&UnitQuaternion::from_axis_angle(&Vector3::x_axis(), 90.0 * std::f32::consts::PI / 180.0));
+    quad.append_translation(&Translation3::new(0.0, -r, 0.0));
+    quad.set_color(color_u.0, color_u.1, color_u.2);
+
+    // cubie F
+    let mut quad = cubie.add_quad(cubie_size, cubie_size, 1, 1);
+    quad.append_translation(&Translation3::new(0.0, 0.0, -r));
+    quad.set_color(color_f.0, color_f.1, color_f.2);
+
+    // cubie L
+    let mut quad = cubie.add_quad(cubie_size, cubie_size, 1, 1);
+    quad.append_rotation(&UnitQuaternion::from_axis_angle(&Vector3::y_axis(), 90.0 * std::f32::consts::PI / 180.0));
+    quad.append_translation(&Translation3::new(-r, 0.0, 0.0));
+    quad.set_color(color_l.0, color_l.1, color_l.2);
+
+    // cubie D
+    let mut quad = cubie.add_quad(cubie_size, cubie_size, 1, 1);
+    quad.append_rotation(&UnitQuaternion::from_axis_angle(&Vector3::x_axis(), 90.0 * std::f32::consts::PI / 180.0));
+    quad.append_translation(&Translation3::new(0.0, r, 0.0));
+    quad.set_color(color_d.0, color_d.1, color_d.2);
+
+    // cubie B
+    let mut quad = cubie.add_quad(cubie_size, cubie_size, 1, 1);
+    quad.append_translation(&Translation3::new(0.0, 0.0, r));
+    quad.set_color(color_b.0, color_b.1, color_b.2);
+
+    // cubie R
+    let mut quad = cubie.add_quad(cubie_size, cubie_size, 1, 1);
+    quad.append_rotation(&UnitQuaternion::from_axis_angle(&Vector3::y_axis(), 90.0 * std::f32::consts::PI / 180.0));
+    quad.append_translation(&Translation3::new(r, 0.0, 0.0));
+    quad.set_color(color_r.0, color_r.1, color_r.2);
+
+    cubie.append_translation(&Translation3::new(pos.x, pos.y, pos.z));
+    return cubie;
 }
