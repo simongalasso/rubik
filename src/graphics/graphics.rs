@@ -3,7 +3,7 @@ extern crate nalgebra;
 extern crate kiss3d;
 
 // use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
-use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion};
+use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion, Unit};
 use kiss3d::window::Window;
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
@@ -28,6 +28,10 @@ impl Vec3 {
             x, y, z
         }
     }
+}
+
+enum Face {
+    U, F, L, D, R, B
 }
 
 pub fn display_graphics() {
@@ -57,31 +61,46 @@ pub fn display_graphics() {
         }
     }
 
-    rubik[0].set_color(C_RED.0, C_RED.1, C_RED.2);
+    rubik[9].set_color(C_RED.0, C_RED.1, C_RED.2);
 
-    let mut nb = 0;
+    let sequence: Vec<Face> = vec![Face::F, Face::R, Face::U, Face::B, Face::D];
+
     let speed: u8 = 1;
+    let mut moves: usize = 0;
     let mut animating: bool = false;
-    let mut current_cubies: &mut [SceneNode] = &mut rubik[0..9];
     let mut target_angle: f32 = 0.0;
     let mut current_angle: f32 = 0.0;
+    let mut current: ([usize; 9], Unit::<Vector3::<f32>>) = get_face_cubies(&sequence[moves]); // doublon
     while window.render() {
-        if !animating {
-            current_cubies = &mut rubik[0..9]; // to unmock
+        if !animating && moves < sequence.len() {
+            current = get_face_cubies(&sequence[moves]); // doublon
             target_angle = 90.0; // to unmock, can be 180
             current_angle = 0.0;
             animating = true;
-        } else if (nb < 1) {
-            let rot = UnitQuaternion::from_axis_angle(&Vector3::x_axis(), radian(speed as f32));
-            for cubie in current_cubies.iter_mut() {
-                (*cubie).append_rotation(&rot);
+        } else if animating {
+            let rot = UnitQuaternion::from_axis_angle(&current.1, radian(speed as f32));
+            for index in 0..rubik.len() {
+                if current.0.contains(&index) {
+                    rubik[index].append_rotation(&rot);
+                }
             }
             current_angle += speed as f32;
             if current_angle == target_angle {
                 animating = false;
-                nb += 1;
+                moves += 1;
             }
         }
+    }
+}
+
+fn get_face_cubies(face: &Face) -> ([usize; 9], Unit::<Vector3::<f32>>) {
+    match face {
+        Face::U => ([26, 17, 8, 25, 16, 7, 24, 15, 6], Vector3::<f32>::y_axis()),
+        Face::F => ([24, 15, 6, 21, 12, 3, 18, 9, 0], Vector3::<f32>::z_axis()),
+        Face::L => ([26, 25, 24, 23, 22, 21, 20, 19, 18], Vector3::<f32>::x_axis()),
+        Face::D => ([20, 11, 2, 19, 10, 1, 18, 9, 0], Vector3::<f32>::y_axis()),
+        Face::R => ([6, 7, 8, 3, 4, 5, 0, 1, 2], Vector3::<f32>::x_axis()),
+        Face::B => ([26, 17, 8, 22, 14, 5, 20, 11, 2], Vector3::<f32>::z_axis()),
     }
 }
 
