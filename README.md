@@ -10,7 +10,8 @@ This is a 42 school project <strong>[Final grade: work in progress]</strong>
 ## Setup
 If you do not have Rust
 ```
-> sh install-rust.sh
+> curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+> export PATH=$PATH:$HOME/.cargo/bin
 ```
 Then you can build the project
 ```
