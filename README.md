@@ -47,7 +47,6 @@ Then you can build the project
 <input_sequence>      The sequence to shuffle a rubik
 ```
 
----
 ### Sequence format
 An action is defined by a face and a rotation
 ```
