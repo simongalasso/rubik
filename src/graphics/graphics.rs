@@ -1,8 +1,6 @@
-// extern crate rulinalg;
 extern crate nalgebra;
 extern crate kiss3d;
 
-// use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
 use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion, Unit, Quaternion};
 use kiss3d::window::Window;
 use kiss3d::light::Light;
@@ -15,13 +13,14 @@ use rand::prelude::*;
 use super::cubie::Cubie;
 use super::action::{Action, Face};
 
-const C_GREY: (f32, f32, f32) = (0.11, 0.11, 0.11);
-const C_RED: (f32, f32, f32) = (1.0, 0.0, 0.0);
-const C_GREEN: (f32, f32, f32) = (0.0, 1.0, 0.0);
-const C_BLUE: (f32, f32, f32) = (0.0, 0.0, 1.0);
-const C_WHITE: (f32, f32, f32) = (1.0, 1.0, 1.0);
-const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
-const C_ORANGE: (f32, f32, f32) = (1.0, 0.647, 0.0);
+pub const C_GREY: (f32, f32, f32) = (0.11, 0.11, 0.11);
+pub const C_RED: (f32, f32, f32) = (1.0, 0.0, 0.0);
+pub const C_GREEN: (f32, f32, f32) = (0.0, 1.0, 0.0);
+pub const C_BLUE: (f32, f32, f32) = (0.0, 0.0, 1.0);
+pub const C_WHITE: (f32, f32, f32) = (1.0, 1.0, 1.0);
+pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
+pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.647, 0.0);
+pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
 pub fn display_graphics() {
     let mut window: Window = Window::new("Rubik");
@@ -37,15 +36,12 @@ pub fn display_graphics() {
     for x in -1..2 {
         for y in -1..2 {
             for z in -1..2 {
-                let size: Vector3<f32> = Vector3::new(1.0, 1.0, 1.0);
                 let pos: Vector3<f32> = Vector3::new(x as f32, y as f32, z as f32);
-                let mut cubie: Cubie = Cubie::new(&mut rubik, size, pos, scale, gap);
+                let mut cubie: Cubie = Cubie::new(&mut rubik, 1.0, pos, scale, gap);
                 cubies.push(cubie);
             }
         }
     }
-
-    cubies[9].node.set_color(C_RED.0, C_RED.1, C_RED.2);
 
     let faces: Vec<Face> = vec![Face::U, Face::F, Face::L, Face::D, Face::R, Face::B];
     let rotations: Vec<f32> = vec![90.0, -90.0, 180.0];
@@ -59,7 +55,8 @@ pub fn display_graphics() {
     let mut current_angle: f32 = 0.0;
     let mut current_face: Face = faces[rand::thread_rng().gen_range(0, faces.len())].clone(); // doublon
     let mut current_rot: f32 = rotations[rand::thread_rng().gen_range(0, rotations.len())].clone(); // doublon
-    let mut current_cubies: (Vec<Cubie>, Unit::<Vector3::<f32>>) = get_face_cubies(&cubies, &Action::new(current_face, current_rot).face); // doublon
+    let mut current_action: Action = Action::new(current_face, current_rot); // doublon
+    let mut current_cubies: (Vec<Cubie>, Unit::<Vector3::<f32>>) = get_face_cubies(&cubies, &current_action.face); // doublon
     while window.render_with_camera(&mut camera) {
         for mut event in window.events().iter() {
             match event.value {
@@ -79,8 +76,10 @@ pub fn display_graphics() {
         if started /*&& moves < sequence.len()*/ {
             if !animating {
                 current_face = faces[rand::thread_rng().gen_range(0, faces.len())].clone(); // doublon
+                eprintln!("{:?}", current_face);
                 current_rot = rotations[rand::thread_rng().gen_range(0, rotations.len())].clone(); // doublon
-                current_cubies = get_face_cubies(&cubies, &Action::new(current_face, current_rot).face); // doublon
+                current_action = Action::new(current_face, current_rot); // doublon
+                current_cubies = get_face_cubies(&cubies, &current_action.face); // doublon
                 current_angle = 0.0;
                 animating = true;
             } else if animating {
@@ -102,10 +101,10 @@ pub fn display_graphics() {
 fn get_face_cubies(cubies: &Vec<Cubie>, face: &Face) -> (Vec<Cubie>, Unit::<Vector3::<f32>>) {
     match face {
         Face::U => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().y) == 1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::y_axis()),
-        Face::F => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().z) == 1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::z_axis()),
-        Face::L => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == -1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::x_axis()),
+        Face::F => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().z) == -1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::z_axis()),
+        Face::L => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == 1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::x_axis()),
         Face::D => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().y) == -1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::y_axis()),
-        Face::R => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == 1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::x_axis()),
-        Face::B => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().z) == -1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::z_axis()),
+        Face::R => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == -1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::x_axis()),
+        Face::B => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().z) == 1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::z_axis()),
     }
 }
