@@ -6,7 +6,7 @@ use kiss3d::window::Window;
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
 use kiss3d::camera::{FirstPerson, ArcBall, Camera};
-use kiss3d::event::{WindowEvent, Key};
+use kiss3d::event::{WindowEvent, Key, MouseButton};
 use std::cell::RefCell;
 use std::rc::Rc;
 use rand::prelude::*;
@@ -14,18 +14,22 @@ use super::cubie::Cubie;
 use super::action::{Action, Face};
 
 pub const C_GREY: (f32, f32, f32) = (0.11, 0.11, 0.11);
-pub const C_RED: (f32, f32, f32) = (1.0, 0.0, 0.0);
-pub const C_GREEN: (f32, f32, f32) = (0.0, 1.0, 0.0);
-pub const C_BLUE: (f32, f32, f32) = (0.0, 0.0, 1.0);
+pub const C_RED: (f32, f32, f32) = (1.0, 0.15, 0.15);
+pub const C_GREEN: (f32, f32, f32) = (0.0, 0.60784, 0.28235);
+pub const C_BLUE: (f32, f32, f32) = (0.0, 0.27450, 0.67843);
 pub const C_WHITE: (f32, f32, f32) = (1.0, 1.0, 1.0);
 pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
-pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.647, 0.0);
+pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.34509, 0.0);
 pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
 pub fn display_graphics() {
     let mut window: Window = Window::new("Rubik");
     window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
-    let mut camera = ArcBall::new(Point3::new(-20.0, 10.0, -20.0), Point3::origin());
+    let mut camera = ArcBall::new(Point3::new(-6.0, 3.0, -6.0), Point3::origin());
+    camera.rebind_drag_button(None);
+    camera.set_min_dist(5.0);
+    camera.set_max_dist(50.0);
+    camera.set_dist_step(5.0);
     window.set_light(Light::StickToCamera);
 
     let mut rubik: SceneNode = window.add_group();
@@ -49,7 +53,7 @@ pub fn display_graphics() {
 
     let rubik_rot = UnitQuaternion::from_axis_angle(&Vector3::y_axis(), (0.5 as f32).to_radians());
 
-    let speed: f32 = 10.0;
+    let speed: f32 = 6.0; // doit impérativement être un diviseur de 90
     let mut moves: usize = 0;
     let mut started: bool = false;
     let mut animating: bool = false;
