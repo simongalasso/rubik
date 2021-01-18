@@ -7,6 +7,9 @@ use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion, Unit};
 use kiss3d::window::Window;
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
+use kiss3d::camera::{FirstPerson, ArcBall, Camera};
+use std::cell::RefCell;
+use std::rc::Rc;
 
 const C_GREY: (f32, f32, f32) = (0.11, 0.11, 0.11);
 const C_RED: (f32, f32, f32) = (1.0, 0.0, 0.0);
@@ -37,12 +40,14 @@ enum Face {
 pub fn display_graphics() {
     let mut window: Window = Window::new("Rubik");
     window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
+    let mut camera = ArcBall::new(Point3::new(-20.0, 10.0, -20.0), Point3::origin());
     window.set_light(Light::StickToCamera);
 
     let mut rubik: Vec<SceneNode> = Vec::new();
 
     let rubik_size: f32 = 10.0;
-    let cubie_size: f32 = rubik_size;
+    let cubie_size: f32 = rubik_size / 3.0;
+    let gap: f32 = cubie_size / 50.0;
 
     let mut index: usize = 0;
     for x in 0..3 {
@@ -53,7 +58,7 @@ pub fn display_graphics() {
                     x as f32 * cubie_size - offset,
                     y as f32 * cubie_size - offset,
                     z as f32 * cubie_size - offset);
-                let mut cubie: SceneNode = window.add_cube(cubie_size - 0.5, cubie_size - 0.5, cubie_size - 0.5);
+                let mut cubie: SceneNode = window.add_cube(cubie_size - gap, cubie_size - gap, cubie_size - gap);
                 cubie.append_translation(&Translation3::new(pos.x, pos.y, pos.z));
                 rubik.push(cubie);
                 index += 1;
@@ -63,6 +68,7 @@ pub fn display_graphics() {
 
     rubik[9].set_color(C_RED.0, C_RED.1, C_RED.2);
 
+
     let sequence: Vec<Face> = vec![Face::F, Face::R, Face::U, Face::B, Face::D];
 
     let speed: u8 = 1;
@@ -71,7 +77,7 @@ pub fn display_graphics() {
     let mut target_angle: f32 = 0.0;
     let mut current_angle: f32 = 0.0;
     let mut current: ([usize; 9], Unit::<Vector3::<f32>>) = get_face_cubies(&sequence[moves]); // doublon
-    while window.render() {
+    while window.render_with_camera(&mut camera) {
         if !animating && moves < sequence.len() {
             current = get_face_cubies(&sequence[moves]); // doublon
             target_angle = 90.0; // to unmock, can be 180
