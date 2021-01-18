@@ -25,13 +25,14 @@ pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 pub fn display_graphics() {
     let mut window: Window = Window::new("Rubik");
     window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
+    window.set_framerate_limit(Some(60));
     let mut camera = ArcBall::new(Point3::new(-6.0, 3.0, -6.0), Point3::origin());
     camera.rebind_drag_button(None);
     camera.set_min_dist(5.0);
     camera.set_max_dist(50.0);
     camera.set_dist_step(5.0);
     window.set_light(Light::StickToCamera);
-
+    
     let mut rubik: SceneNode = window.add_group();
     let mut cubies: Vec<Cubie> = Vec::new();
     let scale: f32 = 3.0;
