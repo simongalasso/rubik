@@ -13,13 +13,13 @@ use rand::prelude::*;
 use super::cubie::Cubie;
 use super::action::{Action, Face};
 
-pub const C_GREY: (f32, f32, f32) = (0.11, 0.11, 0.11);
+pub const C_GREY: (f32, f32, f32) = (0.09, 0.09, 0.09);
 pub const C_RED: (f32, f32, f32) = (1.0, 0.15, 0.15);
 pub const C_GREEN: (f32, f32, f32) = (0.0, 0.60784, 0.28235);
 pub const C_BLUE: (f32, f32, f32) = (0.0, 0.27450, 0.67843);
 pub const C_WHITE: (f32, f32, f32) = (1.0, 1.0, 1.0);
 pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
-pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.34509, 0.0);
+pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.4, 0.1);
 pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
 pub fn display_graphics() {
