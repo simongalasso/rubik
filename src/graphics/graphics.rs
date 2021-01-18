@@ -47,7 +47,9 @@ pub fn display_graphics() {
     let rotations: Vec<f32> = vec![90.0, -90.0, 180.0];
     // let sequence: Vec<Face> = vec![Action::new(Face::F, 90.0), Action::new(Face::B, -90.0), Action::new(Face::L, 180.0)];
 
-    let speed: f32 = 5.0;
+    let rubik_rot = UnitQuaternion::from_axis_angle(&Vector3::y_axis(), (0.5 as f32).to_radians());
+
+    let speed: f32 = 10.0;
     let mut moves: usize = 0;
     let mut started: bool = false;
     let mut animating: bool = false;
@@ -95,6 +97,7 @@ pub fn display_graphics() {
                 }
             }
         }
+        rubik.append_rotation(&rubik_rot);
     }
 }
 
