@@ -3,6 +3,10 @@ A rubik solver, written in Rust<br/>
 This is a 42 school project <strong>[Final grade: work in progress]</strong>
 
 ---
+## Demo
+<img src="demo.gif" height="500"/>
+
+---
 ## Setup
 If you do not have Rust
 ```
