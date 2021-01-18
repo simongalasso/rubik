@@ -19,9 +19,20 @@ Then you can build the project
 ```
 
 ---
-## Usage
+## Train usage (work in progress)
 ```
-> ./target/release/rubik [FLAGS] <input_sequence>
+> ./target/release/train [FLAGS]
+```
+### Flags
+```
+-h, --help       Prints help information
+-V, --version    Prints version information
+```
+
+---
+## Solve usage (work in progress)
+```
+> ./target/release/solve [FLAGS] <input_sequence>
 ```
 
 ### Flags
@@ -37,7 +48,7 @@ Then you can build the project
 ```
 
 ---
-## Sequence format
+### Sequence format
 An action is defined by a face and a rotation
 ```
 F -> front
