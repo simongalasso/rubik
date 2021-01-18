@@ -4,7 +4,7 @@ This is a 42 school project <strong>[Final grade: work in progress]</strong>
 
 ---
 ## Demo
-<img src="demo.gif" height="500"/>
+<img src="demo.gif" height="250"/>
 
 ---
 ## Setup
