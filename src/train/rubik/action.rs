@@ -1,4 +1,4 @@
-use super::rubik::*;
+use super::rubik_state::*;
 
 #[derive(Debug, Clone)]
 pub enum Face {
@@ -24,7 +24,7 @@ impl Action {
         }
     }
 
-    pub fn apply_to(&self, rubik: &mut Rubik) {
+    pub fn apply_to(&self, state: &mut RubikState) {
         // do permutation
     }
 }
