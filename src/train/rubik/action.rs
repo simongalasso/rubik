@@ -86,18 +86,18 @@ impl Action {
         ];
     }
 
-    pub fn apply_to(&self, state: &mut RubikState) {
-        println!("action");
-        let tmp: RubikState = state.clone();
+    pub fn apply_to(&self, state: &RubikState) -> RubikState {
+        let mut new_state: RubikState = state.clone();
         for i in 0..8 {
             let index: usize = self.data.c_p[i].clone() as usize;
-            state.c_p[i] = tmp.c_p[index].clone();
-            state.c_o[i] = (tmp.c_o[index].clone() + self.data.c_o[i]) % 3;
+            new_state.c_p[i] = state.c_p[index].clone();
+            new_state.c_o[i] = (state.c_o[index].clone() + self.data.c_o[i]) % 3;
         }
         for i in 0..12 {
             let index: usize = self.data.e_p[i].clone() as usize;
-            state.e_p[i] = tmp.e_p[index].clone();
-            state.e_o[i] = (tmp.e_o[index].clone() + self.data.e_o[i]) % 2;
+            new_state.e_p[i] = state.e_p[index].clone();
+            new_state.e_o[i] = (state.e_o[index].clone() + self.data.e_o[i]) % 2;
         }
+        return new_state;
     }
 }

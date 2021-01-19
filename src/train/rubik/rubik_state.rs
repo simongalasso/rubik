@@ -39,7 +39,7 @@ impl RubikState {
 
     pub fn shuffle(&mut self, sequence: Vec<Action>) {
         for action in sequence.iter() {
-            action.apply_to(self);
+            *self = action.apply_to(self);
         }
     }
 

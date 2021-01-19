@@ -59,7 +59,7 @@ impl NeuralNetwork {
         }
     }
 
-    pub fn feedforward(&mut self, inputs: Matrix<f64>) -> Matrix<f64> {
+    pub fn guess(&mut self, inputs: Matrix<f64>) -> Matrix<f64> {
         // Feed forward inputs -> hidden
         let mut hidden: Matrix<f64> = &self.weights_ih * &inputs;
         hidden = &hidden + &self.bias_h;
