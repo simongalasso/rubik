@@ -2,23 +2,25 @@ extern crate rand;
 extern crate rulinalg;
 
 use rand::Rng;
+
 use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
 
 /* Math ------------------------------------------ */
 
-fn sigmoid(x: f64) -> f64 {
+pub fn sigmoid(x: f64) -> f64 {
     return 1.0 / (1.0 + (-x).exp());
 }
 
-fn dsigmoid(y: f64) -> f64 {
+pub fn dsigmoid(y: f64) -> f64 {
     return y * (1.0 - y);
 }
 
 /* Utils ----------------------------------------- */
 
 fn mutate(val: f64) -> f64 {
-    if rand::thread_rng().gen_range(0.0, 1.0) < 0.01 { // 1%
-        return rand::thread_rng().gen_range(-1.0, 1.0);
+    let mut rng = rand::thread_rng();
+    if rng.gen_range(0.0, 1.0) < 0.01 { // 1%
+        return rng.gen_range(-1.0, 1.0);
     }
     return val;
 }
@@ -47,14 +49,15 @@ pub struct NeuralNetwork {
 
 impl NeuralNetwork {
     pub fn new(nb_inputs: usize, nb_hidden: usize, nb_outputs: usize) -> NeuralNetwork {
+        let mut rng = rand::thread_rng();
         NeuralNetwork {
             nb_inputs: nb_inputs,
             nb_hidden: nb_hidden,
             nb_outputs: nb_outputs,
-            weights_ih: Matrix::new(nb_hidden, nb_inputs, (0..(nb_hidden * nb_inputs)).map(|_| rand::thread_rng().gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
-            weights_ho: Matrix::new(nb_outputs, nb_hidden, (0..(nb_outputs * nb_hidden)).map(|_| rand::thread_rng().gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
-            bias_h: Matrix::new(nb_hidden, 1, (0..nb_hidden).map(|_| rand::thread_rng().gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
-            bias_o: Matrix::new(nb_outputs, 1, (0..nb_outputs).map(|_| rand::thread_rng().gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
+            weights_ih: Matrix::new(nb_hidden, nb_inputs, (0..(nb_hidden * nb_inputs)).map(|_| rng.gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
+            weights_ho: Matrix::new(nb_outputs, nb_hidden, (0..(nb_outputs * nb_hidden)).map(|_| rng.gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
+            bias_h: Matrix::new(nb_hidden, 1, (0..nb_hidden).map(|_| rng.gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
+            bias_o: Matrix::new(nb_outputs, 1, (0..nb_outputs).map(|_| rng.gen_range(-1.0, 1.0)).collect::<Vec<f64>>()),
             learning_rate: 0.1
         }
     }
@@ -112,10 +115,10 @@ impl NeuralNetwork {
     }
 
     pub fn mutate(&mut self) {
-        let mut new_weights_ih = self.weights_ih.clone();
-        let mut new_weights_ho = self.weights_ho.clone();
-        let mut new_bias_h = self.bias_h.clone();
-        let mut new_bias_o = self.bias_o.clone();
+        let new_weights_ih = self.weights_ih.clone();
+        let new_weights_ho = self.weights_ho.clone();
+        let new_bias_h = self.bias_h.clone();
+        let new_bias_o = self.bias_o.clone();
 
         self.weights_ih = new_weights_ih.apply(&mutate);
         self.weights_ho = new_weights_ho.apply(&mutate);
