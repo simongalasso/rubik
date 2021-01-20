@@ -8,7 +8,14 @@ use super::rotation::*;
 use super::corner::*;
 use super::edge::*;
 
-#[derive(Debug, Clone)]
+pub const SOLVED_STATE: RubikState = RubikState {
+    c_p: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
+    c_o: [0, 0, 0, 0, 0, 0, 0, 0],
+    e_p: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
+    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+};
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct RubikState {
     pub c_p: [Corner; 8],
     pub c_o: [u8; 8],
@@ -17,21 +24,10 @@ pub struct RubikState {
 }
 
 impl RubikState {
-    pub fn new_solved() -> RubikState {
-        return RubikState {
-            c_p: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
-            c_o: [0, 0, 0, 0, 0, 0, 0, 0],
-            e_p: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
-            e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        };
-    }
-
     pub fn new_random(iteration: usize) -> RubikState {
-        let mut state: RubikState = RubikState::new_solved();
+        let mut state: RubikState = SOLVED_STATE;
         let sequence: Vec<Action> = (0..iteration).map(|_| {
-            let current_face: Face = Face::get_faces()[rand::thread_rng().gen_range(0, Face::get_faces().len())].clone();
-            let current_rot: Rotation = Rotation::get_rotations()[rand::thread_rng().gen_range(0, Rotation::get_rotations().len())].clone();
-            return Action::new(current_face, current_rot);
+            return Action::new(Face::pick_random(), Rotation::pick_random());
         }).collect::<Vec<Action>>();
         state.shuffle(sequence);
         return state;
@@ -43,8 +39,8 @@ impl RubikState {
         }
     }
 
-    pub fn is_solvable(&self) -> bool {
-        // do code
-        return true;
-    }
+    // pub fn is_solvable(&self) -> bool {
+    //     // do code
+    //     return true;
+    // }
 }

@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use super::rubik_state::*;
 use super::face::*;
 use super::rotation::*;
@@ -86,7 +84,7 @@ impl Action {
         ];
     }
 
-    pub fn apply_to(&self, state: &RubikState) -> RubikState {
+    pub fn apply_to(&self, state: &RubikState) -> RubikState { // optimize : something else than cloning
         let mut new_state: RubikState = state.clone();
         for i in 0..8 {
             let index: usize = self.data.c_p[i].clone() as usize;

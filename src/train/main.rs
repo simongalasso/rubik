@@ -2,15 +2,14 @@ extern crate pbr;
 extern crate rulinalg;
 
 use pbr::ProgressBar;
-use std::thread;
 
 mod algo;
 mod rubik;
 
 use rubik::rubik_state::*;
-use rubik::action::*;
 use rubik::face::*;
 use rubik::rotation::*;
+use rubik::action::*;
 
 // fn main() {
 //     let mut rubik: Rubik = Rubik::new_shuffled(10);
@@ -18,9 +17,11 @@ use rubik::rotation::*;
 //     println!("chosen action: {:?}", next_action);
 // }
 
-const I: usize = 100; // shuffle iterations
-const L: usize = 100; // nb of iterations
-const K: usize = 10; // training set size
+const MAX_ITER: usize = 1000; // nb of ADI procedure
+const SET_SIZE: usize = 100; // training set size
+const N_SHUFFLE: usize = 100; // training set size
+
+const RAND_IT: usize = 100; // rand cube shuffle iterations
 
 fn main() {
 
@@ -35,62 +36,43 @@ fn main() {
     // rubik_state = Action::new(Face::F, Rotation::R).apply_to(&rubik_state);
     // println!("{:?}", rubik_state);
 
-    let mut progress_bar = ProgressBar::new(L as u64);
+    let mut progress_bar = ProgressBar::new(MAX_ITER as u64);
     progress_bar.format("|██░|");
-    progress_bar.tick_format("-\\|/");
     progress_bar.set_width(Some(80));
 
-    let mut nn = NeuralNetwork::new(/* */);
-    for i in 0..L {
-        let targets: Vec<(f64, f64)> = Vec::new();
-        let training_set: Vec<RubikState> = (0..K).map(|_| RubikState::new_random(I)).collect::<Vec<RubikState>>();
-        for state in training_set.iter() {
-            for (i, action) in Action::get_actions().iter().enumerate() {
-                let child_state: RubikState = action.apply_to(state);
-                // (values[i], policies[i]) = nn.guess(child_state);
-                // results[i] = values[i] + reward(child_state);
+    // let mut nn = NeuralNetwork::new(/* */);
+    for _ in 0..MAX_ITER {
+        for _ in 0..SET_SIZE {
+            let mut state: RubikState = SOLVED_STATE;
+            for n in 0..N_SHUFFLE {
+                let action: Action = Action::new(Face::pick_random(), Rotation::pick_random());
+                state = action.apply_to(&state);
+                let reward: f64 = match state == SOLVED_STATE {
+                    true => 1.0,
+                    false => -1.0
+                };
+                let mut values: Vec<f64> = Vec::new();
+                for a in Action::get_actions().iter() {
+                    state = a.apply_to(&state);
+                    // let (v, p): (f64, ?) = nn.feedforward()
+                    values.push(/* p + */reward);
+                }
+                // let (p_max, v_max): (usize, f64) = output.iter().enumerate().max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(Ordering::Equal)).map(|(index, _)| index);
             }
-            let value_target: f64 = max(/* */); // max value
-            let policy_target: f64 = ; // the action that led to that max value
-            targets.push((value_target, policy_target));
         }
-        nn.train(training_set, targets);
         progress_bar.inc();
     }
     progress_bar.set_width(None);
     progress_bar.finish_print("training done");
+    // export weights to file : weights.csv
 }
 
 /*
 
-// TRAINING (ADI)
-for i in 0..training_iterations {
-    generate training_set sequence of random actions from the solved cube // this ensure to have a positive reward
-    foreach training_set state {
-        for (i, action) in ACTIONS_LIST {
-            child_state = action.apply_to(state);
-            (values[i], policies[i]) = nn.guess(child_state);
-            results[i] = values[i] + reward(child_state);
-        }
-        new_value = max(results);
-        new_policy = ACTIONS_LIST[new_value];
-    }
-    nn.train(training_set, (new_value, new_policy));
-}
-
 // ISSUES
-- divergent behavior -> https://arxiv.org/pdf/1805.07470.pdf (page 5 - weighted samples)
+- https://arxiv.org/pdf/1805.07470.pdf (page 5 - weighted samples)
 
 // OPTIMISATIONS
 - possible states (no state callback)
--
-
-// SOLVER (Asynchronous MCTS)
-loop {
-    if state.is_leaf {
-        
-    }
-    state = state.neighbours[nn.guess.policy];
-}
 
 */
