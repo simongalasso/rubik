@@ -1,7 +1,3 @@
-extern crate rand;
-
-use rand::Rng;
-
 use super::action::*;
 use super::face::*;
 use super::rotation::*;
@@ -37,6 +33,14 @@ impl RubikState {
         for action in sequence.iter() {
             *self = action.apply_to(self);
         }
+    }
+
+    pub fn aligned_format(&self) -> Vec<f64> { // Optimization to do !!!
+        let vec0: Vec<f64> = self.c_p.iter().cloned().map(|v| v as u8 as f64).collect::<Vec<f64>>();
+        let vec1: Vec<f64> = self.c_o.iter().cloned().map(|v| v as u8 as f64).collect::<Vec<f64>>();
+        let vec2: Vec<f64> = self.e_p.iter().cloned().map(|v| v as u8 as f64).collect::<Vec<f64>>();
+        let vec3: Vec<f64> = self.e_o.iter().cloned().map(|v| v as u8 as f64).collect::<Vec<f64>>();
+        return [&vec0[..], &vec1[..], &vec2[..], &vec3[..]].concat();
     }
 
     // pub fn is_solvable(&self) -> bool {

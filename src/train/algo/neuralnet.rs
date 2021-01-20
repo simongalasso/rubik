@@ -15,16 +15,6 @@ pub fn dsigmoid(y: f64) -> f64 {
     return y * (1.0 - y);
 }
 
-/* Utils ----------------------------------------- */
-
-fn mutate(val: f64) -> f64 {
-    let mut rng = rand::thread_rng();
-    if rng.gen_range(0.0, 1.0) < 0.01 { // 1%
-        return rng.gen_range(-1.0, 1.0);
-    }
-    return val;
-}
-
 /* Data ------------------------------------------ */
 
 #[derive(Debug)]
@@ -74,7 +64,7 @@ impl NeuralNetwork {
         return outputs;
     }
 
-    fn train(&mut self, inputs: &Matrix<f64>, targets: &Matrix<f64>) { 
+    pub fn train(&mut self, inputs: &Matrix<f64>, targets: &Matrix<f64>) { 
         // Feed forward inputs -> hidden
         let mut hidden: Matrix<f64> = &self.weights_ih * inputs;
         hidden = &hidden + &self.bias_h;
@@ -112,17 +102,5 @@ impl NeuralNetwork {
         self.weights_ih = &self.weights_ih + &weights_ih_deltas;
         // Update outputs bias
         self.bias_h = &self.bias_h + hidden_gradients;
-    }
-
-    pub fn mutate(&mut self) {
-        let new_weights_ih = self.weights_ih.clone();
-        let new_weights_ho = self.weights_ho.clone();
-        let new_bias_h = self.bias_h.clone();
-        let new_bias_o = self.bias_o.clone();
-
-        self.weights_ih = new_weights_ih.apply(&mutate);
-        self.weights_ho = new_weights_ho.apply(&mutate);
-        self.bias_h = new_bias_h.apply(&mutate);
-        self.bias_o = new_bias_o.apply(&mutate);
     }
 }
