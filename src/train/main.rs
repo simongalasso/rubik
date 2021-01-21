@@ -17,8 +17,6 @@ use rubik::action::*;
 const MAX_ITER: usize = 1000; // nb of ADI procedure
 const N_SHUFFLE: usize = 100; // training set size
 
-const RAND_IT: usize = 100; // rand cube shuffle iterations
-
 fn main() {
 
     // let mut rubik_state: RubikState = RubikState::new_solved();
@@ -69,8 +67,8 @@ fn main() {
         progress_bar.inc();
     }
     progress_bar.set_width(None);
-    progress_bar.finish_print("training done");
-    // export weights to file : weights.csv
+    progress_bar.finish_print("training terminated");
+    nn.export_weights();
 }
 
 /*

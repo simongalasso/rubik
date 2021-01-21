@@ -2,7 +2,9 @@ extern crate rand;
 extern crate rulinalg;
 
 use rand::Rng;
-
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
 use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
 
 /* Math ------------------------------------------ */
@@ -102,5 +104,31 @@ impl NeuralNetwork {
         self.weights_ih = &self.weights_ih + &weights_ih_deltas;
         // Update outputs bias
         self.bias_h = &self.bias_h + hidden_gradients;
+    }
+
+    pub fn export_weights(&self) {
+        let path = Path::new("weights.txt");
+        let display = path.display();
+        let mut file = match File::create(&path) {
+            Err(why) => panic!("couldn't create {}: {}", display, why),
+            Ok(file) => file,
+        };
+        file.write_all(b"weights_ih:").expect(&format!("couldn't write to {}", display));
+        for i in 0..(self.nb_inputs * self.nb_hidden) {
+            file.write_all(&format!("{},", self.weights_ih.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+        }
+        file.write_all(b"\nweights_ho:").expect(&format!("couldn't write to {}", display));
+        for i in 0..(self.nb_hidden * self.nb_outputs) {
+            file.write_all(&format!("{},", self.weights_ho.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+        }
+        file.write_all(b"\nbias_h:").expect(&format!("couldn't write to {}", display));
+        for i in 0..(self.nb_hidden) {
+            file.write_all(&format!("{},", self.bias_h.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+        }
+        file.write_all(b"\nbias_o:").expect(&format!("couldn't write to {}", display));
+        for i in 0..(self.nb_outputs) {
+            file.write_all(&format!("{},", self.bias_o.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+        }
+        println!("successfully wrote to {}", display);
     }
 }
