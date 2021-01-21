@@ -32,7 +32,7 @@ Then you can build the project
 ---
 ## Solve usage (work in progress)
 ```
-> ./target/release/solve [FLAGS] <input_sequence>
+> ./target/release/solve [FLAGS] [OPTIONS] <input_sequence>
 ```
 
 ### Flags
@@ -42,9 +42,14 @@ Then you can build the project
 -v, --visualisator    enable the visualisator
 ```
 
+### Options
+```
+-s, --speed <speed_selection>    visualisator speed selection, choose from 'slow', 'normal' or 'fast'
+```
+
 ### Args
 ```
-<input_sequence>      The sequence to shuffle a rubik
+<input_sequence>    The sequence to shuffle a rubik
 ```
 
 ### Sequence format
@@ -62,6 +67,11 @@ nothing -> turn right
 2 -> half rotation
 ```
 For example: ```F U2 B' L' D'``` means "turn front to right, half rotation on up face..."
+
+### Commands
+<p><kbd>Return</kbd> | launch the sequence</p>
+<p><kbd>spacebar</kbd> | pause the autorotation</p>
+<p><kbd>ESC</kbd> | close the visualisator</p>
 
 ---
 ## Contributors
