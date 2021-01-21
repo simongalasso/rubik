@@ -1,3 +1,4 @@
+pub mod neuralnet;
 pub mod rubik_state;
 pub mod action;
 pub mod corner;

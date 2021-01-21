@@ -147,7 +147,7 @@ impl NeuralNetwork {
         let mut bias_h: Vec<f64> = Vec::new();
         let mut bias_o: Vec<f64> = Vec::new();
         let mut current: String = String::from("");
-        for (i, line) in lines.into_iter().enumerate() {
+        for line in lines.into_iter() {
             if let Ok(content) = line {
                 if content.chars().next().unwrap() == '#' {
                     current = content;

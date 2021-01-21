@@ -55,6 +55,7 @@ const B: RubikState = RubikState {
 #[derive(Debug, Clone)]
 pub struct Action {
     pub data: RubikState,
+    pub face: Face,
     pub rot: Rotation
 }
 
@@ -69,6 +70,7 @@ impl Action {
                 Face::L => L,
                 Face::B => B,
             },
+            face: face,
             rot: rot
         }
     }
@@ -97,5 +99,14 @@ impl Action {
             new_state.e_o[i] = (state.e_o[index].clone() + self.data.e_o[i]) % 2;
         }
         return new_state;
+    }
+
+    pub fn to_string(&self) -> String {
+        let rot: char = match self.rot {
+            Rotation::D => '2',
+            Rotation::L => '\'',
+            Rotation::R => '\0'
+        };
+        return format!("{:?}{}", self.face, rot);
     }
 }

@@ -1,16 +1,15 @@
-extern crate nn;
+extern crate rubik;
 
 mod parsing;
 mod graphics;
 mod display;
 
+use rubik::neuralnet::*;
+use rubik::action::*;
 use parsing::args::*;
 use parsing::parse::*;
-use graphics::action::*;
 use graphics::graphics::*;
 use display::output::*;
-use display::output::*;
-use nn::neuralnet::*;
 
 fn main() {
     let config: Config = Config::new();
@@ -30,6 +29,6 @@ fn main() {
     // display_sequence("solution: ", &output_sequence);
 
     if config.visualisator {
-        display_graphics(&input_sequence, config.speed_selection, &nn);
+        display_graphics(&input_sequence, config.speed_selection, &mut nn);
     }
 }
