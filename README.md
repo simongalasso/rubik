@@ -32,7 +32,7 @@ Then you can build the project
 ---
 ## Solve usage (work in progress)
 ```
-> ./target/release/solve [FLAGS] [OPTIONS] <input_sequence>
+> ./target/release/solve [FLAGS] [OPTIONS] <input_sequence> --file <weights_file>
 ```
 
 ### Flags
@@ -45,6 +45,7 @@ Then you can build the project
 ### Options
 ```
 -s, --speed <speed_selection>    visualisator speed selection, choose from 'slow', 'normal' or 'fast'
+-f, --file <weights_file>        weights file outputed by the train program
 ```
 
 ### Args
