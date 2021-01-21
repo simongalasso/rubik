@@ -3,6 +3,8 @@ extern crate nalgebra;
 extern crate kiss3d;
 extern crate rubik;
 
+use nn::{NN, HaltCondition};
+
 use std::cmp::Ordering;
 use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
 use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion, Unit, Quaternion};
@@ -31,7 +33,7 @@ pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
 pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.4, 0.1);
 pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
-pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mut NeuralNetwork) {
+pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mut NN/*NeuralNetwork*/) {
     let mut window: Window = Window::new("Rubik");
     window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
     window.set_framerate_limit(Some(60));
@@ -122,8 +124,10 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
             } else if solve_started && rubik_state != SOLVED_STATE {
                 if !animating {
                     // println!("{:.5?}", rubik_state.aligned_format());
-                    let result: Matrix<f64> = nn.feedforward(Matrix::new(40, 1, rubik_state.aligned_format()));
-                    let p: Vec<f64> = (&result.data()[1..]).to_vec();
+                    // let results: Matrix<f64> = nn.feedforward(Matrix::new(40, 1, rubik_state.aligned_format()));
+                    let results = nn.run(&(rubik_state.aligned_format())[..]);
+                    let p: Vec<f64> = (&results[1..]).to_vec();
+                    // let p: Vec<f64> = (&results.data()[1..]).to_vec();
                     let policy: usize = p.iter().enumerate().max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(Ordering::Equal)).map(|(index, _)| index).unwrap(); // handle unwrap
                     println!("policy: {}", policy);
                     next_action = Action::get_actions()[policy].clone();

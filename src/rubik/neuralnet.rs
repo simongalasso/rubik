@@ -134,6 +134,17 @@ impl NeuralNetwork {
         println!("successfully wrote to {}", display);
     }
 
+    pub fn export_string(json: String) { // TO DELETE ! USE ONLY FOR NN LIB
+        let path = Path::new("weights.json");
+        let display = path.display();
+        let mut file = match File::create(&path) {
+            Err(why) => panic!("couldn't create {}: {}", display, why),
+            Ok(file) => file,
+        };
+        file.write_all(json.as_bytes()).expect(&format!("couldn't write to {}", display));
+        println!("successfully wrote to {}", display);
+    }
+
     pub fn import_weights(&mut self, file: &String) {
         if !metadata(&file).expect("error: A problem occured with the file").is_file() {
             panic!("error: please provide a valid file");

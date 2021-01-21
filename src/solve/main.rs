@@ -1,5 +1,7 @@
 extern crate rubik;
 
+use nn::{NN, HaltCondition};
+
 mod parsing;
 mod graphics;
 mod display;
@@ -15,8 +17,9 @@ fn main() {
     let config: Config = Config::new();
     let input_sequence: Vec<Action> = parse(&config);
 
-    let mut nn: NeuralNetwork = NeuralNetwork::new(40, 40, 1 + 18);
-    nn.import_weights(&config.weights_file);
+    // let mut nn: NeuralNetwork = NeuralNetwork::new(40, 40, 1 + 18);
+    // nn.import_weights(&config.weights_file);
+    let mut nn = NN::new(&[40, 40, 1 + 18]);
 
     display_sequence("shuffle: ", &input_sequence);
     println!("weights file: {}", config.weights_file);
