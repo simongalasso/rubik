@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["sgalasso"]
 edition = "2018"
 
+[lib]
+name = "nn"
+path = "src/nn/lib.rs"
+
 [[bin]]
 name = "train"
 path = "src/train/main.rs"

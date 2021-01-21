@@ -1,14 +1,15 @@
 extern crate pbr;
 extern crate rulinalg;
 
+extern crate nn;
+
+mod rubik;
+
 use std::cmp::Ordering;
 use pbr::ProgressBar;
 use rulinalg::matrix::{Matrix};
 
-mod algo;
-mod rubik;
-
-use algo::neuralnet::*;
+use nn::neuralnet::*;
 use rubik::rubik_state::*;
 use rubik::face::*;
 use rubik::rotation::*;

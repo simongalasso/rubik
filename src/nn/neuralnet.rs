@@ -113,21 +113,21 @@ impl NeuralNetwork {
             Err(why) => panic!("couldn't create {}: {}", display, why),
             Ok(file) => file,
         };
-        file.write_all(b"weights_ih:").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"weights_ih\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_inputs * self.nb_hidden) {
-            file.write_all(&format!("{},", self.weights_ih.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+            file.write_all(&format!("{}\n", self.weights_ih.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
-        file.write_all(b"\nweights_ho:").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"weights_ho\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_hidden * self.nb_outputs) {
-            file.write_all(&format!("{},", self.weights_ho.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+            file.write_all(&format!("{}\n", self.weights_ho.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
-        file.write_all(b"\nbias_h:").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"bias_h\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_hidden) {
-            file.write_all(&format!("{},", self.bias_h.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+            file.write_all(&format!("{}\n", self.bias_h.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
-        file.write_all(b"\nbias_o:").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"bias_o\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_outputs) {
-            file.write_all(&format!("{},", self.bias_o.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
+            file.write_all(&format!("{}\n", self.bias_o.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
         println!("successfully wrote to {}", display);
     }
