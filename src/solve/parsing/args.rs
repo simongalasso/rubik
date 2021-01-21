@@ -3,7 +3,8 @@ use clap::{Arg, App};
 #[derive(Debug, PartialEq)]
 pub struct Config {
     pub input: String,
-    pub visualisator: bool
+    pub visualisator: bool,
+    pub speed_selection: String
 }
 
 impl Config {
@@ -22,10 +23,17 @@ impl Config {
                 .long("visualisator")
                 .takes_value(false)
                 .help("enable the visualisator"))
+            .arg(Arg::with_name("speed_selection")
+                .required(false)
+                .short("s")
+                .long("speed")
+                .takes_value(true)
+                .help("speed selection, choose from 'slow', 'normal' or 'fast'"))
             .get_matches();
-        return Config {
+        return Config { // TODO : quit if bad speed value
             input: matches.value_of("input_sequence").unwrap_or("").to_string(),
-            visualisator: matches.is_present("visualisator")
+            visualisator: matches.is_present("visualisator"),
+            speed_selection: matches.value_of("speed_selection").unwrap_or("normal").to_string(),
         };
     }
 }

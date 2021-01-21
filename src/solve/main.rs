@@ -5,16 +5,16 @@ mod rubik;
 mod graphics;
 
 use parsing::args::*;
-// use parsing::parse::*;
-// use display::output::*;
-// use action::action::*;
-// use rubik::rubik::*;
+use parsing::parse::*;
+use graphics::action::*;
 use graphics::graphics::*;
+use display::output::*;
 
 fn main() {
     let config: Config = Config::new();
-    // let input_sequence: Vec<Action> = parse(&config);
-    // display_sequence("shuffle: ", &input_sequence);
+    let input_sequence: Vec<Action> = parse(&config);
+    display_sequence("shuffle: ", &input_sequence);
+    println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
 
     // let mut rubik: Rubik = Rubik::new();
     // rubik.shuffle(input_sequence);
@@ -23,6 +23,6 @@ fn main() {
     // display_sequence("solution: ", &output_sequence);
 
     if config.visualisator {
-        display_graphics();
+        display_graphics(&input_sequence, config.speed_selection);
     }
 }

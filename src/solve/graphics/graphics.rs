@@ -10,6 +10,7 @@ use kiss3d::event::{WindowEvent, Key, MouseButton};
 use std::cell::RefCell;
 use std::rc::Rc;
 use rand::prelude::*;
+
 use super::cubie::Cubie;
 use super::action::{Action, Face};
 
@@ -22,7 +23,7 @@ pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
 pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.4, 0.1);
 pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
-pub fn display_graphics() {
+pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String) {
     let mut window: Window = Window::new("Rubik");
     window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
     window.set_framerate_limit(Some(60));
@@ -48,11 +49,14 @@ pub fn display_graphics() {
         }
     }
 
-    let sequence: Vec<Action> = vec![Action::new(Face::D, 90.0), Action::new(Face::D, -90.0), Action::new(Face::D, 180.0)];
-
     let rubik_rot = UnitQuaternion::from_axis_angle(&Vector3::y_axis(), (0.5 as f32).to_radians());
 
-    let speed: f32 = 6.0; // doit impérativement être un diviseur de 90
+    let speed: f32 = match &speed_selection[..] { // doit impérativement être un diviseur de 180
+        "slow" => 1.0,
+        "normal" => 3.0,
+        "fast" => 6.0,
+        _ => 6.0
+    };
     let mut moves: usize = 0;
     let mut started: bool = false;
     let mut rotating: bool = true;
