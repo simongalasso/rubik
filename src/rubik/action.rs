@@ -86,6 +86,7 @@ impl Action {
         ];
     }
 
+    // PROBABLY NOT VALID : TESTS TO DO
     pub fn apply_to(&self, state: &RubikState) -> RubikState { // optimize : something else than cloning
         let mut new_state: RubikState = state.clone();
         for i in 0..8 {

@@ -75,6 +75,7 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
     let mut target_angle: f32 = 0.0;
     let mut current_angle: f32 = 0.0;
     let mut current_cubies: (Vec<Cubie>, Unit::<Vector3::<f32>>) = get_face_cubies(&cubies, &sequence[moves].face); // stupid init, find something else
+    let mut next_action: Action = Action::new(Face::F, Rotation::R); // stupid init, find something else
     while window.render_with_camera(&mut camera) {
         for mut event in window.events().iter() {
             match event.value {
@@ -92,9 +93,7 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
                         Key::Space => {
                             rotating = !rotating;
                         },
-                        _ => {
-                            println!("{:?}", button);
-                        }
+                        _ => {}
                     }
                     
                 },
@@ -121,12 +120,14 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
                     }
                 }
             } else if solve_started && rubik_state != SOLVED_STATE {
-                let next_action: Action = Action::new(Face::F, Rotation::R); // stupid init, find something else
                 if !animating {
+                    // println!("{:.5?}", rubik_state.aligned_format());
                     let result: Matrix<f64> = nn.feedforward(Matrix::new(40, 1, rubik_state.aligned_format()));
                     let p: Vec<f64> = (&result.data()[1..]).to_vec();
                     let policy: usize = p.iter().enumerate().max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(Ordering::Equal)).map(|(index, _)| index).unwrap(); // handle unwrap
-                    let next_action: Action = Action::get_actions()[policy].clone();
+                    println!("policy: {}", policy);
+                    next_action = Action::get_actions()[policy].clone();
+                    println!("next_action: {}", next_action.to_string());
                     current_cubies = get_face_cubies(&cubies, &next_action.face);
                     current_angle = 0.0;
                     animating = true;

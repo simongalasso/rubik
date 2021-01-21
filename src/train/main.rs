@@ -75,6 +75,6 @@ fn main() {
 - https://arxiv.org/pdf/1805.07470.pdf (page 5 - weighted samples)
 
 // OPTIMISATIONS
-- possible states (no state callback)
+- possible states (no state callback, no two times the same action)
 
 */
