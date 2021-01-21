@@ -4,7 +4,8 @@ use clap::{Arg, App};
 pub struct Config {
     pub input: String,
     pub visualisator: bool,
-    pub speed_selection: String
+    pub speed_selection: String,
+    pub weights_file: String
 }
 
 impl Config {
@@ -17,6 +18,12 @@ impl Config {
                 .required(true)
                 .index(1)
                 .help("The sequence to shuffle a rubik"))
+            .arg(Arg::with_name("weights_file")
+                .required(true)
+                .short("f")
+                .long("file")
+                .takes_value(true)
+                .help("weights file"))
             .arg(Arg::with_name("visualisator")
                 .required(false)
                 .short("v")
@@ -34,6 +41,7 @@ impl Config {
             input: matches.value_of("input_sequence").unwrap_or("").to_string(),
             visualisator: matches.is_present("visualisator"),
             speed_selection: matches.value_of("speed_selection").unwrap_or("normal").to_string(),
+            weights_file: matches.value_of("weights_file").unwrap_or("").to_string(),
         };
     }
 }

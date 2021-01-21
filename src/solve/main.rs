@@ -17,9 +17,10 @@ fn main() {
     let input_sequence: Vec<Action> = parse(&config);
 
     let mut nn: NeuralNetwork = NeuralNetwork::new(40, 40, 1 + 18);
-    nn.import_weights();
+    nn.import_weights(&config.weights_file);
 
     display_sequence("shuffle: ", &input_sequence);
+    println!("weights file: {}", config.weights_file);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
 
     // let mut rubik: Rubik = Rubik::new();

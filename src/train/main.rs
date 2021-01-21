@@ -1,6 +1,5 @@
 extern crate pbr;
 extern crate rulinalg;
-
 extern crate nn;
 
 mod rubik;
@@ -54,7 +53,7 @@ fn main() {
                 let a_state = a.apply_to(&state);
                 let result: Matrix<f64> = nn.feedforward(Matrix::new(40, 1, a_state.aligned_format()));
                 let v: f64 = result.data()[0];
-                let p: Vec<f64> = (&result.data()[1..]).to_vec();
+                let p: Vec<f64> = (&result.data()[1..]).to_vec(); // something probably incoherent in p here and below
                 values.push(v * reward);
             }
             let (v_target, p_target): (f64, usize) = values.iter().enumerate().max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(Ordering::Equal)).map(|(index, val)| (*val, index)).unwrap(); // handle unwrap

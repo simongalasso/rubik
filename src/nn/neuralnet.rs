@@ -1,11 +1,13 @@
 extern crate rand;
 extern crate rulinalg;
 
-use rand::Rng;
 use std::fs::File;
-use std::io::prelude::*;
 use std::path::Path;
+use std::fs::metadata;
+use std::io::prelude::*;
+use std::io::BufReader;
 use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
+use rand::Rng;
 
 /* Math ------------------------------------------ */
 
@@ -113,26 +115,65 @@ impl NeuralNetwork {
             Err(why) => panic!("couldn't create {}: {}", display, why),
             Ok(file) => file,
         };
-        file.write_all(b"weights_ih\n").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"#weights_ih\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_inputs * self.nb_hidden) {
             file.write_all(&format!("{}\n", self.weights_ih.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
-        file.write_all(b"weights_ho\n").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"#weights_ho\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_hidden * self.nb_outputs) {
             file.write_all(&format!("{}\n", self.weights_ho.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
-        file.write_all(b"bias_h\n").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"#bias_h\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_hidden) {
             file.write_all(&format!("{}\n", self.bias_h.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
-        file.write_all(b"bias_o\n").expect(&format!("couldn't write to {}", display));
+        file.write_all(b"#bias_o\n").expect(&format!("couldn't write to {}", display));
         for i in 0..(self.nb_outputs) {
             file.write_all(&format!("{}\n", self.bias_o.data()[i]).as_bytes()).expect(&format!("couldn't write to {}", display));
         }
         println!("successfully wrote to {}", display);
     }
 
-    pub fn import_weights(&mut self) {
-        // do code
+    pub fn import_weights(&mut self, file: &String) {
+        if !metadata(&file).expect("error: A problem occured with the file").is_file() {
+            panic!("error: please provide a valid file");
+        }
+        let file = File::open(&file).expect("error: file not found");
+        let lines: Vec<_> = BufReader::new(file).lines().collect();
+    
+        // [!] ALERT SHITTY PARSING [!] TO REFACTOR !!!
+        let mut weights_ih: Vec<f64> = Vec::new();
+        let mut weights_ho: Vec<f64> = Vec::new();
+        let mut bias_h: Vec<f64> = Vec::new();
+        let mut bias_o: Vec<f64> = Vec::new();
+        let mut current: String = String::from("");
+        for (i, line) in lines.into_iter().enumerate() {
+            if let Ok(content) = line {
+                if content.chars().next().unwrap() == '#' {
+                    current = content;
+                } else {
+                    match &current[..] {
+                        "#weights_ih" => {
+                            weights_ih.push(content.parse::<f64>().expect("error: bad character"));
+                        },
+                        "#weights_ho" => {
+                            weights_ho.push(content.parse::<f64>().expect("error: bad character"));
+                        },
+                        "#bias_h" => {
+                            bias_h.push(content.parse::<f64>().expect("error: bad character"));
+                        },
+                        "#bias_o" => {
+                            bias_o.push(content.parse::<f64>().expect("error: bad character"));
+                        },
+                        _ => panic!("error: bad weights file format")
+                    }
+                }
+            }
+        }
+        // check nb of weights and bias
+        self.weights_ih = Matrix::new(self.nb_hidden, self.nb_inputs, weights_ih);
+        self.weights_ho = Matrix::new(self.nb_outputs, self.nb_hidden, weights_ho);
+        self.bias_h = Matrix::new(self.nb_hidden, 1, bias_h);
+        self.bias_o = Matrix::new(self.nb_outputs, 1, bias_o);
     }
 }
