@@ -131,4 +131,8 @@ impl NeuralNetwork {
         }
         println!("successfully wrote to {}", display);
     }
+
+    pub fn import_weights(&mut self) {
+        // do code
+    }
 }
