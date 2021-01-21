@@ -10,6 +10,7 @@ use kiss3d::event::{WindowEvent, Key, MouseButton};
 use std::cell::RefCell;
 use std::rc::Rc;
 use rand::prelude::*;
+use nn::neuralnet::*;
 
 use super::cubie::Cubie;
 use super::action::{Action, Face};
@@ -23,7 +24,7 @@ pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
 pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.4, 0.1);
 pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
-pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String) {
+pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &NeuralNetwork) {
     let mut window: Window = Window::new("Rubik");
     window.set_background_color(C_GREY.0, C_GREY.1, C_GREY.2);
     window.set_framerate_limit(Some(60));
@@ -59,6 +60,7 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String) {
     };
     let mut moves: usize = 0;
     let mut started: bool = false;
+    let mut solve_started: bool = false;
     let mut rotating: bool = true;
     let mut animating: bool = false;
     let mut target_angle: f32 = 0.0;
@@ -72,7 +74,11 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String) {
                     match button {
                         Key::Escape => window.close(),
                         Key::Return => {
-                            started = true;
+                            if !started {
+                                started = true;
+                            } else {
+                                solve_started = true;
+                            }
                         },
                         Key::Space => {
                             rotating = !rotating;
@@ -86,23 +92,42 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String) {
                 _ => {}
             }
         }
-        if started && moves < sequence.len() {
-            if !animating {
-                current_cubies = get_face_cubies(&cubies, &sequence[moves].face); // doublon
-                current_angle = 0.0;
-                animating = true;
-            } else if animating {
-                let angle = sequence[moves].rot.signum() * speed;
-                let rot: UnitQuaternion<f32> = UnitQuaternion::from_axis_angle(&(current_cubies.1), angle.to_radians());
-                for cubie in current_cubies.0.iter_mut() {
-                    cubie.rotate(rot);
+        if started {
+            if (moves < sequence.len()) {
+                if !animating {
+                    current_cubies = get_face_cubies(&cubies, &sequence[moves].face);
+                    current_angle = 0.0;
+                    animating = true;
+                } else if animating {
+                    let angle = sequence[moves].rot.signum() * speed;
+                    let rot: UnitQuaternion<f32> = UnitQuaternion::from_axis_angle(&(current_cubies.1), angle.to_radians());
+                    for cubie in current_cubies.0.iter_mut() {
+                        cubie.rotate(rot);
+                    }
+                    current_angle += angle;
+                    if current_angle == sequence[moves].rot {
+                        animating = false;
+                        moves += 1;
+                    }
                 }
-                current_angle += angle;
-                if current_angle == sequence[moves].rot {
-                    animating = false;
-                    moves += 1;
+            }/* else if solve_started && /* !solved */ {
+                if !animating {
+                    // let next_action = nn.feedforward(/* */);
+                    current_cubies = get_face_cubies(&cubies, &next_action.face);
+                    current_angle = 0.0;
+                    animating = true;
+                } else if animating {
+                    let angle = next_action.rot.signum() * speed;
+                    let rot: UnitQuaternion<f32> = UnitQuaternion::from_axis_angle(&(current_cubies.1), angle.to_radians());
+                    for cubie in current_cubies.0.iter_mut() {
+                        cubie.rotate(rot);
+                    }
+                    current_angle += angle;
+                    if current_angle == next_action.rot {
+                        animating = false;
+                    }
                 }
-            }
+            }*/
         }
         if rotating {
             rubik.append_rotation(&rubik_rot);

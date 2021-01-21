@@ -1,18 +1,24 @@
+extern crate nn;
+
 mod parsing;
-mod display;
-mod action;
-mod rubik;
 mod graphics;
+mod display;
 
 use parsing::args::*;
 use parsing::parse::*;
 use graphics::action::*;
 use graphics::graphics::*;
 use display::output::*;
+use display::output::*;
+use nn::neuralnet::*;
 
 fn main() {
     let config: Config = Config::new();
     let input_sequence: Vec<Action> = parse(&config);
+
+    let mut nn: NeuralNetwork = NeuralNetwork::new(40, 40, 1 + 18);
+    nn.import_weights();
+
     display_sequence("shuffle: ", &input_sequence);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
 
@@ -23,6 +29,6 @@ fn main() {
     // display_sequence("solution: ", &output_sequence);
 
     if config.visualisator {
-        display_graphics(&input_sequence, config.speed_selection);
+        display_graphics(&input_sequence, config.speed_selection, &nn);
     }
 }
