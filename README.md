@@ -1,4 +1,4 @@
-# rubik
+# rubik (work in progress)
 A Rubik's Cube solver using Autodidactic Iteration Reinforcement Learning, written in Rust<br/>
 This is a 42 school project <strong>[Final grade: work in progress]</strong>
 
