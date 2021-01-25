@@ -1,1 +1,1 @@
-pub mod mcts;
+pub mod kociemba;
