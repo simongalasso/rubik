@@ -86,6 +86,10 @@ impl Action {
         ];
     }
 
+    pub fn pick_random() -> Action {
+        return Action::new(Face::pick_random(), Rotation::pick_random());
+    }
+
     // PROBABLY NOT VALID : TESTS TO DO
     pub fn apply_to(&self, state: &RubikState) -> RubikState { // optimize : something else than cloning
         let mut new_state: RubikState = state.clone();

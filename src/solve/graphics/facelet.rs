@@ -1,4 +1,4 @@
-use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion, Unit, Quaternion};
+use nalgebra::{Translation3, UnitQuaternion};
 use kiss3d::scene::SceneNode;
 
 use super::cubie::*;
