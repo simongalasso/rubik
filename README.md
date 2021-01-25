@@ -19,20 +19,9 @@ Then you can build the project
 ```
 
 ---
-## Train usage (work in progress)
+## Usage
 ```
-> ./target/release/train [FLAGS]
-```
-### Flags
-```
--h, --help       Prints help information
--V, --version    Prints version information
-```
-
----
-## Solve usage (work in progress)
-```
-> ./target/release/solve [FLAGS] [OPTIONS] <input_sequence> --file <weights_file>
+> ./target/release/solve [FLAGS] [OPTIONS] <input_sequence>
 ```
 
 ### Flags
@@ -45,7 +34,6 @@ Then you can build the project
 ### Options
 ```
 -s, --speed <speed_selection>    visualisator speed selection, choose from 'slow', 'normal' or 'fast'
--f, --file <weights_file>        weights file outputed by the train program
 ```
 
 ### Args
@@ -79,5 +67,6 @@ For example: ```F U2 B' L' D'``` means "turn front to right, half rotation on up
 <table>
   <tr>
     <td align="center"><a href="https://github.com/sgalasso42"><img src="https://avatars2.githubusercontent.com/u/38636967?v=4" width="100px;" alt=""/><br /><sub><b>Simon Galasso</b></sub></a><br />
+    <td align="center"><a href="https://fr.linkedin.com/in/nicolasvienot"><img src="https://avatars0.githubusercontent.com/u/44903069?v=4" width="100px;" alt=""/><br /><sub><b>Nicolas Viénot</b></sub></a><br />
   </tr>
 </table>
