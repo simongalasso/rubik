@@ -1,0 +1,33 @@
+# NN ##########################################
+
+# DAVI ########################################
+
+const B: usize = ; // Batch size
+const K: usize = ; // Maximum number of scrambles
+const M: usize = ; // Training iterations
+const C: usize = ; // How often to check for convergence
+const E: usize = ; // Error threshold
+
+fn davi() -> trainedTheta {
+    let mut trainedTheta = NN::new(?);
+    usedTheta = trainedTheta;
+    for m in 0..M {
+        let scrambled_states: [RubikState; K] = get_scrambled_states();
+        let results: [?; K] = /**/;
+        for (i, state) in scrambled_states.iter().enumerate() {
+            results[i] = /**/;
+        }
+        nn.train(scrambled_states, results);
+        if M % C == 0 && loss < E {
+            usedTheta = trainedTheta;
+        }
+    }
+    return trainedTheta;
+}
+
+fn get_scrambled_states() -> [RubikState; K] {
+    ?
+}
+
+
+# BWAS ########################################

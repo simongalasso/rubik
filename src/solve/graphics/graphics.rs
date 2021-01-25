@@ -3,20 +3,15 @@ extern crate nalgebra;
 extern crate kiss3d;
 extern crate rubik;
 
-use nn::{NN, HaltCondition};
+use nn::{NN};
 
 use std::cmp::Ordering;
-use rulinalg::matrix::{Matrix, BaseMatrixMut, BaseMatrix};
-use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion, Unit, Quaternion};
+use nalgebra::{Point3, Vector3, UnitQuaternion, Unit};
 use kiss3d::window::Window;
 use kiss3d::light::Light;
 use kiss3d::scene::SceneNode;
-use kiss3d::camera::{FirstPerson, ArcBall, Camera};
-use kiss3d::event::{WindowEvent, Key, MouseButton};
-use std::cell::RefCell;
-use std::rc::Rc;
-use rand::prelude::*;
-use rubik::neuralnet::*;
+use kiss3d::camera::{ArcBall};
+use kiss3d::event::{WindowEvent, Key};
 use rubik::face::*;
 use rubik::rotation::*;
 use rubik::rubik_state::*;
@@ -55,8 +50,7 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
         for y in -1..2 {
             for z in -1..2 {
                 let pos: Vector3<f32> = Vector3::new(x as f32, y as f32, z as f32);
-                let mut cubie: Cubie = Cubie::new(&mut rubik, 1.0, pos, scale, gap);
-                cubies.push(cubie);
+                cubies.push(Cubie::new(&mut rubik, 1.0, pos, scale, gap));
             }
         }
     }
@@ -74,7 +68,6 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
     let mut solve_started: bool = false;
     let mut rotating: bool = true;
     let mut animating: bool = false;
-    let mut target_angle: f32 = 0.0;
     let mut current_angle: f32 = 0.0;
     let mut current_cubies: (Vec<Cubie>, Unit::<Vector3::<f32>>) = get_face_cubies(&cubies, &sequence[moves].face); // stupid init, find something else
     let mut next_action: Action = Action::new(Face::F, Rotation::R); // stupid init, find something else
@@ -103,7 +96,7 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
             }
         }
         if started {
-            if (moves < sequence.len()) {
+            if moves < sequence.len() {
                 if !animating {
                     current_cubies = get_face_cubies(&cubies, &sequence[moves].face);
                     current_angle = 0.0;
@@ -155,7 +148,7 @@ pub fn display_graphics(sequence: &Vec<Action>, speed_selection: String, nn: &mu
     }
 }
 
-fn get_face_cubies(cubies: &Vec<Cubie>, face: &Face) -> (Vec<Cubie>, Unit::<Vector3::<f32>>) {
+fn get_face_cubies(cubies: &Vec<Cubie>, face: &Face) -> (Vec<Cubie>, Unit::<Vector3::<f32>>) { // To optimise
     match face {
         Face::U => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().y) == 1.0).collect::<Vec<Cubie>>(), -Vector3::<f32>::y_axis()),
         Face::R => (cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == -1.0).collect::<Vec<Cubie>>(), Vector3::<f32>::x_axis()),

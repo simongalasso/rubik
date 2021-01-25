@@ -1,6 +1,7 @@
 extern crate rand;
 extern crate rulinalg;
 
+use std::fs;
 use std::fs::File;
 use std::path::Path;
 use std::fs::metadata;
@@ -143,6 +144,10 @@ impl NeuralNetwork {
         };
         file.write_all(json.as_bytes()).expect(&format!("couldn't write to {}", display));
         println!("successfully wrote to {}", display);
+    }
+
+    pub fn import_file(file: &String) -> String { // TO DELETE ! USE ONLY FOR NN LIB
+       return fs::read_to_string(file).expect("Something went wrong reading the file");
     }
 
     pub fn import_weights(&mut self, file: &String) {

@@ -2,7 +2,7 @@ extern crate pbr;
 extern crate rulinalg;
 extern crate rubik;
 
-use nn::{NN, HaltCondition};
+use nn::{NN, HaltCondition, LearningMode};
 
 use std::cmp::Ordering;
 use pbr::ProgressBar;
@@ -17,8 +17,8 @@ use rubik::action::*;
 // const MAX_ITER: usize = 1000; // nb of ADI procedure
 // const N_SHUFFLE: usize = 100; // training set size
 
-const MAX_ADI: usize = 1000;
-const TRAINING_INPUTS_NB: usize = 100;
+const MAX_ADI: usize = 10000;
+const TRAINING_INPUTS_NB: usize = 25;
 
 fn main() {
 
@@ -65,9 +65,9 @@ fn main() {
         }
         let training_set: Vec<(Vec<f64>, Vec<f64>)> = (0..TRAINING_INPUTS_NB).map(|i| (training_inputs[i].aligned_format(), targets[i].clone())).collect::<Vec<(Vec<f64>, Vec<f64>)>>();
         nn.train(&training_set)
+            .learning_mode(LearningMode::Incremental)
             .halt_condition( HaltCondition::Epochs(1) )
-            .momentum( 0.1 )
-            .rate( 0.3 )
+            .rate( 0.01 )
             .go();
         progress_bar.inc();
     }
