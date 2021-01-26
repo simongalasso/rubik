@@ -1,8 +1,8 @@
-use super::action::*;
-use super::face::*;
-use super::rotation::*;
-use super::corner::*;
-use super::edge::*;
+use super::face::{Face};
+use super::rotation::{Rotation};
+use super::action::{Action};
+use super::corner::{Corner};
+use super::edge::{Edge};
 
 pub const SOLVED_STATE: RubikState = RubikState {
     c_p: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
@@ -25,11 +25,11 @@ impl RubikState {
         let sequence: Vec<Action> = (0..iteration).map(|_| {
             return Action::new(Face::pick_random(), Rotation::pick_random());
         }).collect::<Vec<Action>>();
-        state.shuffle(sequence);
+        state.shuffle(&sequence);
         return state;
     }
 
-    pub fn shuffle(&mut self, sequence: Vec<Action>) {
+    pub fn shuffle(&mut self, sequence: &Vec<Action>) {
         for action in sequence.iter() {
             *self = action.apply_to(self);
         }

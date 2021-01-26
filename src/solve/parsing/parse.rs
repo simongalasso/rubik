@@ -1,11 +1,11 @@
 extern crate rubik;
 
-use super::args::*;
-use rubik::action::*;
-use rubik::face::*;
-use rubik::rotation::*;
+use super::args::{Config};
+use rubik::action::{Action};
+use rubik::face::{Face};
+use rubik::rotation::{Rotation};
 
-pub fn parse(config: &Config) -> Vec<Action> {
+pub fn parse_inputs(config: &Config) -> Vec<Action> {
 	let mut input_sequence: Vec<Action> = Vec::new();
 	for value in config.input.trim().split_whitespace() {
 		match value.len() {
