@@ -1,6 +1,6 @@
 extern crate rand;
 
-use rand::Rng;
+use rand::{Rng};
 
 #[derive(Debug, Clone)]
 pub enum Rotation {

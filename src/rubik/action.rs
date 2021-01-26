@@ -1,8 +1,8 @@
-use super::rubik_state::*;
-use super::face::*;
-use super::rotation::*;
-use super::corner::*;
-use super::edge::*;
+use super::rubik_state::{RubikState};
+use super::face::{Face};
+use super::rotation::{Rotation};
+use super::corner::{Corner};
+use super::edge::{Edge};
 
 // U action (is replaced by representation)
 const U: RubikState = RubikState {
