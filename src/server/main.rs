@@ -6,7 +6,6 @@ struct Info {
     username: String,
 }
 
-/// extract `Info` using serde
 #[post("/json")]
 async fn json(info: Json<Info>) -> impl Responder {
     HttpResponse::Ok().body(format!("Hello, {}", info.username))
