@@ -12,9 +12,14 @@ path = "src/rubik/lib.rs"
 name = "solve"
 path = "src/solve/main.rs"
 
+[[bin]]
+name = "server"
+path = "src/server/main.rs"
+
 [dependencies]
 rand = "0.7.3"
 clap = "2.33.3"
 kiss3d = "0.29.0"
 nalgebra = "0.24.0"
 pbr = "1.0.4"
+actix-web = "3"
