@@ -53,6 +53,10 @@
             text-align: center;
         }
 
+        .but:hover {
+            cursor: pointer;
+        }
+
         /* Style the <hr> element */
         hr {
             margin: auto;
@@ -70,6 +74,11 @@
             <h1>COMING SOON</h1>
             <hr>
             <p id="demo" style="font-size:30px"></p>
+            <hr>
+            <p class="but" onclick="scramble()" >Click to scramble!</p>
+            <hr>
+            <p id="scramble" style="font-size:30px"></p>
+
         </div>
         <div class="bottomleft">
             <p>sgalasso / nvienot</p>
@@ -105,6 +114,22 @@
             document.getElementById("demo").innerHTML = "EXPIRED";
         }
     }, 1000);
-</script>
+
+    function httpGetAsync(theUrl, callback) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+
+    const scramble = () => {
+        httpGetAsync('/scramble', (res) => {
+            document.getElementById("scramble").innerHTML = res;
+        })
+    }
+    </script>
 
 </html>

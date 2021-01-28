@@ -1,5 +1,6 @@
 use actix_web::{get, post, web::{self, Json, Path}, App, HttpResponse, HttpServer, Responder, Result};
 use serde::{Serialize, Deserialize};
+use rand::Rng;
 
 #[derive(Deserialize)]
 struct Info {
@@ -18,9 +19,10 @@ async fn json(info: Json<Info>) -> impl Responder {
     HttpResponse::Ok().body(format!("Hello, {}", info.username))
 }
 
-#[get("/shuffle")]
-async fn shuffle() -> impl Responder {
-    let shuffle: String = "D D D D D D'".to_string();
+#[get("/scramble")]
+async fn scramble() -> impl Responder {
+    let mut rng = rand::thread_rng();
+    let shuffle: String = rng.gen_range(0, 99).to_string();
     HttpResponse::Ok().body(shuffle)
 }
 
@@ -30,7 +32,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(load_html)
-            .service(shuffle)
+            .service(scramble)
             .service(json)
     })
     .bind("127.0.0.1:8080")?
