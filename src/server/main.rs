@@ -6,28 +6,20 @@ struct Info {
     username: String,
 }
 
+#[get("/")]
+pub async fn load_html() -> impl Responder {
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("./public/welcome.html").to_string())
+}
+
 #[post("/json")]
 async fn json(info: Json<Info>) -> impl Responder {
     HttpResponse::Ok().body(format!("Hello, {}", info.username))
 }
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
-
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    println!("req_body: {}", req_body);
-    HttpResponse::Ok().body(req_body)
-}
-
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
-
-#[post("/shuffle")]
-async fn shuffle(req_body: String) -> impl Responder {
+#[get("/shuffle")]
+async fn shuffle() -> impl Responder {
     let shuffle: String = "D D D D D D'".to_string();
     HttpResponse::Ok().body(shuffle)
 }
@@ -37,11 +29,9 @@ async fn main() -> std::io::Result<()> {
     print_launch_resume();
     HttpServer::new(|| {
         App::new()
-            .service(hello)
-            .service(echo)
+            .service(load_html)
             .service(shuffle)
             .service(json)
-            .route("/hey", web::get().to(manual_hello))
     })
     .bind("127.0.0.1:8080")?
     .run()
