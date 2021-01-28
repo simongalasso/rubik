@@ -4,6 +4,7 @@ use super::action::{Action};
 use super::corner::{Corner};
 use super::edge::{Edge};
 
+/// The solved RubikState<br>
 pub const SOLVED_STATE: RubikState = RubikState {
     c_p: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
     c_o: [0, 0, 0, 0, 0, 0, 0, 0],
@@ -11,6 +12,7 @@ pub const SOLVED_STATE: RubikState = RubikState {
     e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 };
 
+/// The Rubik's Cube structure
 #[derive(Debug, Clone, PartialEq)]
 pub struct RubikState {
     pub c_p: [Corner; 8],
@@ -20,6 +22,19 @@ pub struct RubikState {
 }
 
 impl RubikState {
+    /// Creates a randomly shuffled RubikState<br>
+    /// Takes as argument the number of shuffle iterations
+    ///
+    /// # Basic usage
+    ///
+    /// ```
+    /// extern crate rubik;
+    /// use rubik::rubik_state::{RubikState};
+    ///
+    /// fn main() {
+    ///     let state: RubikState = RubikState::new_random(20);    
+    /// }
+    /// ```
     pub fn new_random(iteration: usize) -> RubikState {
         let mut state: RubikState = SOLVED_STATE;
         let sequence: Vec<Action> = (0..iteration).map(|_| {
@@ -29,18 +44,26 @@ impl RubikState {
         return state;
     }
 
+    /// Shuffles itself following a sequence of actions<br>
+    /// Takes as argument the sequence that is a vector of 'Action'
+    ///
+    /// # Basic usage
+    ///
+    /// ```
+    /// extern crate rubik;
+    /// use rubik::rubik_state::{SOLVED_STATE, RubikState};
+    /// use rubik::action::{Action};
+    ///
+    /// fn main() {
+    ///     let state: RubikState = SOLVED_STATE;
+    ///     let sequence: Vec<Action> = 0..5.map(|_| Action::pick_random()).collect::<Vec<Action>>();
+    ///     state.shuffle(&sequence);
+    /// }
+    /// ```
     pub fn shuffle(&mut self, sequence: &Vec<Action>) {
         for action in sequence.iter() {
             *self = action.apply_to(self);
         }
-    }
-
-    pub fn aligned_format(&self) -> Vec<f64> { // Optimization to do !!!
-        let vec0: Vec<f64> = self.c_p.iter().cloned().map(|v| (v as u8 as f64) / 8.0).collect::<Vec<f64>>();
-        let vec1: Vec<f64> = self.c_o.iter().cloned().map(|v| (v as u8 as f64) / 8.0).collect::<Vec<f64>>();
-        let vec2: Vec<f64> = self.e_p.iter().cloned().map(|v| (v as u8 as f64) / 12.0).collect::<Vec<f64>>();
-        let vec3: Vec<f64> = self.e_o.iter().cloned().map(|v| (v as u8 as f64) / 12.0).collect::<Vec<f64>>();
-        return [&vec0[..], &vec1[..], &vec2[..], &vec3[..]].concat();
     }
 
     // pub fn is_solvable(&self) -> bool {

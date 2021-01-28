@@ -9,6 +9,7 @@ use algo::kociemba;
 use parsing::parse::*;
 use display::cubie::{Cubie};
 use display::display::{Display};
+use display::gl_rubik::{GlRubik};
 use parsing::args::{Config};
 use rubik::action::{Action};
 use rubik::rubik_state::{SOLVED_STATE, RubikState};
@@ -28,11 +29,13 @@ fn main() {
 
     if config.visualisator {
         let mut display: Display = Display::new(&config);
-        let (mut rubik_state, mut rubik, cubies) = display.g_rubik_setup();
+        let mut gl_rubik: GlRubik = GlRubik::new(&mut display.window);
 
         let rubik_rot = UnitQuaternion::from_axis_angle(&Vector3::y_axis(), (0.5 as f32).to_radians());
+
         let mut current_angle: f32 = 0.0;
-        let mut current_cubies: (Vec<Cubie>, Unit::<Vector3::<f32>>) = Display::get_face_cubies(&cubies, &input_sequence[display.moves].face); // stupid init, find something else
+        let mut current_cubies: Vec<Cubie> = gl_rubik.get_face_cubies(&input_sequence[display.moves].face); // stupid init, find something else
+        let mut current_axis: Unit::<Vector3::<f32>> = gl_rubik.get_face_axis(&input_sequence[display.moves].face); // stupid init, find something else
         let mut sequence: Vec<Action> = input_sequence.clone();
         while display.window.render_with_camera(&mut display.camera) {
             display.handle_events();
@@ -43,25 +46,25 @@ fn main() {
                         display.moves = 0;
                         sequence = solution.clone();
                     }
-                    current_cubies = Display::get_face_cubies(&cubies, &sequence[display.moves].face);
+                    current_cubies = gl_rubik.get_face_cubies(&sequence[display.moves].face);
+                    current_axis = gl_rubik.get_face_axis(&sequence[display.moves].face);
                     current_angle = 0.0;
                     display.animating = true;
                 } else if display.animating {
                     let angle = sequence[display.moves].rot.to_angle().unwrap().signum() * display.speed;
-                    let rot: UnitQuaternion<f32> = UnitQuaternion::from_axis_angle(&(current_cubies.1), angle.to_radians());
-                    for cubie in current_cubies.0.iter_mut() {
+                    let rot: UnitQuaternion<f32> = UnitQuaternion::from_axis_angle(&current_axis, angle.to_radians());
+                    for cubie in current_cubies.iter_mut() {
                         cubie.rotate(rot);
                     }
                     current_angle += angle;
                     if current_angle == sequence[display.moves].rot.to_angle().unwrap() {
-                        rubik_state = sequence[display.moves].apply_to(&rubik_state);
                         display.animating = false;
                         display.moves += 1;
                     }
                 }
             }
             if display.rotating {
-                rubik.append_rotation(&rubik_rot);
+                gl_rubik.scene_node.append_rotation(&rubik_rot);
             }
         }
     }

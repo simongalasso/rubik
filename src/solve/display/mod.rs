@@ -1,3 +1,3 @@
 pub mod display;
 pub mod cubie;
-pub mod facelet;
+pub mod gl_rubik;
