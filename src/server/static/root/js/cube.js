@@ -1,3 +1,12 @@
+const ORANGE = 0xff7800;
+const RED = 0xd92b2c;
+const WHITE = 0xffffff;
+const BLACK = 0x000000;
+const DARK_GREY = 0x161616;
+const GREEN = 0x26b143;
+const BLUE = 0x2f55cf;
+const YELLOW = 0xe6e621;
+
 // QUEUE
 var queue = []
 
@@ -28,40 +37,35 @@ var action = {};
 
 function createCubes(scene) {
     var cubes = [];
-    // var cubesEdges = [];
     for (var x = -1; x < 2; x++) {
         for (var y = -1; y < 2; y++) {
             for (var z = -1; z < 2; z++) {
-                var materials = [
-                    new THREE.MeshPhongMaterial({color: 0xff7800}),
-                    new THREE.MeshPhongMaterial({color: 0xd92b2c}),
-                    new THREE.MeshPhongMaterial({color: 0xffffff}),
-                    new THREE.MeshPhongMaterial({color: 0xe6e621}),
-                    new THREE.MeshPhongMaterial({color: 0x2f55cf}),
-                    new THREE.MeshPhongMaterial({color: 0x26b143}),
-                ];
-                
-                var cubeGeometry = new THREE.BoxGeometry(3.95, 3.95, 3.95);
+                var materials = [];
+                (x == 1) ? materials.push(new THREE.MeshPhongMaterial({color: ORANGE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (x == -1) ? materials.push(new THREE.MeshPhongMaterial({color: RED})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (y == 1) ? materials.push(new THREE.MeshPhongMaterial({color: BLUE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (y == -1) ? materials.push(new THREE.MeshPhongMaterial({color: GREEN})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (z == 1) ? materials.push(new THREE.MeshPhongMaterial({color: YELLOW})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (z == -1) ? materials.push(new THREE.MeshPhongMaterial({color: WHITE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+
+                var cubeGeometry = new THREE.BoxGeometry(3.8, 3.8, 3.8);
                 var cube = new THREE.Mesh(cubeGeometry, materials);
-                
-                cube.x = x;
-                cube.y = y;
-                cube.z = z;
+                var edgesGeometry = new THREE.EdgesGeometry(cubeGeometry);
+                var edges = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: 0x000000,
+                    linewidth: 1.5 }));
+                const group = new THREE.Group();
+                group.add(cube);
+                // group.add(edges);
 
-                cube.position.x = x * 4;
-                cube.position.y = y * 4;
-                cube.position.z = z * 4;
+                group.x = x;
+                group.y = y;
+                group.z = z;
                 
-                // var geometry2 = new THREE.BoxGeometry(3.5, 3.5, 3.5);
-                // var edges2 = new THREE.EdgesGeometry(geometry2);
-                // var edges = new THREE.LineSegments(edges2, new THREE.LineBasicMaterial( { color: 0x000000 } ));
+                group.position.x = x * 4;
+                group.position.y = y * 4;
+                group.position.z = z * 4;
 
-                // edges.position.x = (x - 1) * 3.6;
-                // edges.position.y = (y - 1) * 3.6;
-                // edges.position.z = (z - 1) * 3.6;
-                
-                cubes.push(cube);
-                // cubesEdges.push(edges);
+                cubes.push(group);
             }
         }
     }
@@ -70,9 +74,6 @@ function createCubes(scene) {
         scene.add(cube);
     });
     
-    // cubesEdges.forEach(function(cubeEdges) {
-    //     scene.add(cubeEdges);
-    // });
     return (cubes)
 }
 
