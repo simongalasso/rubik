@@ -83,7 +83,7 @@ const applySequence = (sequence) => {
     moves.map((letter) => {
         enqueue(letter);
     })
-    // document.getElementById("sequence").innerHTML = queue.join(" ");
+    document.getElementById("sequence").innerHTML = queue.join(" ");
 }
 
 var scene = new THREE.Scene();
@@ -115,8 +115,8 @@ controls.update()
 camera.position.set(-30, 30, 50);
 controls.update();
 
-const sequence = "R F R F R F R F";
-applySequence(sequence);
+// const sequence = "R F R F R F R F";
+// applySequence(sequence);
 
 const nextmove = () => {
     if (queue.length == 0 || moving) {
