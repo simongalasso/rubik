@@ -141,7 +141,7 @@ function setCubes(face) {
             break;
         case 'R':
             action = {
-                selectedCubes: cubes.filter(cube => cube.x == 1),
+                selectedCubes: cubes.filter(cube => cube.x == -1),
                 axis: "x",
                 direction: 1
             }
