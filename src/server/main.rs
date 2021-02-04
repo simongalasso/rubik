@@ -45,7 +45,7 @@ async fn main() -> std::io::Result<()> {
             .service(json)
             .service(Files::new("/", "./src/server/static/root/").index_file("index.html"))
     })
-    .bind("127.0.0.1:8080")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }
@@ -61,7 +61,7 @@ pub fn print_launch_resume() {
 //     //  ////// /////   // //  //    //////  "#;
     eprintln!("{}", ascii_name);
     eprintln!();
-    eprintln!("Server listening on:\t{:?}", "127.0.0.1:8080");
+    eprintln!("Server listening on:\t{:?}", "0.0.0.0:8080");
     eprintln!();
     eprintln!("Source code:\t\thttps://github.com/sgalasso42/rubik");
     eprintln!("Contact:\t\thttps://github.com/sgalasso42/rubik or bonjour@rubik.com");
