@@ -8,6 +8,21 @@
         body {
             margin: 0;
         }
+        .btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            
+        }
+        .aa {
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            
+        }
+        .btn:hover {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -15,6 +30,27 @@
     <script src="/js/three.js"></script>
     <script src="/js/orbitControls.js"></script>
     <script src="/js/cube.js" ></script>
+    <button id="fire" class="btn" onclick="scramble()">Scramble</button>
+    <p id="sequence" class="aa" style="font-size:30px"></p>
+    <script>
+        function httpGetAsync(theUrl, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+            }
+            xmlHttp.open("GET", theUrl, true);
+            xmlHttp.send(null);
+        }
+
+        const scramble = () => {
+            httpGetAsync('/scramble', (res) => {
+                console.log("HELLO")
+                applySequence(res);
+                nextmove();
+            })
+        }
+    </script>
 </body>
 
 </html>

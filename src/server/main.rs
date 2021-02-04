@@ -18,8 +18,10 @@ async fn json(info: Json<Info>) -> impl Responder {
 
 #[get("/scramble")]
 async fn scramble() -> impl Responder {
-    let mut rng = rand::thread_rng();
-    let shuffle: String = rng.gen_range(0, 99).to_string();
+    // let mut rng = rand::thread_rng();
+    // let shuffle: String = rng.gen_range(0, 99).to_string();
+    let shuffle: String = "U R F D L B".to_string();
+
     HttpResponse::Ok().body(shuffle)
 }
 
@@ -43,7 +45,7 @@ async fn main() -> std::io::Result<()> {
             .service(json)
             .service(Files::new("/", "./src/server/static/root/").index_file("index.html"))
     })
-    .bind("127.0.0.1:8080")?
+    .bind("127.0.0.1:8081")?
     .run()
     .await
 }

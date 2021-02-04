@@ -78,10 +78,12 @@ function createCubes(scene) {
 }
 
 const applySequence = (sequence) => {
+    console.log("APPLYING SEQUENCE", sequence)
     const moves = sequence.split(" ");
     moves.map((letter) => {
         enqueue(letter);
     })
+    document.getElementById("sequence").innerHTML = queue.join(" ");
 }
 
 var scene = new THREE.Scene();
@@ -113,11 +115,11 @@ controls.update()
 camera.position.set(-30, 30, 50);
 controls.update();
 
-const sequence = "R D U L B D F";
-applySequence(sequence);
+// const sequence = "";
+// applySequence(sequence);
 
 const nextmove = () => {
-    if (queue.length == 0) {
+    if (queue.length == 0 || moving) {
         return ;
     } else {
         setCubes(front());
@@ -209,6 +211,7 @@ function stop() {
     }
     pivot = new THREE.Object3D();
     dequeue();
+    document.getElementById("sequence").innerHTML = queue.join(" ");
     action = {};
     nextmove();
 }
