@@ -1,1 +1,1 @@
-pub mod kociemba;
+pub mod solve;
