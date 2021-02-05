@@ -50,29 +50,38 @@ use rubik::cubie_cube::{CubieCube};
 
 /* # God's Algorithm ############################################ */
 
-pub fn gods_algorithm(state: &mut CubieCube) -> Vec<CubieCube> {
-    let database: Vec<(CubieCube, Option<CubieCube>)> = generate_database();
-    let sequence: Vec<CubieCube> = vec![];
+use std::collections::VecDeque;
+
+// db_max break the function, added for testing
+pub fn gods_algorithm(state: &mut CubieCube, db_max: i32) -> Vec<CubieCube> {
+    let database: Vec<(CubieCube, Option<CubieCube>)> = generate_database(db_max);
+    // for row in database.iter() {
+    //     eprintln!("{} -> {:?}", row.1.as_ref().unwrap().to_string(), row.0);
+    // }
+    let mut sequence: Vec<CubieCube> = vec![];
     while *state != CubieCube::new_solved() {
-        let action: CubieCube = database.iter().find(|&&row| row.0 == *state).unwrap().1.unwrap();
+        let row: (CubieCube, Option<CubieCube>) = database.iter().find(|row| row.0 == *state).expect("error, gods_algorithm(), state doen't exist in database").clone();
+        let action: CubieCube = row.1.expect("error, gods_algorithm(), action is None");
         state.multiply(&action);
         sequence.push(action);
     }
     return sequence;
 }
 
-fn generate_database() -> Vec<(CubieCube, Option<CubieCube>)> {
-    let database: Vec<(CubieCube, Option<CubieCube>)> = vec![(CubieCube::new_solved(), None)];
-    let queue: Vec<&(CubieCube, Option<CubieCube>)> = vec![database.last().unwrap()];
-    for (state, _) in queue.iter() {
-        queue.pop();
+fn generate_database(mut db_max: i32) -> Vec<(CubieCube, Option<CubieCube>)> {
+    let mut database: Vec<(CubieCube, Option<CubieCube>)> = vec![];
+    let mut queue: VecDeque<(CubieCube, Option<CubieCube>)> = VecDeque::new();
+    queue.push_back((CubieCube::new_solved(), None));
+    while let Some(el) = queue.pop_front() {
+        if db_max <= 0 {
+            break;
+        }
         for action in CubieCube::get_actions().iter() {
-            let new_state: CubieCube = state.clone();
+            let mut new_state: CubieCube = el.0.clone();
             new_state.multiply(action);
-            if !database.iter().any(|&row| row.0 == new_state) {
-                database.push((new_state, Some(action.inverse())));
-                queue.push(database.last().unwrap());
-            }
+            queue.push_back((new_state.clone(), Some(action.clone())));
+            database.push((new_state.clone(), Some(action.inverse())));
+            db_max -= 1;
         }
     }
     return database;

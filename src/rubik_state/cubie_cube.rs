@@ -151,7 +151,7 @@ impl CubieCube {
     /// Returns a CubieCube from action char
     pub fn from_action_str(s: &str) -> CubieCube {
         let actions: Vec<CubieCube> = CubieCube::get_actions();
-        let index: usize = match s.chars().nth(0).unwrap() {
+        let index: usize = match s.chars().nth(0).expect("error, from_action_str(), bad input") {
             'U' => 0,
             'R' => 3,
             'F' => 6,
@@ -159,11 +159,22 @@ impl CubieCube {
             'L' => 12,
             _ => 15 // B
         };
-        return actions[index + match s.chars().nth(1).unwrap() {
-            '\0' => 0,
-            '2' => 1,
-            _ => 2 // '
+        return actions[index + match s.chars().nth(1) {
+            None => 0,
+            Some(v) if v == '2' => 1,
+            Some(v) if v == '\'' => 2,
+            Some(_) => panic!("error, from_action_str(), bad input"),
         }].clone();
+    }
+
+    /// Returns the action string or None if not corresponding to any available actions
+    pub fn to_string(&self) -> String {
+        let s_actions: [&str; 18] = ["U", "U2", "U\'", "R", "R2", "R\'", "F", "F2", "F\'", "D", "D2", "D\'", "L", "L2", "L\'", "B", "B2", "B\'"];
+        let actions: Vec<CubieCube> = CubieCube::get_actions();
+        return match actions.iter().position(|a| a == self) {
+            Some(index) => String::from(s_actions[index]),
+            None => String::from("None")
+        }
     }
 
     /// Returns the inverse of itself
@@ -179,7 +190,7 @@ impl CubieCube {
             inverse.c_p[self.c_p[i] as usize] = *c;
         }
         for i in 0..CORNERS.len() {
-            let mut ori: i32 = self.c_o[inverse.c_p[i] as usize] as i32;
+            let ori: i32 = self.c_o[inverse.c_p[i] as usize] as i32;
             if ori >= 3 {
                 inverse.c_o[i] = ori as u8;
             } else {

@@ -10,7 +10,7 @@ pub fn parse_inputs(config: &Config) -> Vec<CubieCube> {
 			1 | 2 => {
 				input_sequence.push(CubieCube::from_action_str(value));
 			},
-			_ => panic!("error: bad input format")
+			_ => panic!("error: parse_inputs(), bad input format")
 		}
 	}
 	return input_sequence;

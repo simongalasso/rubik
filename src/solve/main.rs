@@ -16,12 +16,15 @@ use rubik::cubie_cube::{CubieCube};
 fn main() {
     let config: Config = Config::new();
     let input_sequence: Vec<CubieCube> = parse_inputs(&config);
-
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
-    let solution: Vec<CubieCube> = gods_algorithm(&mut cb_cube);
+    let solution: Vec<CubieCube> = gods_algorithm(&mut cb_cube, 10000);
+    for a in solution.iter() {
+        eprint!("{}, ", a.to_string());
+    }
+    eprintln!("");
 
     // if config.visualisator {
     //     let mut display: Display = Display::new(&config);
