@@ -117,6 +117,13 @@ renderer.setClearColor(new THREE.Color(0x0F1617));
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+window.addEventListener('resize', onWindowResize, false);
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 const light = new THREE.AmbientLight(0xFFFFFF, 0.8);
 scene.add(light);
 
@@ -290,5 +297,7 @@ var render = function() {
         move();
     renderer.render(scene, camera);
 };
+
+
 
 render();
