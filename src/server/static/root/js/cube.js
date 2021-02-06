@@ -43,10 +43,10 @@ function createCubes(scene) {
                 var materials = [];
                 (x == 1) ? materials.push(new THREE.MeshPhongMaterial({color: ORANGE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
                 (x == -1) ? materials.push(new THREE.MeshPhongMaterial({color: RED})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
-                (y == 1) ? materials.push(new THREE.MeshPhongMaterial({color: BLUE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
-                (y == -1) ? materials.push(new THREE.MeshPhongMaterial({color: GREEN})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
-                (z == 1) ? materials.push(new THREE.MeshPhongMaterial({color: YELLOW})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
-                (z == -1) ? materials.push(new THREE.MeshPhongMaterial({color: WHITE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (y == 1) ? materials.push(new THREE.MeshPhongMaterial({color: YELLOW})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (y == -1) ? materials.push(new THREE.MeshPhongMaterial({color: WHITE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (z == 1) ? materials.push(new THREE.MeshPhongMaterial({color: GREEN})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
+                (z == -1) ? materials.push(new THREE.MeshPhongMaterial({color: BLUE})) : materials.push(new THREE.MeshPhongMaterial({color: DARK_GREY}));
 
                 var cubeGeometry = new THREE.BoxGeometry(3.8, 3.8, 3.8);
                 var cube = new THREE.Mesh(cubeGeometry, materials);
