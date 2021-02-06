@@ -11,19 +11,18 @@
         .btn {
             
         }
-        .container {
+        .maincontainer {
             position: absolute;
             top: 10px;
             left: 10px;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
         }
-        .container2 {
-            position: absolute;
-            top: 40px;
-            left: 10px;
+        .container {
             display: flex;
             flex-direction: row;
+        }
+        .text {
             color: white;
         }
         .seq {
@@ -39,20 +38,35 @@
     <script src="/js/three.js"></script>
     <script src="/js/orbitControls.js"></script>
     <script src="/js/cube.js" ></script>
-    <div class="container">
-        <button class="btn" onclick="scramble()">Scramble</button>
-        <button class="btn" onclick="applySequence('U')">U</button>
-        <button class="btn" onclick="applySequence('R')">R</button>
-        <button class="btn" onclick="applySequence('F')">F</button>
-        <button class="btn" onclick="applySequence('D')">D</button>
-        <button class="btn" onclick="applySequence('L')">L</button>
-        <button class="btn" onclick="applySequence('B')">B</button>
-        <button class="btn" onclick="nextmove()">Launch</button>
-        <button class="btn" onclick="clearSequence()">Clear</button>
-    </div>
-    <div class="container2">
-        <p>Queue: </p>
-        <p id="sequence" class="seq">No action</p>
+    <div class="maincontainer">
+        <div class="container">
+            <button class="btn" onclick="scramble()">Scramble</button>
+            <button class="btn" onclick="resetCube()">Reset</button>
+        </div>
+        <div class="container">
+            <button class="btn" onclick="applySequence('U')">U</button>
+            <button class="btn" onclick="applySequence('R')">R</button>
+            <button class="btn" onclick="applySequence('F')">F</button>
+            <button class="btn" onclick="applySequence('D')">D</button>
+            <button class="btn" onclick="applySequence('L')">L</button>
+            <button class="btn" onclick="applySequence('B')">B</button>
+        </div>
+        <div class="container">
+            <button class="btn" onclick="applySequence('U\'')">U'</button>
+            <button class="btn" onclick="applySequence('R\'')">R'</button>
+            <button class="btn" onclick="applySequence('F\'')">F'</button>
+            <button class="btn" onclick="applySequence('D\'')">D'</button>
+            <button class="btn" onclick="applySequence('L\'')">L'</button>
+            <button class="btn" onclick="applySequence('B\'')">B'</button>
+        </div>
+        <div class="container">
+            <button class="btn" onclick="nextmove()">Launch</button>
+            <button class="btn" onclick="clearSequence()">Clear queue</button>
+        </div>
+        <div class="container text">
+            <p>Queue: </p>
+            <p id="sequence" class="seq">No action</p>
+        </div>
     </div>
     <script>
         function httpGetAsync(theUrl, callback) {

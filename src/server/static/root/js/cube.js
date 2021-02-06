@@ -31,7 +31,7 @@ const front = () => {
 
 var pivot = new THREE.Object3D();
 var moving = false;
-var speed = 0.02;
+var speed = 0.03;
 var cubes = [];
 var action = {};
 
@@ -97,6 +97,15 @@ const showAction = () => {
     } else {
         document.getElementById("sequence").innerHTML = "No action";
     }
+}
+
+const resetCube = () => {
+    clearSequence();
+    moving = false;
+    scene.remove.apply(scene, scene.children);
+    scene.add(light);
+    cubes = [];
+    cubes = createCubes(scene);
 }
 
 var scene = new THREE.Scene();
@@ -187,6 +196,50 @@ function setCubes(face) {
                 direction: -1
             }
             break;
+        case "U'":
+            action = {
+                selectedCubes: cubes.filter(cube => cube.y == 1),
+                axis: "y",
+                direction: 1
+            }
+            break;
+        case "R'":
+            action = {
+                selectedCubes: cubes.filter(cube => cube.x == -1),
+                axis: "x",
+                direction: -1
+            }
+            break;
+        case "F'":
+            action = {
+                selectedCubes: cubes.filter(cube => cube.z == -1),
+                axis: "z",
+                direction: -1
+            }
+            break;
+        case "D'":
+            action = {
+                selectedCubes: cubes.filter(cube => cube.y == -1),
+                axis: "y",
+                direction: -1
+            }
+            break;
+        case "L'":
+            action = { 
+                selectedCubes: cubes.filter(cube => cube.x == 1),
+                axis: "x",
+                direction: 1
+            }
+            break;
+        case "B'":
+            action = {
+                selectedCubes: cubes.filter(cube => cube.z == 1),
+                axis: "z",
+                direction: 1
+            }
+            break;
+        default:
+            console.log(`Unknown action ${face}.`);
     }
 }
 
