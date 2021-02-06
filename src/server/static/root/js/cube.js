@@ -83,7 +83,20 @@ const applySequence = (sequence) => {
     moves.map((letter) => {
         enqueue(letter);
     })
-    document.getElementById("sequence").innerHTML = queue.join(" ");
+    showAction();
+}
+
+const clearSequence = () => {
+    queue = [];
+    showAction();
+}
+
+const showAction = () => {
+    if (queue.length != 0) {
+        document.getElementById("sequence").innerHTML = queue.join(" ");
+    } else {
+        document.getElementById("sequence").innerHTML = "No action";
+    }
 }
 
 var scene = new THREE.Scene();
@@ -212,7 +225,7 @@ function stop() {
     }
     pivot = new THREE.Object3D();
     dequeue();
-    document.getElementById("sequence").innerHTML = queue.join(" ");
+    showAction();
     action = {};
     nextmove();
 }

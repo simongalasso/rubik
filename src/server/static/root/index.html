@@ -18,10 +18,15 @@
             display: flex;
             flex-direction: row;
         }
-        .aa {
+        .container2 {
             position: absolute;
             top: 40px;
             left: 10px;
+            display: flex;
+            flex-direction: row;
+        }
+        .aa {
+            margin-left: 10px;
         }
         .btn:hover {
             cursor: pointer;
@@ -42,8 +47,12 @@
         <button class="btn" onclick="applySequence('L')">L</button>
         <button class="btn" onclick="applySequence('B')">B</button>
         <button class="btn" onclick="nextmove()">Launch</button>
+        <button class="btn" onclick="clearSequence()">Clear</button>
     </div>
-    <p id="sequence" class="aa" style="font-size:30px"></p>
+    <div class="container2">
+        <p>Queue: </p>
+        <p id="sequence" class="aa">No action</p>
+    </div>
     <script>
         function httpGetAsync(theUrl, callback) {
             var xmlHttp = new XMLHttpRequest();
@@ -57,7 +66,7 @@
 
         const scramble = () => {
             httpGetAsync('/scramble', (res) => {
-                console.log("HELLO")
+                clearSequence();
                 applySequence(res);
                 nextmove();
             })
