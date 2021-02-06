@@ -9,16 +9,19 @@
             margin: 0;
         }
         .btn {
+            
+        }
+        .container {
             position: absolute;
             top: 10px;
             left: 10px;
-            
+            display: flex;
+            flex-direction: row;
         }
         .aa {
             position: absolute;
             top: 40px;
             left: 10px;
-            
         }
         .btn:hover {
             cursor: pointer;
@@ -30,7 +33,16 @@
     <script src="/js/three.js"></script>
     <script src="/js/orbitControls.js"></script>
     <script src="/js/cube.js" ></script>
-    <button id="fire" class="btn" onclick="scramble()">Scramble</button>
+    <div class="container">
+        <button class="btn" onclick="scramble()">Scramble</button>
+        <button class="btn" onclick="applySequence('U')">U</button>
+        <button class="btn" onclick="applySequence('R')">R</button>
+        <button class="btn" onclick="applySequence('F')">F</button>
+        <button class="btn" onclick="applySequence('D')">D</button>
+        <button class="btn" onclick="applySequence('L')">L</button>
+        <button class="btn" onclick="applySequence('B')">B</button>
+        <button class="btn" onclick="nextmove()">Launch</button>
+    </div>
     <p id="sequence" class="aa" style="font-size:30px"></p>
     <script>
         function httpGetAsync(theUrl, callback) {
