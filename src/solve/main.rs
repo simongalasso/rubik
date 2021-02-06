@@ -20,11 +20,15 @@ fn main() {
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
-    let solution: Vec<CubieCube> = solve(&mut cb_cube, 20, 10000);
-    for a in solution.iter() {
-        eprint!("{} ", a.to_string());
+    match solve(&mut cb_cube, 20, 10000) {
+        Some(solution) => {
+            for a in solution.iter() {
+                eprint!("{} ", a.to_string());
+            }
+            eprintln!("");
+        },
+        None => eprintln!("Search timed out without finding any solution")
     }
-    eprintln!("");
 
     // if config.visualisator {
     //     let mut display: Display = Display::new(&config);
