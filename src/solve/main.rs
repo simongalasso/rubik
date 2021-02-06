@@ -20,9 +20,9 @@ fn main() {
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
-    let solution: Vec<CubieCube> = gods_algorithm(&mut cb_cube, 10000);
+    let solution: Vec<CubieCube> = solve(&mut cb_cube, 20, 10000);
     for a in solution.iter() {
-        eprint!("{}, ", a.to_string());
+        eprint!("{} ", a.to_string());
     }
     eprintln!("");
 
