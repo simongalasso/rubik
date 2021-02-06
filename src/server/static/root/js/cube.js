@@ -104,7 +104,7 @@ var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHei
 var renderer = new THREE.WebGLRenderer();
 var clock = new THREE.Clock();
 
-renderer.setClearColor(new THREE.Color(0xEEEEEE));
+renderer.setClearColor(new THREE.Color(0x0F1617));
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
