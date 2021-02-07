@@ -1,5 +1,5 @@
-// binomial coefficient [n choose k]
-pub fn c_nk(n: usize, mut k: usize) -> usize { // FIXME, pas compris
+/// Binomial coefficient [n choose k]
+pub fn c_nk(n: usize, mut k: usize) -> usize {
     if n < k {
         return 0;
     }
@@ -16,4 +16,13 @@ pub fn c_nk(n: usize, mut k: usize) -> usize { // FIXME, pas compris
         j += 1;
     }
     return res;
+}
+
+/// Rotate a vec left between l and r (r included)
+pub fn rotate_left<T: Clone>(vec: &mut Vec<T>, l: usize, r: usize) {
+    let temp: T = vec[l].clone();
+    for i in l..r {
+        vec[i] = vec[i + 1].clone();
+    }
+    vec[r] = temp;
 }

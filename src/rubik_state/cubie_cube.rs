@@ -1,6 +1,5 @@
-use super::corner::{Corner, CORNERS};
-use super::edge::{Edge, EDGES};
-use super::utils::{c_nk};
+use super::enums::{Corner, CORNERS, Edge, EDGES};
+use super::utils::{c_nk, rotate_left};
 
 /// U action (is replaced by representation)
 pub const U: CubieCube = CubieCube {
@@ -72,6 +71,7 @@ impl CubieCube {
         };
     }
 
+    /// Applies a sequence of action on itself
     pub fn apply_sequence(&mut self, sequence: &Vec<CubieCube>) {
         for a in sequence.iter() {
             self.multiply(a);
@@ -85,14 +85,14 @@ impl CubieCube {
     }
 
     /// Multiplies itself with another CubieCube (edges not affected)
-    pub fn corner_multiply(&mut self, b: &CubieCube) { // FIXME, comprendre le fonctionnement de cette fonction et la simplifier !!!
+    pub fn corner_multiply(&mut self, b: &CubieCube) { // FIXME, refactor, opti
         let mut c_p_tmp: [Corner; 8] = [Corner::URF; 8]; // FIXME, stupide initialisation, trouver une autre methode
         let mut c_o_tmp: [u8; 8] = [0; 8];
-        let mut ori: i32 = 0; // FIXME, j'ai mis i32 par defaut, verifier si c'est pertinent
+        let mut ori: i32 = 0;
         for i in 0..8 {
             c_p_tmp[i] = self.c_p[b.c_p[i] as usize];
-            let ori_a: i32 = self.c_o[b.c_p[i] as usize] as i32; // FIXME, j'ai mis i32 par defaut, verifier si c'est pertinent
-            let ori_b: i32 = b.c_o[i] as i32; // FIXME, j'ai mis i32 par defaut, verifier si c'est pertinent
+            let ori_a: i32 = self.c_o[b.c_p[i] as usize] as i32;
+            let ori_b: i32 = b.c_o[i] as i32;
             if ori_a < 3 && ori_b < 3 { // two regular cubes
                 ori = ori_a + ori_b;
                 if ori >= 3 {
@@ -137,7 +137,7 @@ impl CubieCube {
     }
 
     /// Returns a vector of all actions (U, U2, U', R, R2, R', F, F2, F', D, D2, D', L, L2, L', B, B2, B')
-    pub fn get_actions() -> Vec<CubieCube> { // FIXME, do it once at start
+    pub fn get_actions() -> Vec<CubieCube> { // FIXME, refactor, only need to do it once at start
         let mut actions: Vec<CubieCube> = vec![];
         for a in 0..6 {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
@@ -150,7 +150,7 @@ impl CubieCube {
     }
 
     /// Returns a CubieCube from action char
-    pub fn from_action_str(s: &str) -> CubieCube {
+    pub fn from_action_str(s: &str) -> CubieCube { // FIXME, refactor the architecture
         let actions: Vec<CubieCube> = CubieCube::get_actions();
         let index: usize = match s.chars().nth(0).expect("error, from_action_str(), bad input") {
             'U' => 0,
@@ -178,8 +178,8 @@ impl CubieCube {
         }
     }
 
-    /// Returns the inverse of itself
-    pub fn inverse(&self) -> CubieCube { // FIXME, comprendre le fonctionnement de cette fonction, et l'optimiser / simplifier !!!
+    /// Returns the inverse of itself (ex, if self is F then returns F')
+    pub fn inverse(&self) -> CubieCube { // FIXME, optimisation, refactor
         let mut inverse: CubieCube = CubieCube::new_solved();
         for (i, e) in EDGES.iter().enumerate() {
             inverse.e_p[self.e_p[i] as usize] = *e;
@@ -203,7 +203,8 @@ impl CubieCube {
         return inverse;
     }
 
-    pub fn get_twist(&self) -> usize { // FIXME, bof compris
+    /// Returns as a number from 0 to 2186 (3^7 - 1) the twist of every corners
+    pub fn get_twist_coord(&self) -> usize {
         let mut twist: usize = 0;
         for i in (Corner::URF as usize)..(Corner::DRB as usize) {
             twist = twist * 3 + self.c_o[i] as usize;
@@ -211,7 +212,8 @@ impl CubieCube {
         return twist;
     }
 
-    pub fn get_flip(&self) -> usize { // FIXME, bof compris
+    /// Returns as a number from 0 to 2047 (2^11 - 1) the flip of every edges
+    pub fn get_flip_coord(&self) -> usize {
         let mut flip: usize = 0;
         for i in (Edge::UR as usize)..(Edge::BR as usize) {
             flip = flip * 2 + self.e_o[i] as usize;
@@ -219,15 +221,71 @@ impl CubieCube {
         return flip;
     }
 
-    pub fn get_uds_e_sorted(&self) -> usize { // FIXME, bof compris
+    /// Returns as a number from 0 to 494 the location state of the 4 UD slice edges
+    pub fn get_uds_e_location_coord(&self) -> usize {
         let mut uds_e_sorted: usize = 0;
         let mut x: usize = 0;
-        for i in (0..(11 + 1)).rev() {
+        for i in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
             if Edge::FR as usize <= self.e_p[i] as usize && self.e_p[i] as usize <= Edge::BR as usize {
                 uds_e_sorted += c_nk(11 - i, x + 1);
                 x += 1;
             }
         }
         return uds_e_sorted;
+    }
+
+    /// Returns as a number from 0 to 40319 (8! - 1) the permutation of every corners (unused in phase1)
+    pub fn get_c_p_coord(&self) -> usize {
+        let mut perm: Vec<Corner> = self.c_p.to_vec();
+        let mut c_p_coord: usize = 0;
+        for j in ((Corner::URF as usize + 1)..(Corner::DRB as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+            let mut k: usize = 0;
+            while perm[j] != CORNERS[j] {
+                rotate_left::<Corner>(&mut perm, 0, j);
+                k += 1;
+            }
+            c_p_coord = (j + 1) * c_p_coord + k;
+        }
+        return c_p_coord;
+    }
+
+    /// Returns as a number from 0 to 40319 the permutation of every U edges and every D edges (undefined in phase1)
+    pub fn get_ud_e_p_coord(&self) -> usize {
+        let mut perm: Vec<Edge> = Vec::from(&self.e_p[..8]);
+        let mut ud_e_p_coord: usize = 0;
+        for j in ((Edge::UR as usize + 1)..(Edge::DB as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+            let mut k: usize = 0;
+            while perm[j] != EDGES[j] {
+                rotate_left::<Edge>(&mut perm, 0, j);
+                k += 1;
+            }
+            ud_e_p_coord = (j + 1) * ud_e_p_coord + k;
+        }
+        return ud_e_p_coord;
+    }
+    /// Returns as a number from 0 to 23 the location and permutation state of the 4 UD slice edges (unused in phase1)
+    pub fn get_uds_e_sorted_coord(&self) -> usize {
+        let mut a: usize = 0;
+        let mut x: usize = 0;
+        let mut edge4: Vec<Edge> = Vec::from(&[Edge::UR; 4][..]); // FIXME, stupid init, refactor
+        // First compute the index a < (12 choose 4) and the permutation array perm
+        for j in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+            if Edge::FR as usize <= self.e_p[j] as usize && self.e_p[j] as usize <= Edge::BR as usize {
+                a += c_nk(11 - j, x + 1);
+                edge4[3 - x] = self.e_p[j];
+                x += 1;
+            }
+        }
+        // Then compute the index b < 4! for the permutation in edge4
+        let mut b: usize = 0;
+        for j in (1..4).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+            let mut k: usize = 0;
+            while edge4[j] != EDGES[j + 8] {
+                rotate_left::<Edge>(&mut edge4, 0, j);
+                k += 1;
+            }
+            b = (j + 1) * b + k;
+        }
+        return 24 * a + b;
     }
 }
