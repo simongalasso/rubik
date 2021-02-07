@@ -1,5 +1,6 @@
 use super::corner::{Corner, CORNERS};
 use super::edge::{Edge, EDGES};
+use super::utils::{c_nk};
 
 /// U action (is replaced by representation)
 pub const U: CubieCube = CubieCube {
@@ -200,5 +201,33 @@ impl CubieCube {
             }
         }
         return inverse;
+    }
+
+    pub fn get_twist(&self) -> usize { // FIXME, bof compris
+        let mut twist: usize = 0;
+        for i in (Corner::URF as usize)..(Corner::DRB as usize) {
+            twist = twist * 3 + self.c_o[i] as usize;
+        }
+        return twist;
+    }
+
+    pub fn get_flip(&self) -> usize { // FIXME, bof compris
+        let mut flip: usize = 0;
+        for i in (Edge::UR as usize)..(Edge::BR as usize) {
+            flip = flip * 2 + self.e_o[i] as usize;
+        }
+        return flip;
+    }
+
+    pub fn get_uds_e_sorted(&self) -> usize { // FIXME, bof compris
+        let mut uds_e_sorted: usize = 0;
+        let mut x: usize = 0;
+        for i in (0..(11 + 1)).rev() {
+            if Edge::FR as usize <= self.e_p[i] as usize && self.e_p[i] as usize <= Edge::BR as usize {
+                uds_e_sorted += c_nk(11 - i, x + 1);
+                x += 1;
+            }
+        }
+        return uds_e_sorted;
     }
 }

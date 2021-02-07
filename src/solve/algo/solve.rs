@@ -1,7 +1,7 @@
 extern crate rubik;
 
 use rubik::cubie_cube::{CubieCube};
-use rubik::edge::{Edge};
+use rubik::coord_cube::{CoordCube};
 
 /* # Kociemba Algorithm ######################################### */
 
@@ -64,7 +64,8 @@ pub fn solve(state: &mut CubieCube, max_depth: u8, db_max: i32) -> Option<Vec<Cu
 
 fn search_phase1(state: &CubieCube, depth: u8, bound: u8, max_depth: u8, sequence: &mut Vec<CubieCube>, /* database: Vec<> */) -> bool {
     if depth == bound {
-        if contained_in_g1(state) {
+        let co_cube: CoordCube = CoordCube::from_cubie_cube(state);
+        if co_cube.twist == 0 && co_cube.flip == 0 && co_cube.uds_e_sorted == 0 {
             for bound_phase2 in 0..(max_depth - depth) {
                 if search_phase2(state, 0, bound_phase2, sequence, /* database */) {
                     return true;
@@ -86,16 +87,6 @@ fn search_phase1(state: &CubieCube, depth: u8, bound: u8, max_depth: u8, sequenc
         }
     }
     return false;
-}
-
-fn contained_in_g1(state: &CubieCube) -> bool { // FIXME, a optimiser
-    let o_sum: u8 = state.e_o.iter().sum::<u8>() + state.c_o.iter().sum::<u8>();
-    let fr_index: usize = state.e_p.iter().position(|el| *el == Edge::FR).unwrap();
-    let fl_index: usize = state.e_p.iter().position(|el| *el == Edge::FL).unwrap();
-    let bl_index: usize = state.e_p.iter().position(|el| *el == Edge::BL).unwrap();
-    let br_index: usize = state.e_p.iter().position(|el| *el == Edge::BR).unwrap();
-    let valid_pos: [usize; 4] = [8, 9, 10, 11];
-    return o_sum == 0 && valid_pos.contains(&fr_index) && valid_pos.contains(&fl_index) && valid_pos.contains(&bl_index) && valid_pos.contains(&br_index);
 }
 
 fn search_phase2(state: &CubieCube, depth: u8, bound: u8, sequence: &mut Vec<CubieCube>, /* database: Vec<> */) -> bool {
