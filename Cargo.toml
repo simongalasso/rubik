@@ -6,7 +6,7 @@ edition = "2018"
 
 [lib]
 name = "rubik"
-path = "src/rubik/lib.rs"
+path = "src/rubik_state/lib.rs"
 
 [[bin]]
 name = "solve"

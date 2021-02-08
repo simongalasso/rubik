@@ -1,20 +1,16 @@
 extern crate rubik;
 
 use super::args::{Config};
-use rubik::action::{Action};
-use rubik::face::{Face};
-use rubik::rotation::{Rotation};
+use rubik::cubie_cube::{CubieCube};
 
-pub fn parse_inputs(config: &Config) -> Vec<Action> {
-	let mut input_sequence: Vec<Action> = Vec::new();
+pub fn parse_inputs(config: &Config) -> Vec<CubieCube> {
+	let mut input_sequence: Vec<CubieCube> = Vec::new();
 	for value in config.input.trim().split_whitespace() {
 		match value.len() {
 			1 | 2 => {
-				let face: Face = Face::from_char(value.chars().nth(0).unwrap()).expect("error: bad character"); // handle first unwrap
-				let rotation: Rotation = Rotation::from_char(value.chars().nth(1).unwrap_or('\0')).expect("error: bad character");
-				input_sequence.push(Action::new(face, rotation));
+				input_sequence.push(CubieCube::from_action_str(value));
 			},
-			_ => panic!("error: bad input format")
+			_ => panic!("error: parse_inputs(), bad input format")
 		}
 	}
 	return input_sequence;
