@@ -4,7 +4,7 @@ use std::path::Path;
 use std::fs::File;
 use std::io::prelude::*;
 use rubik::cubie_cube::{CubieCube};
-use rubik::coord_cube::{CoordCube};
+// use rubik::coord_cube::{CoordCube};
 use super::file_utils::{write_u32_vec, read_u32_vec};
 
 /// Let's get a coffee and try to understand all of those constants :)
@@ -45,6 +45,57 @@ impl Pruning {
         } else {
             println!("Pruning tables for phase 1 twist doesn't exists!");
             println!("Creating the file");
+
+            let mut cb_cube: CubieCube = CubieCube::new_solved();
+            let mut depth: i32 = 0;
+            // cb_cube.set_flip_coord(2564);
+            // println!("FLIP COORD SHOULD BE 2564 {:?}", cb_cube.get_flip_coord());
+            // cb_cube.set_twist_coord(123);
+            // println!("TWIST COORD SHOULD BE 123 {:?}", cb_cube.get_twist_coord());
+            // cb_cube.set_uds_e_location_coord(128);
+            // println!("SLICE COORD SHOULD BE 128 {:?}", cb_cube.get_uds_e_location_coord());
+            cb_cube.set_flip_coord(20);
+            println!("TWIST COORD SHOULD BE 20 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(21);
+            println!("TWIST COORD SHOULD BE 21 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(22);
+            println!("TWIST COORD SHOULD BE 22 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(23);
+            println!("TWIST COORD SHOULD BE 23 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(24);
+            println!("TWIST COORD SHOULD BE 24 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(25);
+            println!("TWIST COORD SHOULD BE 25 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(26);
+            println!("TWIST COORD SHOULD BE 26 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(27);
+            println!("TWIST COORD SHOULD BE 27 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(28);
+            println!("TWIST COORD SHOULD BE 28 {:?}", cb_cube.get_flip_coord());
+            cb_cube.set_flip_coord(29);
+            println!("TWIST COORD SHOULD BE 29 {:?}", cb_cube.get_flip_coord());
+            // cb_cube.set_flip_coord(12);
+            // println!("FLIP COORD SHOULD BE 12 {:?}", cb_cube.get_flip_coord());
+            // cb_cube.set_flip_coord(12);
+            // println!("FLIP COORD SHOULD BE 12 {:?}", cb_cube.get_flip_coord());
+            // cb_cube.set_uds_e_location_coord(2);
+            // println!("SLICE COORD SHOULD BE 2 {:?}", cb_cube.get_uds_e_location_coord());
+            
+            // for i in 0..N_TWIST {
+                // for j in 0..6 {
+                //     for k in 0..3 {
+
+                //         cornerMultiply(a, &moveCube[j]);
+                //         twistMove[i][3 * j + k] = getTwist(a);
+                //     }
+                //     cornerMultiply(a, &moveCube[j]);// 4. faceturn restores
+                // }
+            // }
+
+            // for i in 0..(N_SLICE * N_TWIST / 2 + 1) {
+            //     println!("i = {}", i);
+            // }
+
             slice_twist_pruning_table = vec![1, 2, 3];
             write_u32_vec("./pruning_slice_twist.pr", &slice_twist_pruning_table);
         }
