@@ -27,7 +27,7 @@ const N_FLIPSLICE_CLASS: i32 = 64430;  // number of equivalence classes for comb
 
 #[derive(Debug)]
 pub struct Pruning {
-    pub phase1: String,
+    pub phase1: Vec<u32>,
     pub phase2: String,
 }
 
@@ -39,19 +39,20 @@ impl Pruning {
         };
     }
 
-    pub fn create_phase_1() -> String {
+    pub fn create_phase_1() -> Vec<u32> {
         println!("/// CREATE_PHASE_1 ///");
         println!("I'm checking wether the file exists or if I have to generate the pruning tables for phase 1");
+        let mut phase1: Vec<u32>;
         if Path::new("pruning_phase1.pr").exists() {
             println!("Pruning tables for phase 1 exists!");
             println!("Let's load the variable!");
         } else {
             println!("Pruning tables for phase 1 doesn't exists!");
             println!("Creating the file");
+            phase1 = vec![1, 2, 3];
             let mut file: File = File::create("./pruning_phase1.pr").unwrap();
-            file.write_all(b"Hello, world!");
+            file.write_all(phase1);
         }
-        let mut phase1: String = "phase1".to_string();
         return phase1;
     }
 
