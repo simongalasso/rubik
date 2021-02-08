@@ -1,62 +1,11 @@
-use super::enums::{Corner, CORNERS, Edge, EDGES};
 use super::utils::{c_nk, rotate_left};
-
-/// U action (is replaced by representation)
-pub const U: CubieCube = CubieCube {
-    c_p: [Corner::UBR, Corner::URF, Corner::UFL, Corner::ULB, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
-    c_o: [0, 0, 0, 0, 0, 0, 0, 0],
-    e_p: [Edge::UB, Edge::UR, Edge::UF, Edge::UL, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
-    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-};
-
-/// R action (is replaced by representation)
-pub const R: CubieCube = CubieCube {
-    c_p: [Corner::DFR, Corner::UFL, Corner::ULB, Corner::URF, Corner::DRB, Corner::DLF, Corner::DBL, Corner::UBR],
-    c_o: [2, 0, 0, 1, 1, 0, 0, 2],
-    e_p: [Edge::FR, Edge::UF, Edge::UL, Edge::UB, Edge::BR, Edge::DF, Edge::DL, Edge::DB, Edge::DR, Edge::FL, Edge::BL, Edge::UR],
-    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-};
-
-/// F action (is replaced by representation)
-pub const F: CubieCube = CubieCube {
-    c_p: [Corner::UFL, Corner::DLF, Corner::ULB, Corner::UBR, Corner::URF, Corner::DFR, Corner::DBL, Corner::DRB],
-    c_o: [1, 2, 0, 0, 2, 1, 0, 0],
-    e_p: [Edge::UR, Edge::FL, Edge::UL, Edge::UB, Edge::DR, Edge::FR, Edge::DL, Edge::DB, Edge::UF, Edge::DF, Edge::BL, Edge::BR],
-    e_o: [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0]
-};
-
-/// D action (is replaced by representation)
-pub const D: CubieCube = CubieCube {
-    c_p: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DLF, Corner::DBL, Corner::DRB, Corner::DFR],
-    c_o: [0, 0, 0, 0, 0, 0, 0, 0],
-    e_p: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DF, Edge::DL, Edge::DB, Edge::DR, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
-    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-};
-
-/// L action (is replaced by representation)
-pub const L: CubieCube = CubieCube {
-    c_p: [Corner::URF, Corner::ULB, Corner::DBL, Corner::UBR, Corner::DFR, Corner::UFL, Corner::DLF, Corner::DRB],
-    c_o: [0, 1, 2, 0, 0, 2, 1, 0],
-    e_p: [Edge::UR, Edge::UF, Edge::BL, Edge::UB, Edge::DR, Edge::DF, Edge::FL, Edge::DB, Edge::FR, Edge::UL, Edge::DL, Edge::BR],
-    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-};
-
-/// B action (is replaced by representation)
-pub const B: CubieCube = CubieCube {
-    c_p: [Corner::URF, Corner::UFL, Corner::UBR, Corner::DRB, Corner::DFR, Corner::DLF, Corner::ULB, Corner::DBL],
-    c_o: [0, 0, 1, 2, 0, 0, 2, 1],
-    e_p: [Edge::UR, Edge::UF, Edge::UL, Edge::BR, Edge::DR, Edge::DF, Edge::DL, Edge::BL, Edge::FR, Edge::FL, Edge::UB, Edge::DB],
-    e_o: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1]
-};
-
-/// All 90 degree actions
-pub const BASIC_ACTIONS: [CubieCube; 6] = [U, R, F, D, L, B];
+use super::enums::*;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct CubieCube {
-    pub c_p: [Corner; 8],
+    pub c_p: [usize; 8],
     pub c_o: [u8; 8],
-    pub e_p: [Edge; 12],
+    pub e_p: [usize; 12],
     pub e_o: [u8; 12]
 }
 
@@ -64,34 +13,38 @@ impl CubieCube {
     /// Creates a new solved CubieCube
     pub fn new_solved() -> CubieCube {
         return CubieCube {
-            c_p: [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB],
+            c_p: [URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB],
             c_o: [0, 0, 0, 0, 0, 0, 0, 0],
-            e_p: [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR],
+            e_p: [UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR],
             e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         };
     }
 
     /// Applies a sequence of action on itself
-    pub fn apply_sequence(&mut self, sequence: &Vec<CubieCube>) {
+    pub fn apply_sequence(&mut self, sequence: &Vec<(CubieCube, u8)>) {
         for a in sequence.iter() {
-            self.multiply(a);
+            *self = self.multiply(&a.0, a.1);
         }
     }
 
-    /// Multiplies itself with another CubieCube
-    pub fn multiply(&mut self, b: &CubieCube) {
-        self.corner_multiply(b);
-        self.edge_multiply(b);
+    /// Creates a CubieCube by multiplying itself with another CubieCube
+    pub fn multiply(&self, b: &CubieCube, repeat: u8) -> CubieCube {
+        let mut new_cb_cube: CubieCube = self.clone();
+        for _ in 0..repeat {
+            new_cb_cube.corner_multiply(b);
+            new_cb_cube.edge_multiply(b);
+        }
+        return new_cb_cube;
     }
 
     /// Multiplies itself with another CubieCube (edges not affected)
     pub fn corner_multiply(&mut self, b: &CubieCube) { // FIXME, refactor, opti
-        let mut c_p_tmp: [Corner; 8] = [Corner::URF; 8]; // FIXME, stupide initialisation, trouver une autre methode
+        let mut c_p_tmp: [usize; 8] = [0; 8];
         let mut c_o_tmp: [u8; 8] = [0; 8];
         let mut ori: i32 = 0;
         for i in 0..8 {
-            c_p_tmp[i] = self.c_p[b.c_p[i] as usize];
-            let ori_a: i32 = self.c_o[b.c_p[i] as usize] as i32;
+            c_p_tmp[i] = self.c_p[b.c_p[i]];
+            let ori_a: i32 = self.c_o[b.c_p[i]] as i32;
             let ori_b: i32 = b.c_o[i] as i32;
             if ori_a < 3 && ori_b < 3 { // two regular cubes
                 ori = ori_a + ori_b;
@@ -124,11 +77,11 @@ impl CubieCube {
 
     /// Multiply itself with another CubieCube (corners not affected)
     pub fn edge_multiply(&mut self, b: &CubieCube) {
-        let mut e_p_tmp: [Edge; 12] = [Edge::UR; 12];
+        let mut e_p_tmp: [usize; 12] = [0; 12];
         let mut e_o_tmp: [u8; 12] = [0; 12];
         for i in 0..12 {
-            e_p_tmp[i] = self.e_p[b.e_p[i] as usize];
-            e_o_tmp[i] = (b.e_o[i] + self.e_o[b.e_p[i] as usize]) % 2;
+            e_p_tmp[i] = self.e_p[b.e_p[i]];
+            e_o_tmp[i] = (b.e_o[i] + self.e_o[b.e_p[i]]) % 2;
         }
         for i in 0..12 {
             self.e_p[i] = e_p_tmp[i];
@@ -136,49 +89,29 @@ impl CubieCube {
         }
     }
 
-    /// Returns a vector of all actions (U, U2, U', R, R2, R', F, F2, F', D, D2, D', L, L2, L', B, B2, B')
-    pub fn get_actions() -> Vec<CubieCube> { // FIXME, refactor, only need to do it once at start
-        let mut actions: Vec<CubieCube> = vec![];
-        for a in 0..6 {
-            let mut cb_cube: CubieCube = CubieCube::new_solved();
-            for _ in 0..3 {
-                cb_cube.multiply(&BASIC_ACTIONS[a]);
-                actions.push(cb_cube.clone());
-            }
-        }
-        return actions;
-    }
-
-    /// Returns a vector of G1 actions (U, U2, U', R2, F2, D, D2, D', L2, B2)
-    pub fn get_g1_actions() -> Vec<CubieCube> { // FIXME, refactor, only need to do it once at start
-        let g1_indexes: [usize; 10] = [0, 1, 2, 4, 7, 9, 10, 11, 13, 16];
-        return CubieCube::get_actions().into_iter().enumerate().filter(|(i, _)| g1_indexes.contains(i)).map(|(_, a)| a).collect::<Vec<CubieCube>>();
-    }
-
     /// Returns a CubieCube from action char
-    pub fn from_action_str(s: &str) -> CubieCube { // FIXME, refactor the architecture
-        let actions: Vec<CubieCube> = CubieCube::get_actions();
-        let index: usize = match s.chars().nth(0).expect("error, from_action_str(), bad input") {
-            'U' => 0,
-            'R' => 3,
-            'F' => 6,
-            'D' => 9,
-            'L' => 12,
-            _ => 15 // B
+    pub fn from_action_str(s: &str) -> (CubieCube, u8) { // FIXME, refactor the architecture
+        let basic_action: CubieCube = match s.chars().nth(0).expect("error, from_action_str(), bad input") {
+            'U' => U,
+            'R' => R,
+            'F' => F,
+            'D' => D,
+            'L' => L,
+            'B' => B,
+            _ => panic!("error, from_action_str() bad character") // FIXME, maybe handle differently
         };
-        return actions[index + match s.chars().nth(1) {
-            None => 0,
-            Some(v) if v == '2' => 1,
-            Some(v) if v == '\'' => 2,
+        return match s.chars().nth(1) {
+            None => (basic_action, 1),
+            Some(v) if v == '2' => (basic_action, 2),
+            Some(v) if v == '\'' => (basic_action, 3),
             Some(_) => panic!("error, from_action_str(), bad input"),
-        }].clone();
+        };
     }
 
     /// Returns the action string or None if not corresponding to any available actions
     pub fn to_string(&self) -> String {
         let s_actions: [&str; 18] = ["U", "U2", "U\'", "R", "R2", "R\'", "F", "F2", "F\'", "D", "D2", "D\'", "L", "L2", "L\'", "B", "B2", "B\'"];
-        let actions: Vec<CubieCube> = CubieCube::get_actions();
-        return match actions.iter().position(|a| a == self) {
+        return match ACTIONS.iter().position(|a| CubieCube::new_solved().multiply(&a.0, a.1) == *self) {
             Some(index) => String::from(s_actions[index]),
             None => String::from("None")
         }
@@ -187,17 +120,17 @@ impl CubieCube {
     /// Returns the inverse of itself (ex, if self is F then returns F')
     pub fn inverse(&self) -> CubieCube { // FIXME, optimisation, refactor
         let mut inverse: CubieCube = CubieCube::new_solved();
-        for (i, e) in EDGES.iter().enumerate() {
-            inverse.e_p[self.e_p[i] as usize] = *e;
+        for i in 0..EDGES_NB {
+            inverse.e_p[self.e_p[i]] = i;
         }
-        for i in 0..EDGES.len() {
-            inverse.e_o[i] = self.e_o[inverse.e_p[i] as usize];
+        for i in 0..EDGES_NB {
+            inverse.e_o[i] = self.e_o[inverse.e_p[i]];
         }
-        for (i, c) in CORNERS.iter().enumerate() {
-            inverse.c_p[self.c_p[i] as usize] = *c;
+        for i in 0..CORNERS_NB {
+            inverse.c_p[self.c_p[i]] = i;
         }
-        for i in 0..CORNERS.len() {
-            let ori: i32 = self.c_o[inverse.c_p[i] as usize] as i32;
+        for i in 0..CORNERS_NB {
+            let ori: i32 = self.c_o[inverse.c_p[i]] as i32;
             if ori >= 3 {
                 inverse.c_o[i] = ori as u8;
             } else {
@@ -212,7 +145,7 @@ impl CubieCube {
     /// Returns as a number from 0 to 2186 (3^7 - 1) the twist of every corners
     pub fn get_twist_coord(&self) -> usize {
         let mut twist: usize = 0;
-        for i in (Corner::URF as usize)..(Corner::DRB as usize) {
+        for i in URF..DRB {
             twist = twist * 3 + self.c_o[i] as usize;
         }
         return twist;
@@ -221,7 +154,7 @@ impl CubieCube {
     /// Returns as a number from 0 to 2047 (2^11 - 1) the flip of every edges
     pub fn get_flip_coord(&self) -> usize {
         let mut flip: usize = 0;
-        for i in (Edge::UR as usize)..(Edge::BR as usize) {
+        for i in UR..BR {
             flip = flip * 2 + self.e_o[i] as usize;
         }
         return flip;
@@ -231,8 +164,8 @@ impl CubieCube {
     pub fn get_uds_e_location_coord(&self) -> usize {
         let mut uds_e_sorted: usize = 0;
         let mut x: usize = 0;
-        for i in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() {
-            if Edge::FR as usize <= self.e_p[i] as usize && self.e_p[i] as usize <= Edge::BR as usize {
+        for i in (UR..(BR + 1)).rev() {
+            if FR <= self.e_p[i] && self.e_p[i] <= BR {
                 uds_e_sorted += c_nk(11 - i, x + 1);
                 x += 1;
             }
@@ -242,12 +175,12 @@ impl CubieCube {
 
     /// Returns as a number from 0 to 40319 (8! - 1) the permutation of every corners (unused in phase1)
     pub fn get_c_p_coord(&self) -> usize {
-        let mut perm: Vec<Corner> = self.c_p.to_vec();
+        let mut perm: Vec<usize> = self.c_p.to_vec();
         let mut c_p_coord: usize = 0;
-        for j in ((Corner::URF as usize + 1)..(Corner::DRB as usize + 1)).rev() {
+        for j in ((URF + 1)..(DRB + 1)).rev() {
             let mut k: usize = 0;
-            while perm[j] != CORNERS[j] {
-                rotate_left::<Corner>(&mut perm, 0, j);
+            while perm[j] != j {
+                rotate_left(&mut perm, 0, j);
                 k += 1;
             }
             c_p_coord = (j + 1) * c_p_coord + k;
@@ -257,12 +190,12 @@ impl CubieCube {
 
     /// Returns as a number from 0 to 40319 the permutation of every U edges and every D edges (undefined in phase1)
     pub fn get_ud_e_p_coord(&self) -> usize {
-        let mut perm: Vec<Edge> = Vec::from(&self.e_p[..8]);
+        let mut perm: Vec<usize> = Vec::from(&self.e_p[..8]);
         let mut ud_e_p_coord: usize = 0;
-        for j in ((Edge::UR as usize + 1)..(Edge::DB as usize + 1)).rev() {
+        for j in ((UR + 1)..(DB + 1)).rev() {
             let mut k: usize = 0;
-            while perm[j] != EDGES[j] {
-                rotate_left::<Edge>(&mut perm, 0, j);
+            while perm[j] != j {
+                rotate_left(&mut perm, 0, j);
                 k += 1;
             }
             ud_e_p_coord = (j + 1) * ud_e_p_coord + k;
@@ -273,10 +206,10 @@ impl CubieCube {
     pub fn get_uds_e_sorted_coord(&self) -> usize {
         let mut a: usize = 0;
         let mut x: usize = 0;
-        let mut edge4: Vec<Edge> = Vec::from(&[Edge::UR; 4][..]); // FIXME, stupid init, refactor
+        let mut edge4: Vec<usize> = Vec::from(&[UR; 4][..]); // FIXME, stupid init, refactor
         // First compute the index a < (12 choose 4) and the permutation array perm
-        for j in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() {
-            if Edge::FR as usize <= self.e_p[j] as usize && self.e_p[j] as usize <= Edge::BR as usize {
+        for j in (UR..(BR + 1)).rev() {
+            if FR <= self.e_p[j] && self.e_p[j] <= BR {
                 a += c_nk(11 - j, x + 1);
                 edge4[3 - x] = self.e_p[j];
                 x += 1;
@@ -286,8 +219,8 @@ impl CubieCube {
         let mut b: usize = 0;
         for j in (1..4).rev() {
             let mut k: usize = 0;
-            while edge4[j] != EDGES[j + 8] {
-                rotate_left::<Edge>(&mut edge4, 0, j);
+            while edge4[j] != j + 8 {
+                rotate_left(&mut edge4, 0, j);
                 k += 1;
             }
             b = (j + 1) * b + k;

@@ -15,14 +15,14 @@ use rubik::cubie_cube::{CubieCube};
 
 fn main() {
     let config: Config = Config::new();
-    let input_sequence: Vec<CubieCube> = parse_inputs(&config);
+    let input_sequence: Vec<(CubieCube, u8)> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
-    println!("sequence: {}", input_sequence.iter().map(|a| a.to_string()).collect::<Vec<String>>().join(" "));
+    println!("sequence: {}", input_sequence.iter().map(|a| CubieCube::new_solved().multiply(&a.0, a.1).to_string()).collect::<Vec<String>>().join(" "));
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
     match solve(&mut cb_cube, 20) {
-        Some(solution) => eprintln!("solution: {}", solution.iter().map(|a| a.to_string()).collect::<Vec<String>>().join(" ")),
+        Some(solution) => eprintln!("solution: {}", solution.iter().map(|a| CubieCube::new_solved().multiply(&a.0, a.1).to_string()).collect::<Vec<String>>().join(" ")),
         None => println!("Search timed out without finding any solution")
     }
 

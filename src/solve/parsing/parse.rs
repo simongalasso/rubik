@@ -3,8 +3,8 @@ extern crate rubik;
 use super::args::{Config};
 use rubik::cubie_cube::{CubieCube};
 
-pub fn parse_inputs(config: &Config) -> Vec<CubieCube> {
-	let mut input_sequence: Vec<CubieCube> = Vec::new();
+pub fn parse_inputs(config: &Config) -> Vec<(CubieCube, u8)> {
+	let mut input_sequence: Vec<(CubieCube, u8)> = Vec::new();
 	for value in config.input.trim().split_whitespace() {
 		match value.len() {
 			1 | 2 => {

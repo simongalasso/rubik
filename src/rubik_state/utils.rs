@@ -19,8 +19,8 @@ pub fn c_nk(n: usize, mut k: usize) -> usize {
 }
 
 /// Rotate a vec left between l and r (r included)
-pub fn rotate_left<T: Clone>(vec: &mut Vec<T>, l: usize, r: usize) {
-    let temp: T = vec[l].clone();
+pub fn rotate_left(vec: &mut Vec<usize>, l: usize, r: usize) {
+    let temp: usize = vec[l].clone();
     for i in l..r {
         vec[i] = vec[i + 1].clone();
     }
