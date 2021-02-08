@@ -1,5 +1,5 @@
-extern crate rubik;
 extern crate kiss3d;
+extern crate rubik;
 
 mod parsing;
 mod display;
