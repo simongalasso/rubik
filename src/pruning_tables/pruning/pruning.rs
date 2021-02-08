@@ -1,5 +1,8 @@
 extern crate rubik;
 
+use std::path::Path;
+use std::fs::File;
+use std::io::prelude::*;
 use rubik::cubie_cube::{CubieCube};
 use rubik::coord_cube::{CoordCube};
 
@@ -29,7 +32,7 @@ pub struct Pruning {
 }
 
 impl Pruning {
-    pub fn new() -> Pruning { 
+    pub fn new() -> Pruning {
         return Pruning {
             phase1: Self::create_phase_1(),
             phase2: Self::create_phase_2()
@@ -37,13 +40,33 @@ impl Pruning {
     }
 
     pub fn create_phase_1() -> String {
-        println!("I'm starting to create the pruning tables for the phase 2");
+        println!("/// CREATE_PHASE_1 ///");
+        println!("I'm checking wether the file exists or if I have to generate the pruning tables for phase 1");
+        if Path::new("pruning_phase1.pr").exists() {
+            println!("Pruning tables for phase 1 exists!");
+            println!("Let's load the variable!");
+        } else {
+            println!("Pruning tables for phase 1 doesn't exists!");
+            println!("Creating the file");
+            let mut file: File = File::create("./pruning_phase1.pr").unwrap();
+            file.write_all(b"Hello, world!");
+        }
         let mut phase1: String = "phase1".to_string();
         return phase1;
     }
 
     pub fn create_phase_2() -> String {
-        println!("I'm starting to create the pruning tables for the phase 2");
+        println!("/// CREATE_PHASE_2 ///");
+        println!("I'm checking wether the file exists or if I have to generate the pruning tables for phase 2");
+        if Path::new("pruning_phase2.pr").exists() {
+            println!("Pruning tables for phase 2 exists!");
+            println!("Let's load the variable!");
+        } else {
+            println!("Pruning tables for phase 2 doesn't exists!");
+            println!("Creating the file");
+            let mut file: File = File::create("./pruning_phase2.pr").unwrap();
+            file.write_all(b"Hello, world!");
+        }
         let mut phase2: String = "phase2".to_string();
         return phase2;
     }
