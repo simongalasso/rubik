@@ -48,38 +48,6 @@ impl Pruning {
 
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: i32 = 0;
-            // cb_cube.set_flip_coord(2564);
-            // println!("FLIP COORD SHOULD BE 2564 {:?}", cb_cube.get_flip_coord());
-            // cb_cube.set_twist_coord(123);
-            // println!("TWIST COORD SHOULD BE 123 {:?}", cb_cube.get_twist_coord());
-            // cb_cube.set_uds_e_location_coord(128);
-            // println!("SLICE COORD SHOULD BE 128 {:?}", cb_cube.get_uds_e_location_coord());
-            cb_cube.set_flip_coord(20);
-            println!("TWIST COORD SHOULD BE 20 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(21);
-            println!("TWIST COORD SHOULD BE 21 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(22);
-            println!("TWIST COORD SHOULD BE 22 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(23);
-            println!("TWIST COORD SHOULD BE 23 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(24);
-            println!("TWIST COORD SHOULD BE 24 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(25);
-            println!("TWIST COORD SHOULD BE 25 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(26);
-            println!("TWIST COORD SHOULD BE 26 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(27);
-            println!("TWIST COORD SHOULD BE 27 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(28);
-            println!("TWIST COORD SHOULD BE 28 {:?}", cb_cube.get_flip_coord());
-            cb_cube.set_flip_coord(29);
-            println!("TWIST COORD SHOULD BE 29 {:?}", cb_cube.get_flip_coord());
-            // cb_cube.set_flip_coord(12);
-            // println!("FLIP COORD SHOULD BE 12 {:?}", cb_cube.get_flip_coord());
-            // cb_cube.set_flip_coord(12);
-            // println!("FLIP COORD SHOULD BE 12 {:?}", cb_cube.get_flip_coord());
-            // cb_cube.set_uds_e_location_coord(2);
-            // println!("SLICE COORD SHOULD BE 2 {:?}", cb_cube.get_uds_e_location_coord());
             
             // for i in 0..N_TWIST {
                 // for j in 0..6 {
