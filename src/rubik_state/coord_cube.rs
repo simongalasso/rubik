@@ -1,6 +1,6 @@
 use super::cubie_cube::{CubieCube};
 
-pub struct CoordCube { // FIXME, check le rendu de la doc de cette structure
+pub struct CoordCube {
     /// orientations of every corners as coordinate (used in phase1)
     pub twist_coord: usize,
     /// orientations of every edges as coordinate (used in phase1)

@@ -1,13 +1,96 @@
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub enum Corner {
-    URF = 0, UFL = 1, ULB = 2, UBR = 3, DFR = 4, DLF = 5, DBL = 6, DRB = 7
-}
+use super::cubie_cube::{CubieCube};
 
-pub const CORNERS: [Corner; 8] = [Corner::URF, Corner::UFL, Corner::ULB, Corner::UBR, Corner::DFR, Corner::DLF, Corner::DBL, Corner::DRB];
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/*  Corners                                                                 */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub enum Edge {
-    UR = 0, UF = 1, UL = 2, UB = 3, DR = 4, DF = 5, DL = 6, DB = 7, FR = 8, FL = 9, BL = 10, BR = 11
-}
+pub const CORNERS_NB: usize = 8;
 
-pub const EDGES: [Edge; 12] = [Edge::UR, Edge::UF, Edge::UL, Edge::UB, Edge::DR, Edge::DF, Edge::DL, Edge::DB, Edge::FR, Edge::FL, Edge::BL, Edge::BR];
+pub const URF: usize = 0;
+pub const UFL: usize = 1;
+pub const ULB: usize = 2;
+pub const UBR: usize = 3;
+pub const DFR: usize = 4;
+pub const DLF: usize = 5;
+pub const DBL: usize = 6;
+pub const DRB: usize = 7;
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/*  Edges                                                                   */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+pub const EDGES_NB: usize = 12;
+
+pub const UR: usize = 0;
+pub const UF: usize = 1;
+pub const UL: usize = 2;
+pub const UB: usize = 3;
+pub const DR: usize = 4;
+pub const DF: usize = 5;
+pub const DL: usize = 6;
+pub const DB: usize = 7;
+pub const FR: usize = 8;
+pub const FL: usize = 9;
+pub const BL: usize = 10;
+pub const BR: usize = 11;
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/*  Actions                                                                 */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+/// CubieCube U action (is replaced by representation)
+pub const U: CubieCube = CubieCube {
+    c_p: [UBR, URF, UFL, ULB, DFR, DLF, DBL, DRB],
+    c_o: [0, 0, 0, 0, 0, 0, 0, 0],
+    e_p: [UB, UR, UF, UL, DR, DF, DL, DB, FR, FL, BL, BR],
+    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+};
+
+/// CubieCube R action (is replaced by representation)
+pub const R: CubieCube = CubieCube {
+    c_p: [DFR, UFL, ULB, URF, DRB, DLF, DBL, UBR],
+    c_o: [2, 0, 0, 1, 1, 0, 0, 2],
+    e_p: [FR, UF, UL, UB, BR, DF, DL, DB, DR, FL, BL, UR],
+    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+};
+
+/// CubieCube F action (is replaced by representation)
+pub const F: CubieCube = CubieCube {
+    c_p: [UFL, DLF, ULB, UBR, URF, DFR, DBL, DRB],
+    c_o: [1, 2, 0, 0, 2, 1, 0, 0],
+    e_p: [UR, FL, UL, UB, DR, FR, DL, DB, UF, DF, BL, BR],
+    e_o: [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0]
+};
+
+/// CubieCube D action (is replaced by representation)
+pub const D: CubieCube = CubieCube {
+    c_p: [URF, UFL, ULB, UBR, DLF, DBL, DRB, DFR],
+    c_o: [0, 0, 0, 0, 0, 0, 0, 0],
+    e_p: [UR, UF, UL, UB, DF, DL, DB, DR, FR, FL, BL, BR],
+    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+};
+
+/// CubieCube L action (is replaced by representation)
+pub const L: CubieCube = CubieCube {
+    c_p: [URF, ULB, DBL, UBR, DFR, UFL, DLF, DRB],
+    c_o: [0, 1, 2, 0, 0, 2, 1, 0],
+    e_p: [UR, UF, BL, UB, DR, DF, FL, DB, FR, UL, DL, BR],
+    e_o: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+};
+
+/// CubieCube B action (is replaced by representation)
+pub const B: CubieCube = CubieCube {
+    c_p: [URF, UFL, UBR, DRB, DFR, DLF, ULB, DBL],
+    c_o: [0, 0, 1, 2, 0, 0, 2, 1],
+    e_p: [UR, UF, UL, BR, DR, DF, DL, BL, FR, FL, UB, DB],
+    e_o: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1]
+};
+
+pub const ACTIONS: [(CubieCube, u8); 18] = [
+    (U, 1), (U, 2), (U, 3), (R, 1), (R, 2), (R, 3), (F, 1), (F, 2), (F, 3),
+    (D, 1), (D, 2), (D, 3), (L, 1), (L, 2), (L, 3), (B, 1), (B, 2), (B, 3)
+];
+
+pub const G1_ACTIONS: [(CubieCube, u8); 10] = [
+    (U, 1), (U, 2), (U, 3), (R, 2), (F, 2), (D, 1), (D, 2), (D, 3), (L, 2), (B, 2)
+];
