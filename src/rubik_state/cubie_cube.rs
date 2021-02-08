@@ -52,7 +52,7 @@ pub const B: CubieCube = CubieCube {
 /// All 90 degree actions
 pub const BASIC_ACTIONS: [CubieCube; 6] = [U, R, F, D, L, B];
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct CubieCube {
     pub c_p: [Corner; 8],
     pub c_o: [u8; 8],
@@ -149,6 +149,12 @@ impl CubieCube {
         return actions;
     }
 
+    /// Returns a vector of G1 actions (U, U2, U', R2, F2, D, D2, D', L2, B2)
+    pub fn get_g1_actions() -> Vec<CubieCube> { // FIXME, refactor, only need to do it once at start
+        let g1_indexes: [usize; 10] = [0, 1, 2, 4, 7, 9, 10, 11, 13, 16];
+        return CubieCube::get_actions().into_iter().enumerate().filter(|(i, _)| g1_indexes.contains(i)).map(|(_, a)| a).collect::<Vec<CubieCube>>();
+    }
+
     /// Returns a CubieCube from action char
     pub fn from_action_str(s: &str) -> CubieCube { // FIXME, refactor the architecture
         let actions: Vec<CubieCube> = CubieCube::get_actions();
@@ -225,7 +231,7 @@ impl CubieCube {
     pub fn get_uds_e_location_coord(&self) -> usize {
         let mut uds_e_sorted: usize = 0;
         let mut x: usize = 0;
-        for i in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+        for i in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() {
             if Edge::FR as usize <= self.e_p[i] as usize && self.e_p[i] as usize <= Edge::BR as usize {
                 uds_e_sorted += c_nk(11 - i, x + 1);
                 x += 1;
@@ -238,7 +244,7 @@ impl CubieCube {
     pub fn get_c_p_coord(&self) -> usize {
         let mut perm: Vec<Corner> = self.c_p.to_vec();
         let mut c_p_coord: usize = 0;
-        for j in ((Corner::URF as usize + 1)..(Corner::DRB as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+        for j in ((Corner::URF as usize + 1)..(Corner::DRB as usize + 1)).rev() {
             let mut k: usize = 0;
             while perm[j] != CORNERS[j] {
                 rotate_left::<Corner>(&mut perm, 0, j);
@@ -253,7 +259,7 @@ impl CubieCube {
     pub fn get_ud_e_p_coord(&self) -> usize {
         let mut perm: Vec<Edge> = Vec::from(&self.e_p[..8]);
         let mut ud_e_p_coord: usize = 0;
-        for j in ((Edge::UR as usize + 1)..(Edge::DB as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+        for j in ((Edge::UR as usize + 1)..(Edge::DB as usize + 1)).rev() {
             let mut k: usize = 0;
             while perm[j] != EDGES[j] {
                 rotate_left::<Edge>(&mut perm, 0, j);
@@ -269,7 +275,7 @@ impl CubieCube {
         let mut x: usize = 0;
         let mut edge4: Vec<Edge> = Vec::from(&[Edge::UR; 4][..]); // FIXME, stupid init, refactor
         // First compute the index a < (12 choose 4) and the permutation array perm
-        for j in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+        for j in ((Edge::UR as usize)..(Edge::BR as usize + 1)).rev() {
             if Edge::FR as usize <= self.e_p[j] as usize && self.e_p[j] as usize <= Edge::BR as usize {
                 a += c_nk(11 - j, x + 1);
                 edge4[3 - x] = self.e_p[j];
@@ -278,7 +284,7 @@ impl CubieCube {
         }
         // Then compute the index b < 4! for the permutation in edge4
         let mut b: usize = 0;
-        for j in (1..4).rev() { // FIXME, bien check si la range correspond à celle de kociemba
+        for j in (1..4).rev() {
             let mut k: usize = 0;
             while edge4[j] != EDGES[j + 8] {
                 rotate_left::<Edge>(&mut edge4, 0, j);

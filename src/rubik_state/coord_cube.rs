@@ -23,9 +23,9 @@ impl CoordCube {
             twist_coord: cb_cube.get_twist_coord(),
             flip_coord: cb_cube.get_flip_coord(),
             uds_e_location_coord: cb_cube.get_uds_e_location_coord(),
-            c_p_coord: 0/*cb_cube.get_c_p_coord()*/,
-            ud_e_p_coord: 0/*cb_cube.get_ud_e_p_coord()*/,
-            uds_e_sorted_coord: 0/*cb_cube.get_uds_e_sorted_coord()*/
+            c_p_coord: 0,
+            ud_e_p_coord: 0,
+            uds_e_sorted_coord: 0
         };
     }
 
