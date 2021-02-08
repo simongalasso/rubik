@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use rubik::cubie_cube::{CubieCube};
 use rubik::coord_cube::{CoordCube};
+use super::file_utils::{do_write, do_read};
 
 /// Let's get a coffee and try to understand all of those constants :)
 const N_PERM_4: i32 = 24;
@@ -46,12 +47,14 @@ impl Pruning {
         if Path::new("pruning_phase1.pr").exists() {
             println!("Pruning tables for phase 1 exists!");
             println!("Let's load the variable!");
+            phase1 = do_read("./pruning_phase1.pr");
         } else {
             println!("Pruning tables for phase 1 doesn't exists!");
             println!("Creating the file");
             phase1 = vec![1, 2, 3];
-            let mut file: File = File::create("./pruning_phase1.pr").unwrap();
-            file.write_all(phase1);
+            do_write("./pruning_phase1.pr", &phase1);
+            // let mut file: File = File::create("./pruning_phase1.pr").unwrap();
+            // file.write_all(phase1);
         }
         return phase1;
     }
