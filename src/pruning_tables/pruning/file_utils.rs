@@ -2,12 +2,12 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::{mem, slice};
 
-pub fn as_u8_slice(v: &[u32]) -> &[u8] {
+fn as_u8_slice(v: &[u32]) -> &[u8] {
     let element_size = mem::size_of::<u32>();
     unsafe { slice::from_raw_parts(v.as_ptr() as *const u8, v.len() * element_size) }
 }
 
-pub fn from_u8(v: Vec<u8>) -> Vec<u32> {
+fn from_u8(v: Vec<u8>) -> Vec<u32> {
     let data = v.as_ptr();
     let len = v.len();
     let capacity = v.capacity();
@@ -31,12 +31,12 @@ pub fn from_u8(v: Vec<u8>) -> Vec<u32> {
     }
 }
 
-pub fn do_write(filename: &str, v: &[u32]) {
+pub fn write_u32_vec(filename: &str, v: &[u32]) {
     let mut f: File = File::create(filename).unwrap();
     f.write_all(as_u8_slice(v)).unwrap();
 }
 
-pub fn do_read(filename: &str) -> Vec<u32> {
+pub fn read_u32_vec(filename: &str) -> Vec<u32> {
     let mut f: File = File::open(filename).unwrap();
     let mut bytes: Vec<u8> = Vec::new();
 
