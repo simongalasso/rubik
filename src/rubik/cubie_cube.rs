@@ -1,6 +1,5 @@
 use super::utils::{c_nk, rotate_left, rotate_right};
 use super::enums::*;
-use std::convert::TryInto;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct CubieCube {
@@ -206,6 +205,7 @@ impl CubieCube {
     /// Returns as a number from 0 to 40319 the permutation of every U edges and every D edges (undefined in phase1)
     pub fn get_ud_e_p_coord(&self) -> usize {
         let mut perm: Vec<usize> = Vec::from(&self.e_p[..8]);
+        
         let mut ud_e_p_coord: usize = 0;
         for j in ((UR + 1)..(DB + 1)).rev() {
             let mut k: usize = 0;
@@ -216,6 +216,25 @@ impl CubieCube {
             ud_e_p_coord = (j + 1) * ud_e_p_coord + k;
         }
         return ud_e_p_coord;
+    }
+
+    /// Sets the permutation of every U edges and every D edges from a number from 0 to 40319 
+    pub fn set_ud_e_p_coord(&mut self, mut index: usize) {
+        let mut perm: Vec<usize> = self.e_p.to_vec();
+        for i in 0..8 {
+            perm[i] = i;
+        }
+        for j in 0..8 {
+            let mut k: usize = index % (j + 1);
+            index = index / (j + 1);
+            while k > 0 {
+                rotate_right(&mut perm, 0, j);
+                k -= 1;
+            }
+        }
+        for i in 0..8 {
+            self.e_p[i] = perm[i];
+        }
     }
 
     /// Returns as a number from 0 to 23 the location and permutation state of the 4 UD slice edges (unused in phase1)
