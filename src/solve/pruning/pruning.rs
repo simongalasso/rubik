@@ -52,11 +52,8 @@ impl Pruning {
                     if twist_pruning_table[i as usize] == depth {
                         cb_cube.set_twist_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let mut new_cb_cube: CubieCube = cb_cube.clone();
-                            for _ in 0..action.1 {
-                                new_cb_cube.corner_multiply(&action.0);
-                            }
-                            let new_twist = new_cb_cube.get_twist_coord();
+                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+                            let new_twist = new_state.get_twist_coord();
                             if twist_pruning_table[new_twist as usize] == 255 {
                                 twist_pruning_table[new_twist as usize] = depth + 1;
                                 done += 1;
