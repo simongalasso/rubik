@@ -12,10 +12,6 @@ path = "src/rubik/lib.rs"
 name = "solve"
 path = "src/solve/main.rs"
 
-[[bin]]
-name = "pruning"
-path = "src/pruning_tables/main.rs"
-
 [dependencies]
 rand = "0.7.3"
 clap = "2.33.3"

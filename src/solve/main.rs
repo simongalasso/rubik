@@ -19,6 +19,12 @@ use rubik::enums::{ACTIONS_STR_LIST};
 fn main() {
     let config: Config = Config::new();
     let mut pruning_tables: Pruning = Pruning::new();
+    
+    println!("flip_pruning_table : {:?}", pruning_tables.flip_pruning_table);
+    println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
+    println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);
+    
+    let input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 

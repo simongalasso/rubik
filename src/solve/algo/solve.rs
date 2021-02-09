@@ -28,7 +28,7 @@ fn search_phase1(state: &CubieCube, depth: u8, bound: u8, max_depth: u8, sequenc
             }
             panic!("error, phase2 didn't found a solution"); // FIXME, find other way
         }
-    } else if cmp::max(pruning_tables.slice_flip_pruning_table[state.get_flip_coord()], pruning_tables.slice_twist_pruning_table[state.get_twist_coord()]) as u8 <= depth {
+    } else /* if (cmp::max(pruning_tables.slice_flip_pruning_table[state.get_flip_coord()], pruning_tables.slice_twist_pruning_table[state.get_twist_coord()]) as u8) > depth */ {
         for action in ACTIONS.iter() {
             sequence.push(action.clone());
             let new_state: CubieCube = state.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
