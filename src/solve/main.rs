@@ -4,7 +4,9 @@ extern crate rubik;
 mod parsing;
 mod display;
 mod algo;
+mod pruning;
 
+use pruning::pruning::{Pruning};
 use algo::solve::*;
 use parsing::parse::*;
 // use display::display::{Display};
@@ -16,13 +18,13 @@ use rubik::enums::{ACTIONS_STR_LIST};
 
 fn main() {
     let config: Config = Config::new();
-    let input_sequence: Vec<usize> = parse_inputs(&config);
+    let mut pruning_tables: Pruning = Pruning::new();
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
-    match solve(&mut cb_cube, 20) {
+    match solve(&mut cb_cube, 20, pruning_tables) {
         Some(solution) => eprintln!("solution: {}", solution.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ")),
         None => println!("Search timed out without finding any solution")
     }
