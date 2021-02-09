@@ -1,15 +1,11 @@
 extern crate rubik;
 
 use std::path::Path;
-use std::fs::File;
-use std::io::prelude::*;
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-// use rubik::coord_cube::{CoordCube};
 use super::file_utils::{write_u8_vec, read_u8_vec};
 
-/// Let's get a coffee and try to understand all of those constants :)
 /// Let's try with phase1
 const N_MOVE: i32 = 18;  // number of possible face moves
 const N_TWIST: i32 = 2187;  // 3^7 possible corner orientations in phase 1
@@ -21,6 +17,7 @@ pub struct Pruning {
     pub twist_pruning_table: Vec<u8>,
     pub flip_pruning_table: Vec<u8>,
     pub uds_e_location_pruning_table: Vec<u8>,
+    // pub c_p_coord_pruning_table: Vec<u8>,
     pub phase2: Vec<u8>,
 }
 

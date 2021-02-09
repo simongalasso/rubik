@@ -1,5 +1,6 @@
-use super::utils::{c_nk, rotate_left};
+use super::utils::{c_nk, rotate_left, rotate_right};
 use super::enums::*;
+use std::convert::TryInto;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct CubieCube {
@@ -184,6 +185,22 @@ impl CubieCube {
             c_p_coord = (j + 1) * c_p_coord + k;
         }
         return c_p_coord;
+    }
+
+    /// Sets the permutation of every corners from a number from 0 to 40319 (8! - 1)  (unused in phase1)
+    pub fn set_c_p_coord(&mut self, mut index: usize) {
+        let mut perm: Vec<usize> = vec![URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB];
+        for j in 0..CORNERS_NB {
+            let mut k: usize = index % (j + 1);
+            index = index / (j + 1);
+            while k > 0 {
+                rotate_right(&mut perm, 0, j);
+                k -= 1;
+            }
+        }
+        for i in 0..8 {
+            self.c_p[i] = perm[i];
+        }
     }
 
     /// Returns as a number from 0 to 40319 the permutation of every U edges and every D edges (undefined in phase1)

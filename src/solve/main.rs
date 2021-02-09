@@ -29,6 +29,19 @@ fn main() {
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
+    cb_cube.set_c_p_coord(12);
+    println!("c_p_coord: {}",  cb_cube.get_c_p_coord());
+    cb_cube.set_c_p_coord(28);
+    println!("c_p_coord: {}",  cb_cube.get_c_p_coord());
+    cb_cube.set_c_p_coord(72);
+    println!("c_p_coord: {}",  cb_cube.get_c_p_coord());
+    cb_cube.set_c_p_coord(96);
+    println!("c_p_coord: {}",  cb_cube.get_c_p_coord());
+    cb_cube.set_c_p_coord(40319);
+    println!("c_p_coord: {}",  cb_cube.get_c_p_coord());
+    cb_cube.set_c_p_coord(0);
+    println!("c_p_coord: {}",  cb_cube.get_c_p_coord());
+
     cb_cube.apply_sequence(&input_sequence);
     match solve(&mut cb_cube, 20, pruning_tables) {
         Some(solution) => eprintln!("solution: {}", solution.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ")),
