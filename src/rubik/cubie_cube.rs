@@ -21,9 +21,9 @@ impl CubieCube {
     }
 
     /// Applies a sequence of action on itself
-    pub fn apply_sequence(&mut self, sequence: &Vec<(CubieCube, u8)>) {
+    pub fn apply_sequence(&mut self, sequence: &Vec<usize>) {
         for a in sequence.iter() {
-            *self = self.multiply(&a.0, a.1);
+            *self = self.multiply(&ACTIONS_LIST[*a].0, ACTIONS_LIST[*a].1);
         }
     }
 
@@ -89,59 +89,6 @@ impl CubieCube {
         }
     }
 
-    /// Returns a CubieCube from action char
-    pub fn from_action_str(s: &str) -> (CubieCube, u8) { // FIXME, refactor the architecture
-        let basic_action: CubieCube = match s.chars().nth(0).expect("error, from_action_str(), bad input") {
-            'U' => U,
-            'R' => R,
-            'F' => F,
-            'D' => D,
-            'L' => L,
-            'B' => B,
-            _ => panic!("error, from_action_str() bad character") // FIXME, maybe handle differently
-        };
-        return match s.chars().nth(1) {
-            None => (basic_action, 1),
-            Some(v) if v == '2' => (basic_action, 2),
-            Some(v) if v == '\'' => (basic_action, 3),
-            Some(_) => panic!("error, from_action_str(), bad input"),
-        };
-    }
-
-    /// Returns the action string or None if not corresponding to any available actions
-    pub fn to_string(&self) -> String {
-        let s_actions: [&str; 18] = ["U", "U2", "U\'", "R", "R2", "R\'", "F", "F2", "F\'", "D", "D2", "D\'", "L", "L2", "L\'", "B", "B2", "B\'"];
-        return match ACTIONS.iter().position(|a| CubieCube::new_solved().multiply(&a.0, a.1) == *self) {
-            Some(index) => String::from(s_actions[index]),
-            None => String::from("None")
-        }
-    }
-
-    /// Returns the inverse of itself (ex, if self is F then returns F')
-    pub fn inverse(&self) -> CubieCube { // FIXME, optimisation, refactor
-        let mut inverse: CubieCube = CubieCube::new_solved();
-        for i in 0..EDGES_NB {
-            inverse.e_p[self.e_p[i]] = i;
-        }
-        for i in 0..EDGES_NB {
-            inverse.e_o[i] = self.e_o[inverse.e_p[i]];
-        }
-        for i in 0..CORNERS_NB {
-            inverse.c_p[self.c_p[i]] = i;
-        }
-        for i in 0..CORNERS_NB {
-            let ori: i32 = self.c_o[inverse.c_p[i]] as i32;
-            if ori >= 3 {
-                inverse.c_o[i] = ori as u8;
-            } else {
-                if -ori < 0 {
-                    inverse.c_o[i] = (-ori + 3) as u8;
-                }
-            }
-        }
-        return inverse;
-    }
-
     /// Returns as a number from 0 to 2186 (3^7 - 1) the twist of every corners
     pub fn get_twist_coord(&self) -> usize {
         let mut twist: usize = 0;
@@ -202,6 +149,7 @@ impl CubieCube {
         }
         return ud_e_p_coord;
     }
+
     /// Returns as a number from 0 to 23 the location and permutation state of the 4 UD slice edges (unused in phase1)
     pub fn get_uds_e_sorted_coord(&self) -> usize {
         let mut a: usize = 0;
@@ -226,5 +174,15 @@ impl CubieCube {
             b = (j + 1) * b + k;
         }
         return 24 * a + b;
+    }
+
+    /// Returns true if this state is part of G1 group
+    pub fn is_part_of_g1(&self) -> bool {
+        return self.get_twist_coord() == 0 && self.get_flip_coord() == 0 && self.get_uds_e_location_coord() == 0;
+    }
+
+    /// Returns true if this state is the solved state (valid if is part of G1 group)
+    pub fn is_solved(&self) -> bool {
+        return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
     }
 }
