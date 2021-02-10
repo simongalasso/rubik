@@ -58,7 +58,7 @@ impl Pruning {
                     if twist_pruning_table[i as usize] == depth {
                         cb_cube.set_twist_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+                            let new_state: CubieCube = cb_cube.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
                             let new_twist = new_state.get_twist_coord();
                             if twist_pruning_table[new_twist as usize] == 255 {
                                 twist_pruning_table[new_twist as usize] = depth + 1;
@@ -92,7 +92,7 @@ impl Pruning {
                     if flip_pruning_table[i as usize] == depth {
                         cb_cube.set_flip_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+                            let new_state: CubieCube = cb_cube.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
                             let new_flip = new_state.get_flip_coord();
                             if flip_pruning_table[new_flip as usize] == 255 {
                                 flip_pruning_table[new_flip as usize] = depth + 1;
@@ -126,7 +126,7 @@ impl Pruning {
                     if uds_e_location_pruning_table[i as usize] == depth {
                         cb_cube.set_uds_e_location_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+                            let new_state: CubieCube = cb_cube.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
                             let new_uds_e_location = new_state.get_uds_e_location_coord();
                             if uds_e_location_pruning_table[new_uds_e_location as usize] == 255 {
                                 uds_e_location_pruning_table[new_uds_e_location as usize] = depth + 1;
@@ -160,7 +160,7 @@ impl Pruning {
                     if c_p_pruning_table[i as usize] == depth {
                         cb_cube.set_c_p_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+                            let new_state: CubieCube = cb_cube.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
                             let new_c_p = new_state.get_c_p_coord();
                             if c_p_pruning_table[new_c_p as usize] == 255 {
                                 c_p_pruning_table[new_c_p as usize] = depth + 1;
@@ -194,8 +194,8 @@ impl Pruning {
                     if ud_e_p_pruning_table[i as usize] == depth {
                         cb_cube.set_ud_e_p_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
-                            if new_state.get_twist_coord() == 0 && new_state.get_flip_coord() == 0 && new_state.get_uds_e_location_coord() == 0 {
+                            let new_state: CubieCube = cb_cube.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
+                            if new_state.is_part_of_g1() {
                                 let new_ud_e_p = new_state.get_ud_e_p_coord();
                                 if ud_e_p_pruning_table[new_ud_e_p as usize] == 255 {
                                     ud_e_p_pruning_table[new_ud_e_p as usize] = depth + 1;
@@ -230,8 +230,8 @@ impl Pruning {
                     if uds_e_sorted_pruning_table[i as usize] == depth {
                         cb_cube.set_uds_e_sorted_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
-                            if new_state.get_twist_coord() == 0 && new_state.get_flip_coord() == 0 && new_state.get_uds_e_location_coord() == 0 {
+                            let new_state: CubieCube = cb_cube.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
+                            if new_state.is_part_of_g1() {
                                 let new_uds_e_sorted = new_state.get_uds_e_sorted_coord();
                                 if uds_e_sorted_pruning_table[new_uds_e_sorted as usize] == 255 {
                                     uds_e_sorted_pruning_table[new_uds_e_sorted as usize] = depth + 1;

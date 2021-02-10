@@ -7,7 +7,7 @@ use rubik::enums::*;
 use std::cmp;
 
 // this version stops at the first solution found
-pub fn solve(state: &mut CubieCube, max_depth: u8, pruning_tables: Pruning) -> Option<Vec<(CubieCube, u8)>> {
+pub fn solve(state: &mut CubieCube, max_depth: u8, pruning_tables: Pruning) -> Option<Vec<usize>> {
     let mut sequence: Vec<usize> = vec![];
     for bound in 0..max_depth {
         if search_phase1(state, 0, bound, max_depth, &mut sequence, &pruning_tables) {
@@ -17,7 +17,7 @@ pub fn solve(state: &mut CubieCube, max_depth: u8, pruning_tables: Pruning) -> O
     return None;
 }
 
-fn search_phase1(state: &CubieCube, depth: u8, bound: u8, max_depth: u8, sequence: &mut Vec<usize>>, pruning_tables: &Pruning) -> bool {
+fn search_phase1(state: &CubieCube, depth: u8, bound: u8, max_depth: u8, sequence: &mut Vec<usize>, pruning_tables: &Pruning) -> bool {
     if depth == bound {
         if state.is_part_of_g1() {
             println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));

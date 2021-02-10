@@ -22,10 +22,6 @@ fn main() {
     let config: Config = Config::new();
     let mut pruning_tables: Pruning = Pruning::new();
     
-    println!("flip_pruning_table : {:?}", pruning_tables.flip_pruning_table);
-    println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
-    println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);
-    
     // println!("flip_pruning_table : {:?}", pruning_tables.flip_pruning_table);
     // println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
     // println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);

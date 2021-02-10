@@ -271,6 +271,8 @@ impl CubieCube {
     /// Returns true if this state is the solved state (valid if is part of G1 group)
     pub fn is_solved(&self) -> bool {
         return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
+    }
+    
     /// Sets the location and permutation state of the 4 UD slice edges from a number from 0 to 23 
     pub fn set_uds_e_sorted_coord(&mut self, mut index: usize) {
         let mut slice_edge: Vec<usize> = vec![FR, FL, BL, BR];
