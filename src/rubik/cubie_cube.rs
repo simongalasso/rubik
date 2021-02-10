@@ -1,4 +1,4 @@
-use super::utils::{c_nk, rotate_left};
+use super::utils::{c_nk, rotate_left, rotate_right};
 use super::enums::*;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -98,6 +98,17 @@ impl CubieCube {
         return twist;
     }
 
+    /// Sets the twist of every corners from a number from 0 to 2186 (3^7 - 1)
+    pub fn set_twist_coord(&mut self, mut twist: usize) {
+        let mut twistparity: usize = 0;
+        for i in (URF..DRB).rev() {
+            self.c_o[i] = (twist % 3) as u8;
+            twistparity += self.c_o[i] as usize;
+            twist = twist / 3;
+        }
+        self.c_o[DRB] = ((3 - twistparity % 3) % 3) as u8;
+    }
+
     /// Returns as a number from 0 to 2047 (2^11 - 1) the flip of every edges
     pub fn get_flip_coord(&self) -> usize {
         let mut flip: usize = 0;
@@ -107,10 +118,22 @@ impl CubieCube {
         return flip;
     }
 
+    /// Sets the flip of every edges from a number from 0 to 2047 (2^11 - 1)
+    pub fn set_flip_coord(&mut self, mut flip: usize) {
+        let mut flipparity: usize = 0;
+        for i in (UR..BR).rev() {
+            self.e_o[i] = (flip % 2) as u8;
+            flipparity += self.e_o[i] as usize;
+            flip = flip / 2;
+        }
+        self.e_o[BR] = ((2 - flipparity % 2) % 2) as u8;
+    }
+
     /// Returns as a number from 0 to 494 the location state of the 4 UD slice edges
     pub fn get_uds_e_location_coord(&self) -> usize {
         let mut uds_e_sorted: usize = 0;
         let mut x: usize = 0;
+        // FOR LOOP ONLY BETWEEN FR AND BR INSTEAD?
         for i in (UR..(BR + 1)).rev() {
             if FR <= self.e_p[i] && self.e_p[i] <= BR {
                 uds_e_sorted += c_nk(11 - i, x + 1);
@@ -118,6 +141,34 @@ impl CubieCube {
             }
         }
         return uds_e_sorted;
+    }
+
+    /// Sets the 4 UD slice edges from a number from 0 to 494
+    pub fn set_uds_e_location_coord(&mut self, mut index: usize) {
+        let slice_edge = [FR, FL, BL, BR];
+        let other_edge = [UR, UF, UL, UB, DR, DF, DL, DB];
+        let mut a: i32 = index as i32;
+        let mut x: usize = 0;
+        for i in 0..EDGES_NB {
+            self.e_p[i] = 12; // Invalidate all edge positions
+        }
+
+        x = 4;
+        for j in 0..EDGES_NB {
+            if a - c_nk(11 - j, x) as i32 >= 0 {
+                self.e_p[j] = slice_edge[4 - x];
+                a -= c_nk(11 - j, x) as i32;
+                x -= 1;
+            }
+        }
+
+        x = 0;
+        for k in 0..EDGES_NB {
+            if self.e_p[k] == 12 {
+                self.e_p[k] = other_edge[x];
+                x += 1;
+            }
+        }
     }
 
     /// Returns as a number from 0 to 40319 (8! - 1) the permutation of every corners (unused in phase1)
@@ -135,9 +186,26 @@ impl CubieCube {
         return c_p_coord;
     }
 
+    /// Sets the permutation of every corners from a number from 0 to 40319 (8! - 1)  (unused in phase1)
+    pub fn set_c_p_coord(&mut self, mut index: usize) {
+        let mut perm: Vec<usize> = vec![URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB];
+        for j in 0..CORNERS_NB {
+            let mut k: usize = index % (j + 1);
+            index = index / (j + 1);
+            while k > 0 {
+                rotate_right(&mut perm, 0, j);
+                k -= 1;
+            }
+        }
+        for i in 0..8 {
+            self.c_p[i] = perm[i];
+        }
+    }
+
     /// Returns as a number from 0 to 40319 the permutation of every U edges and every D edges (undefined in phase1)
     pub fn get_ud_e_p_coord(&self) -> usize {
         let mut perm: Vec<usize> = Vec::from(&self.e_p[..8]);
+        
         let mut ud_e_p_coord: usize = 0;
         for j in ((UR + 1)..(DB + 1)).rev() {
             let mut k: usize = 0;
@@ -148,6 +216,25 @@ impl CubieCube {
             ud_e_p_coord = (j + 1) * ud_e_p_coord + k;
         }
         return ud_e_p_coord;
+    }
+
+    /// Sets the permutation of every U edges and every D edges from a number from 0 to 40319 
+    pub fn set_ud_e_p_coord(&mut self, mut index: usize) {
+        let mut perm: Vec<usize> = self.e_p.to_vec();
+        for i in 0..8 {
+            perm[i] = i;
+        }
+        for j in 0..8 {
+            let mut k: usize = index % (j + 1);
+            index = index / (j + 1);
+            while k > 0 {
+                rotate_right(&mut perm, 0, j);
+                k -= 1;
+            }
+        }
+        for i in 0..8 {
+            self.e_p[i] = perm[i];
+        }
     }
 
     /// Returns as a number from 0 to 23 the location and permutation state of the 4 UD slice edges (unused in phase1)
@@ -184,5 +271,48 @@ impl CubieCube {
     /// Returns true if this state is the solved state (valid if is part of G1 group)
     pub fn is_solved(&self) -> bool {
         return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
+    }
+    
+    /// Sets the location and permutation state of the 4 UD slice edges from a number from 0 to 23 
+    pub fn set_uds_e_sorted_coord(&mut self, mut index: usize) {
+        let mut slice_edge: Vec<usize> = vec![FR, FL, BL, BR];
+        let mut other_edge: Vec<usize> = vec![UR, UF, UL, UB, DR, DF, DL, DB];
+        let mut a: usize = index / 24;
+        let mut b: usize = index % 24;
+        
+        for i in 0..EDGES_NB {
+            self.e_p[i] = EDGES_NB;
+        }
+        
+        let mut l: usize = 1;
+        while l < 4 {
+            let mut k: usize = b % (l + 1);
+            b = b / (l + 1);
+            while k > 0 {
+                rotate_right(&mut slice_edge, 0, l);
+                k -= 1;
+            }
+            l += 1;
+        }
+        
+        // FIXME, dumb implementation, but kociemba's implementation is not working (liar?)
+        let mut x: usize = 4;
+        for j in 0..EDGES_NB {
+            if FR <= j && j <= BR {
+                if a - c_nk(11 - j, x) >= 0 {
+                    self.e_p[j] = slice_edge[4 - x];
+                    a -= c_nk(11 - j, x);
+                    x -= 1;
+                }
+            }
+        }
+
+        x = 0;
+        for j in 0..EDGES_NB {
+            if self.e_p[j] == EDGES_NB {
+                self.e_p[j] = other_edge[x];
+                x += 1;
+            }
+        }
     }
 }

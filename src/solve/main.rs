@@ -4,7 +4,9 @@ extern crate rubik;
 mod parsing;
 mod display;
 mod algo;
+mod pruning;
 
+use pruning::pruning::{Pruning};
 use algo::solve::*;
 use parsing::parse::*;
 // use display::display::{Display};
@@ -13,17 +15,38 @@ use parsing::args::{Config};
 use rubik::cubie_cube::{CubieCube};
 // use nalgebra::{Vector3, UnitQuaternion, Unit};
 use rubik::enums::{ACTIONS_STR_LIST};
+use std::time::{Instant};
+use rubik::enums::*;
 
 fn main() {
     let config: Config = Config::new();
+    let mut pruning_tables: Pruning = Pruning::new();
+    
+    // println!("flip_pruning_table : {:?}", pruning_tables.flip_pruning_table);
+    // println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
+    // println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);
+    // println!("c_p_pruning_table : {:?}", pruning_tables.c_p_pruning_table);
+    // println!("ud_e_p_pruning_table : {:?}", pruning_tables.ud_e_p_pruning_table);
+    // println!("uds_e_sorted_pruning_table : {:?}", pruning_tables.uds_e_sorted_pruning_table);
+
+    // for i in 0..pruning_tables.ud_e_p_pruning_table.len() {
+    //     if  pruning_tables.ud_e_p_pruning_table[i] > 8 {
+    //         println!("depth = {}",  pruning_tables.ud_e_p_pruning_table[i]);
+    //     }
+    // }
+
     let input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
-    match solve(&mut cb_cube, 20) {
-        Some(solution) => eprintln!("solution: {}", solution.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ")),
+    let very_start_time: std::time::Instant = Instant::now();
+    match solve(&mut cb_cube, 20, pruning_tables) {
+        Some(solution) => {
+            eprintln!("solution: {}", solution.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+            eprintln!("solved: {:?}", very_start_time.elapsed());
+        },
         None => println!("Search timed out without finding any solution")
     }
 

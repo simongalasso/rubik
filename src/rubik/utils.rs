@@ -26,3 +26,12 @@ pub fn rotate_left(vec: &mut Vec<usize>, l: usize, r: usize) {
     }
     vec[r] = temp;
 }
+
+/// Rotate a vec left between l and r (r included)
+pub fn rotate_right(vec: &mut Vec<usize>, l: usize, r: usize) {
+    let temp: usize = vec[r].clone();
+    for i in ((l + 1)..(r + 1)).rev() {
+        vec[i] = vec[i - 1].clone();
+    }
+    vec[l] = temp;
+}
