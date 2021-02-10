@@ -191,18 +191,22 @@ impl Pruning {
             }
             ud_e_p_pruning_table[0] = 0;
             while done != N_UD_E_P-1 {
+                println!("done = {}", done);
                 for i in 0..N_UD_E_P {
+                    println!("i = {}", i);
                     if ud_e_p_pruning_table[i as usize] == depth {
-                        cb_cube.set_ud_e_p_coord(i as usize);
+                        println!("i = {} ud_e_p_pruning_table[i as usize] = {}", i, ud_e_p_pruning_table[i as usize]);
+                        // cb_cube.set_ud_e_p_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let mut new_state: CubieCube = cb_cube;
-                            for _ in 0..action.1 {
-                                new_state.edge_multiply(&action.0);
-                            }
+                            println!("action.1 = {}", action.1);
+                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
                             let new_ud_e_p = new_state.get_ud_e_p_coord();
                             if ud_e_p_pruning_table[new_ud_e_p as usize] == 255 {
+                                println!("new_ud_e_p = {} depth + 1 = {}", new_ud_e_p, depth + 1);
                                 ud_e_p_pruning_table[new_ud_e_p as usize] = depth + 1;
                                 done += 1;
+                            } else {
+                                println!("ud_e_p_pruning_table[new_ud_e_p as usize] = {}", ud_e_p_pruning_table[new_ud_e_p as usize]);
                             }
                         }
                     }

@@ -16,6 +16,7 @@ use rubik::cubie_cube::{CubieCube};
 // use nalgebra::{Vector3, UnitQuaternion, Unit};
 use rubik::enums::{ACTIONS_STR_LIST};
 use std::time::{Instant};
+use rubik::enums::*;
 
 fn main() {
     let config: Config = Config::new();
@@ -47,12 +48,17 @@ fn main() {
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
+    for action in ACTIONS.iter() {
+        let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+        println!("new_state.get_ud_e_p_coord() = {}", new_state.get_ud_e_p_coord());
+    }
     // for i in 0..40320 {
     //     cb_cube.set_ud_e_p_coord(i);
     //     if cb_cube.get_ud_e_p_coord() != i {
     //         println!("Error i = {}", i);
     //     }
     // }
+    cb_cube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
     let very_start_time: std::time::Instant = Instant::now();
     match solve(&mut cb_cube, 20, pruning_tables) {
