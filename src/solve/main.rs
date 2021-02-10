@@ -35,6 +35,11 @@ fn main() {
     //         println!("{}", pruning_tables.c_p_pruning_table[i]);
     //     }
     // }
+    // for i in 0..pruning_tables.uds_e_sorted_pruning_table.len() {
+    //     if pruning_tables.uds_e_sorted_pruning_table[i] > 7 {
+    //         println!("{}", pruning_tables.uds_e_sorted_pruning_table[i]);
+    //     }
+    // }
     // println!("ud_e_p_pruning_table : {:?}", pruning_tables.ud_e_p_pruning_table);
     // println!("uds_e_sorted_pruning_table : {:?}", pruning_tables.uds_e_sorted_pruning_table);
 
