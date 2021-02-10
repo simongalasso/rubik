@@ -271,5 +271,46 @@ impl CubieCube {
     /// Returns true if this state is the solved state (valid if is part of G1 group)
     pub fn is_solved(&self) -> bool {
         return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
+    /// Sets the location and permutation state of the 4 UD slice edges from a number from 0 to 23 
+    pub fn set_uds_e_sorted_coord(&mut self, mut index: usize) {
+        let mut slice_edge: Vec<usize> = vec![FR, FL, BL, BR];
+        let mut other_edge: Vec<usize> = vec![UR, UF, UL, UB, DR, DF, DL, DB];
+        let mut a: usize = index / 24;
+        let mut b: usize = index % 24;
+        
+        for i in 0..EDGES_NB {
+            self.e_p[i] = EDGES_NB;
+        }
+        
+        let mut l: usize = 1;
+        while l < 4 {
+            let mut k: usize = b % (l + 1);
+            b = b / (l + 1);
+            while k > 0 {
+                rotate_right(&mut slice_edge, 0, l);
+                k -= 1;
+            }
+            l += 1;
+        }
+        
+        // FIXME, dumb implementation, but kociemba's implementation is not working (liar?)
+        let mut x: usize = 4;
+        for j in 0..EDGES_NB {
+            if FR <= j && j <= BR {
+                if a - c_nk(11 - j, x) >= 0 {
+                    self.e_p[j] = slice_edge[4 - x];
+                    a -= c_nk(11 - j, x);
+                    x -= 1;
+                }
+            }
+        }
+
+        x = 0;
+        for j in 0..EDGES_NB {
+            if self.e_p[j] == EDGES_NB {
+                self.e_p[j] = other_edge[x];
+                x += 1;
+            }
+        }
     }
 }
