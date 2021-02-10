@@ -28,8 +28,7 @@ fn search_phase1(state: &CubieCube, depth: u8, bound: u8, max_depth: u8, sequenc
             }
             panic!("error, phase2 didn't found a solution"); // FIXME, find other way
         }
-    // } else {
-    } else if bound > pruning_tables.flip_pruning_table[state.get_flip_coord()] && bound > pruning_tables.twist_pruning_table[state.get_twist_coord()] && bound > pruning_tables.uds_e_location_pruning_table[state.get_uds_e_location_coord()] {
+    } else if (bound - depth) >= pruning_tables.flip_pruning_table[state.get_flip_coord()] && (bound - depth) >= pruning_tables.twist_pruning_table[state.get_twist_coord()] && (bound - depth) >= pruning_tables.uds_e_location_pruning_table[state.get_uds_e_location_coord()] {
         for action in ACTIONS.iter() {
             sequence.push(action.clone());
             let new_state: CubieCube = state.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
@@ -47,8 +46,7 @@ fn search_phase2(state: &CubieCube, depth: u8, bound: u8, sequence: &mut Vec<usi
         if state.is_solved() {
             return true;
         }
-    // } else {
-    } else if bound > pruning_tables.c_p_pruning_table[state.get_c_p_coord()] && bound > pruning_tables.uds_e_sorted_pruning_table[state.get_uds_e_sorted_coord()] {
+    } else if (bound - depth) >= pruning_tables.c_p_pruning_table[state.get_c_p_coord()] && (bound - depth) >= pruning_tables.uds_e_sorted_pruning_table[state.get_uds_e_sorted_coord()] {
         for action in G1_ACTIONS.iter() {
             sequence.push(action.clone());
             let new_state: CubieCube = state.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
