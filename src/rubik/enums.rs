@@ -86,16 +86,23 @@ pub const B: CubieCube = CubieCube {
     e_o: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1]
 };
 
+/// The list of actions represented as &str
 pub const ACTIONS_STR_LIST: [&str; 18] = [
     "U", "U2", "U'", "R", "R2", "R'", "F", "F2", "F'",
     "D", "D2", "D'", "L", "L2", "L'", "B", "B2", "B'"
 ];
 
+/// The list of actions represented as a tuple of the basic_action and its factor
 pub const ACTIONS_LIST: [(CubieCube, u8); 18] = [
     (U, 1), (U, 2), (U, 3), (R, 1), (R, 2), (R, 3), (F, 1), (F, 2), (F, 3),
     (D, 1), (D, 2), (D, 3), (L, 1), (L, 2), (L, 3), (B, 1), (B, 2), (B, 3)
 ];
 
+/// The indexes of the list of actions
 pub const ACTIONS: [usize; 18] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
+/// The indexes of the list of actions inverses
+pub const ACTION_INVERSE: [usize; 18] = [9, 10, 11, 12, 13, 14, 15, 16, 17, 0, 1, 2, 3, 4, 5, 6, 7, 8]; // FIXME, can optimise by turn function
+
+/// The indexes of the list of G1 actions
 pub const G1_ACTIONS: [usize; 10] = [0, 1, 2, 4, 7, 9, 10, 11, 13, 16];

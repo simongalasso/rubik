@@ -6,7 +6,6 @@ use rubik::enums::*;
 
 use super::file_utils::{write_u8_vec, read_u8_vec};
 
-const N_MOVE: i32 = 18;  // number of possible face moves
 const N_TWIST: i32 = 2187;  // 3^7 possible corner orientations in phase 1
 const N_FLIP: i32 = 2048;  // 2^11 possible edge orientations in phase 1
 const N_UDS_E_LOCATION: i32 = 495;
@@ -49,7 +48,7 @@ impl Pruning {
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
 
-            for i in 0..N_TWIST {
+            for _ in 0..N_TWIST {
                 twist_pruning_table.push(255);
             }
             twist_pruning_table[0] = 0;
@@ -83,7 +82,7 @@ impl Pruning {
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
 
-            for i in 0..N_FLIP {
+            for _ in 0..N_FLIP {
                 flip_pruning_table.push(255);
             }
             flip_pruning_table[0] = 0;
@@ -117,7 +116,7 @@ impl Pruning {
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
 
-            for i in 0..N_UDS_E_LOCATION {
+            for _ in 0..N_UDS_E_LOCATION {
                 uds_e_location_pruning_table.push(255);
             }
             uds_e_location_pruning_table[0] = 0;
@@ -151,7 +150,7 @@ impl Pruning {
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
 
-            for i in 0..N_C_P {
+            for _ in 0..N_C_P {
                 c_p_pruning_table.push(255);
             }
             c_p_pruning_table[0] = 0;
@@ -185,7 +184,7 @@ impl Pruning {
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
 
-            for i in 0..N_UD_E_P {
+            for _ in 0..N_UD_E_P {
                 ud_e_p_pruning_table.push(255);
             }
             ud_e_p_pruning_table[0] = 0;
@@ -221,7 +220,7 @@ impl Pruning {
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
 
-            for i in 0..N_UDS_E_SORTED {
+            for _ in 0..N_UDS_E_SORTED {
                 uds_e_sorted_pruning_table.push(255);
             }
             uds_e_sorted_pruning_table[0] = 0;
