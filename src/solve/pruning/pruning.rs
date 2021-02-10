@@ -195,7 +195,10 @@ impl Pruning {
                     if ud_e_p_pruning_table[i as usize] == depth {
                         cb_cube.set_ud_e_p_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
+                            let mut new_state: CubieCube = cb_cube;
+                            for _ in 0..action.1 {
+                                new_state.edge_multiply(&action.0);
+                            }
                             let new_ud_e_p = new_state.get_ud_e_p_coord();
                             if ud_e_p_pruning_table[new_ud_e_p as usize] == 255 {
                                 ud_e_p_pruning_table[new_ud_e_p as usize] = depth + 1;
