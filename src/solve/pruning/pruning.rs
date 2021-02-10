@@ -6,14 +6,13 @@ use rubik::enums::*;
 
 use super::file_utils::{write_u8_vec, read_u8_vec};
 
-/// Let's try with phase1
 const N_MOVE: i32 = 18;  // number of possible face moves
 const N_TWIST: i32 = 2187;  // 3^7 possible corner orientations in phase 1
 const N_FLIP: i32 = 2048;  // 2^11 possible edge orientations in phase 1
-const N_UDS_E_LOCATION: i32 = 495; // N_PERM_4 // we ignore the permutation of FR, FL, BL, BR in phase 1
-const N_C_P: i32 = 40320; // N_PERM_4 // we ignore the permutation of FR, FL, BL, BR in phase 1
-const N_UD_E_P: i32 = 40320; // N_PERM_4 // we ignore the permutation of FR, FL, BL, BR in phase 1
-const N_UDS_E_SORTED: i32 = 24; // N_PERM_4 // we ignore the permutation of FR, FL, BL, BR in phase 1
+const N_UDS_E_LOCATION: i32 = 495;
+const N_C_P: i32 = 40320;
+const N_UD_E_P: i32 = 40320;
+const N_UDS_E_SORTED: i32 = 24;
 
 #[derive(Debug)]
 pub struct Pruning {

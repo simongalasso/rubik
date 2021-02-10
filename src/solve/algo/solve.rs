@@ -46,7 +46,7 @@ fn search_phase2(state: &CubieCube, depth: u8, bound: u8, sequence: &mut Vec<usi
         if state.is_solved() {
             return true;
         }
-    } else if (bound - depth) >= pruning_tables.c_p_pruning_table[state.get_c_p_coord()] && (bound - depth) >= pruning_tables.uds_e_sorted_pruning_table[state.get_uds_e_sorted_coord()] {
+    } else if (bound - depth) >= pruning_tables.c_p_pruning_table[state.get_c_p_coord()] && (bound - depth) >= pruning_tables.ud_e_p_pruning_table[state.get_ud_e_p_coord()] && (bound - depth) >= pruning_tables.uds_e_sorted_pruning_table[state.get_uds_e_sorted_coord()] {
         for action in G1_ACTIONS.iter() {
             sequence.push(action.clone());
             let new_state: CubieCube = state.multiply(&ACTIONS_LIST[*action].0, ACTIONS_LIST[*action].1);
