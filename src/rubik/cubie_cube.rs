@@ -144,16 +144,14 @@ impl CubieCube {
     }
 
     /// Sets the 4 UD slice edges from a number from 0 to 494
-    pub fn set_uds_e_location_coord(&mut self, mut index: usize) {
+    pub fn set_uds_e_location_coord(&mut self, index: usize) {
         let slice_edge = [FR, FL, BL, BR];
         let other_edge = [UR, UF, UL, UB, DR, DF, DL, DB];
         let mut a: i32 = index as i32;
-        let mut x: usize = 0;
         for i in 0..EDGES_NB {
             self.e_p[i] = 12; // Invalidate all edge positions
         }
-
-        x = 4;
+        let mut x: usize = 4;
         for j in 0..EDGES_NB {
             if a - c_nk(11 - j, x) as i32 >= 0 {
                 self.e_p[j] = slice_edge[4 - x];
@@ -161,7 +159,6 @@ impl CubieCube {
                 x -= 1;
             }
         }
-
         x = 0;
         for k in 0..EDGES_NB {
             if self.e_p[k] == 12 {
@@ -263,20 +260,10 @@ impl CubieCube {
         return 24 * a + b;
     }
 
-    /// Returns true if this state is part of G1 group
-    pub fn is_part_of_g1(&self) -> bool {
-        return self.get_twist_coord() == 0 && self.get_flip_coord() == 0 && self.get_uds_e_location_coord() == 0;
-    }
-
-    /// Returns true if this state is the solved state (valid if is part of G1 group)
-    pub fn is_solved(&self) -> bool {
-        return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
-    }
-    
     /// Sets the location and permutation state of the 4 UD slice edges from a number from 0 to 23 
-    pub fn set_uds_e_sorted_coord(&mut self, mut index: usize) {
+    pub fn set_uds_e_sorted_coord(&mut self, index: usize) {
         let mut slice_edge: Vec<usize> = vec![FR, FL, BL, BR];
-        let mut other_edge: Vec<usize> = vec![UR, UF, UL, UB, DR, DF, DL, DB];
+        let other_edge: Vec<usize> = vec![UR, UF, UL, UB, DR, DF, DL, DB];
         let mut a: usize = index / 24;
         let mut b: usize = index % 24;
         
@@ -299,7 +286,7 @@ impl CubieCube {
         let mut x: usize = 4;
         for j in 0..EDGES_NB {
             if FR <= j && j <= BR {
-                if a - c_nk(11 - j, x) >= 0 {
+                if a as i32 - c_nk(11 - j, x) as i32 >= 0 {
                     self.e_p[j] = slice_edge[4 - x];
                     a -= c_nk(11 - j, x);
                     x -= 1;
@@ -314,5 +301,15 @@ impl CubieCube {
                 x += 1;
             }
         }
+    }
+    
+    /// Returns true if this state is part of G1 group
+    pub fn is_part_of_g1(&self) -> bool {
+        return self.get_twist_coord() == 0 && self.get_flip_coord() == 0 && self.get_uds_e_location_coord() == 0;
+    }
+
+    /// Returns true if this state is the solved state (valid if is part of G1 group)
+    pub fn is_solved(&self) -> bool {
+        return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
     }
 }

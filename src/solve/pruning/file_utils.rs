@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io::{Read, Write};
-use std::{mem, slice};
 
 // fn u32_as_u8_slice(v: &[u32]) -> &[u8] {
 //     let element_size = mem::size_of::<u32>();
