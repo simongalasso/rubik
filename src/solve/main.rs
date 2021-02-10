@@ -26,39 +26,24 @@ fn main() {
     println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
     println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);
     
-    let input_sequence: Vec<usize> = parse_inputs(&config);
     // println!("flip_pruning_table : {:?}", pruning_tables.flip_pruning_table);
     // println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
     // println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);
     // println!("c_p_pruning_table : {:?}", pruning_tables.c_p_pruning_table);
-    // for i in 0..pruning_tables.c_p_pruning_table.len() {
-    //     if pruning_tables.c_p_pruning_table[i] > 7 {
-    //         println!("{}", pruning_tables.c_p_pruning_table[i]);
-    //     }
-    // }
-    // for i in 0..pruning_tables.uds_e_sorted_pruning_table.len() {
-    //     if pruning_tables.uds_e_sorted_pruning_table[i] > 7 {
-    //         println!("{}", pruning_tables.uds_e_sorted_pruning_table[i]);
-    //     }
-    // }
     // println!("ud_e_p_pruning_table : {:?}", pruning_tables.ud_e_p_pruning_table);
     // println!("uds_e_sorted_pruning_table : {:?}", pruning_tables.uds_e_sorted_pruning_table);
 
+    // for i in 0..pruning_tables.ud_e_p_pruning_table.len() {
+    //     if  pruning_tables.ud_e_p_pruning_table[i] > 8 {
+    //         println!("depth = {}",  pruning_tables.ud_e_p_pruning_table[i]);
+    //     }
+    // }
+
+    let input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
     let mut cb_cube: CubieCube = CubieCube::new_solved();
-    for action in ACTIONS.iter() {
-        let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
-        println!("new_state.get_ud_e_p_coord() = {}", new_state.get_ud_e_p_coord());
-    }
-    // for i in 0..40320 {
-    //     cb_cube.set_ud_e_p_coord(i);
-    //     if cb_cube.get_ud_e_p_coord() != i {
-    //         println!("Error i = {}", i);
-    //     }
-    // }
-    cb_cube = CubieCube::new_solved();
     cb_cube.apply_sequence(&input_sequence);
     let very_start_time: std::time::Instant = Instant::now();
     match solve(&mut cb_cube, 20, pruning_tables) {

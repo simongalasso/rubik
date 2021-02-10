@@ -23,7 +23,7 @@ pub struct Pruning {
     pub uds_e_location_pruning_table: Vec<u8>,
     // phase 2
     pub c_p_pruning_table: Vec<u8>,
-    // pub ud_e_p_pruning_table: Vec<u8>,
+    pub ud_e_p_pruning_table: Vec<u8>,
     pub uds_e_sorted_pruning_table: Vec<u8>,
 }
 
@@ -36,7 +36,7 @@ impl Pruning {
             uds_e_location_pruning_table: Self::create_uds_e_location(),
             // phase 2
             c_p_pruning_table: Self::create_c_p(),
-            // ud_e_p_pruning_table: Self::create_ud_e_p(),
+            ud_e_p_pruning_table: Self::create_ud_e_p(),
             uds_e_sorted_pruning_table: Self::create_uds_e_sorted(),
         };
     }
@@ -191,22 +191,17 @@ impl Pruning {
             }
             ud_e_p_pruning_table[0] = 0;
             while done != N_UD_E_P-1 {
-                println!("done = {}", done);
                 for i in 0..N_UD_E_P {
-                    println!("i = {}", i);
                     if ud_e_p_pruning_table[i as usize] == depth {
-                        println!("i = {} ud_e_p_pruning_table[i as usize] = {}", i, ud_e_p_pruning_table[i as usize]);
-                        // cb_cube.set_ud_e_p_coord(i as usize);
+                        cb_cube.set_ud_e_p_coord(i as usize);
                         for action in ACTIONS.iter() {
-                            println!("action.1 = {}", action.1);
                             let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
-                            let new_ud_e_p = new_state.get_ud_e_p_coord();
-                            if ud_e_p_pruning_table[new_ud_e_p as usize] == 255 {
-                                println!("new_ud_e_p = {} depth + 1 = {}", new_ud_e_p, depth + 1);
-                                ud_e_p_pruning_table[new_ud_e_p as usize] = depth + 1;
-                                done += 1;
-                            } else {
-                                println!("ud_e_p_pruning_table[new_ud_e_p as usize] = {}", ud_e_p_pruning_table[new_ud_e_p as usize]);
+                            if new_state.get_twist_coord() == 0 && new_state.get_flip_coord() == 0 && new_state.get_uds_e_location_coord() == 0 {
+                                let new_ud_e_p = new_state.get_ud_e_p_coord();
+                                if ud_e_p_pruning_table[new_ud_e_p as usize] == 255 {
+                                    ud_e_p_pruning_table[new_ud_e_p as usize] = depth + 1;
+                                    done += 1;
+                                }
                             }
                         }
                     }
@@ -237,11 +232,12 @@ impl Pruning {
                         cb_cube.set_uds_e_sorted_coord(i as usize);
                         for action in ACTIONS.iter() {
                             let new_state: CubieCube = cb_cube.multiply(&action.0, action.1);
-                            let new_uds_e_sorted = new_state.get_uds_e_sorted_coord();
-                            // FIX ME
-                            if new_uds_e_sorted < 24 && uds_e_sorted_pruning_table[new_uds_e_sorted as usize] == 255 {
-                                uds_e_sorted_pruning_table[new_uds_e_sorted as usize] = depth + 1;
-                                done += 1;
+                            if new_state.get_twist_coord() == 0 && new_state.get_flip_coord() == 0 && new_state.get_uds_e_location_coord() == 0 {
+                                let new_uds_e_sorted = new_state.get_uds_e_sorted_coord();
+                                if uds_e_sorted_pruning_table[new_uds_e_sorted as usize] == 255 {
+                                    uds_e_sorted_pruning_table[new_uds_e_sorted as usize] = depth + 1;
+                                    done += 1;
+                                }
                             }
                         }
                     }
