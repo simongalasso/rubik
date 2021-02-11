@@ -1,10 +1,8 @@
 extern crate env_logger;
 use actix_cors::Cors;
-use actix_web::{middleware, http, get, post, web::{self, Json, Path}, App, HttpRequest, HttpResponse, HttpServer, Responder, Result};
-use serde::{Serialize, Deserialize};
-use rand::Rng;
+use actix_web::{middleware, http, get, post, web::{Json}, App,  HttpResponse, HttpServer, Responder};
+use serde::{Deserialize};
 use actix_files::Files;
-use std::path::PathBuf;
 
 #[derive(Deserialize)]
 struct Info {
@@ -18,10 +16,7 @@ async fn json(info: Json<Info>) -> impl Responder {
 
 #[get("/scramble")]
 async fn scramble() -> impl Responder {
-    // let mut rng = rand::thread_rng();
-    // let shuffle: String = rng.gen_range(0, 99).to_string();
     let shuffle: String = "U R F D L B".to_string();
-
     HttpResponse::Ok().body(shuffle)
 }
 
@@ -43,7 +38,7 @@ async fn main() -> std::io::Result<()> {
                 .finish())
             .service(scramble)
             .service(json)
-            .service(Files::new("/", "./src/server/static/root/").index_file("index.html"))
+            .service(Files::new("/", "./public").index_file("index.html"))
     })
     .bind("0.0.0.0:8080")?
     .run()
