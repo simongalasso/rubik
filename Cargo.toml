@@ -1,20 +1,5 @@
-[package]
-name = "rubik"
-version = "0.1.0"
-authors = ["sgalasso"]
-edition = "2018"
-
-[lib]
-name = "rubik"
-path = "src/rubik/lib.rs"
-
-[[bin]]
-name = "solve"
-path = "src/solve/main.rs"
-
-[dependencies]
-rand = "0.7.3"
-clap = "2.33.3"
-kiss3d = "0.29.0"
-nalgebra = "0.24.0"
-pbr = "1.0.4"
+[workspace]
+members = [
+    "solver",
+    "server"
+]

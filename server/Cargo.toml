@@ -1,0 +1,19 @@
+[package]
+name = "rubik_server"
+version = "0.1.0"
+authors = ["sgalasso, nvienot"]
+edition = "2018"
+
+[[bin]]
+name = "server"
+path = "src/main.rs"
+
+[dependencies]
+rubik_lib = { path = "../rubik_lib" }
+actix-web = { version = "3.3.2", features = ["rustls"] }
+serde = { version = "1.0.118", features = ["derive"] }
+actix-rt = "1.1.1"
+actix-cors = "0.3.0"
+actix-files = "0.3.0"
+env_logger = "0.8"
+rand = "0.7.3"

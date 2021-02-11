@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Rubik's</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        .btn {
+            
+        }
+        .maincontainer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+        }
+        .text {
+            color: white;
+        }
+        .seq {
+            margin-left: 10px;
+        }
+        .btn:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="/js/three.js"></script>
+    <script src="/js/orbitControls.js"></script>
+    <script src="/js/cube.js" ></script>
+    <div class="maincontainer">
+        <div class="container">
+            <button class="btn" onclick="scramble()">Scramble</button>
+            <button class="btn" onclick="resetCube()">Reset</button>
+        </div>
+        <div class="container">
+            <button class="btn" onclick="applySequence('U')">U</button>
+            <button class="btn" onclick="applySequence('R')">R</button>
+            <button class="btn" onclick="applySequence('F')">F</button>
+            <button class="btn" onclick="applySequence('D')">D</button>
+            <button class="btn" onclick="applySequence('L')">L</button>
+            <button class="btn" onclick="applySequence('B')">B</button>
+        </div>
+        <div class="container">
+            <button class="btn" onclick="applySequence('U\'')">U'</button>
+            <button class="btn" onclick="applySequence('R\'')">R'</button>
+            <button class="btn" onclick="applySequence('F\'')">F'</button>
+            <button class="btn" onclick="applySequence('D\'')">D'</button>
+            <button class="btn" onclick="applySequence('L\'')">L'</button>
+            <button class="btn" onclick="applySequence('B\'')">B'</button>
+        </div>
+        <div class="container">
+            <button class="btn" onclick="nextmove()">Launch</button>
+            <button class="btn" onclick="clearSequence()">Clear queue</button>
+        </div>
+        <div class="container text">
+            <p>Queue: </p>
+            <p id="sequence" class="seq">No action</p>
+        </div>
+    </div>
+    <script>
+        function httpGetAsync(theUrl, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+            }
+            xmlHttp.open("GET", theUrl, true);
+            xmlHttp.send(null);
+        }
+
+        const scramble = () => {
+            httpGetAsync('/scramble', (res) => {
+                clearSequence();
+                applySequence(res);
+                nextmove();
+            })
+        }
+    </script>
+</body>
+
+</html>
