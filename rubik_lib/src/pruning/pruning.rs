@@ -1,5 +1,3 @@
-extern crate rubik;
-
 use std::path::Path;
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
