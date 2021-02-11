@@ -2354,6 +2354,7 @@ dependencies = [
  "kiss3d",
  "nalgebra",
  "pbr",
+ "rand",
  "rubik_lib",
 ]
 

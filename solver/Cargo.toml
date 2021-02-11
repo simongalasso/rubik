@@ -10,6 +10,8 @@ path = "src/main.rs"
 
 [dependencies]
 rubik_lib = { path = "../rubik_lib" }
+rand = "0.7.3"
 clap = "2.33.3"
+kiss3d = "0.29.0"
 nalgebra = "0.24.0"
 pbr = "1.0.4"
