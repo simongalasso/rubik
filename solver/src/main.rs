@@ -1,43 +1,26 @@
-extern crate kiss3d;
-extern crate rubik;
+use rubik_lib::rubik::cubie_cube::{CubieCube};
+use rubik_lib::rubik::enums::*;
+use rubik_lib::pruning::pruning::{Pruning};
+use rubik_lib::algo::solve::*;
+use rubik_lib::rubik::enums::{ACTIONS_STR_LIST};
+use nalgebra::{Vector3, UnitQuaternion, Unit};
+use std::time::{Instant};
 
 mod parsing;
 mod display;
-mod algo;
-mod pruning;
 
-use pruning::pruning::{Pruning};
-use algo::solve::*;
 use parsing::parse::*;
+use parsing::args::{Config};
 use display::display::{Display};
 use display::gl_rubik::{GlRubik};
 use display::cubie::{Cubie};
-use parsing::args::{Config};
-use rubik::cubie_cube::{CubieCube};
-use rubik::enums::*;
-use nalgebra::{Vector3, UnitQuaternion, Unit};
-use rubik::enums::{ACTIONS_STR_LIST};
-use std::time::{Instant};
 
 pub const ANGLES: [f32; 3] = [90.0, 180.0, -90.0];
- 
+
 fn main() {
     let config: Config = Config::new();
     let pruning_tables: Pruning = Pruning::new();
     
-    // println!("flip_pruning_table : {:?}", pruning_tables.flip_pruning_table);
-    // println!("twist_pruning_table : {:?}", pruning_tables.twist_pruning_table);
-    // println!("uds_e_location_pruning_table : {:?}", pruning_tables.uds_e_location_pruning_table);
-    // println!("c_p_pruning_table : {:?}", pruning_tables.c_p_pruning_table);
-    // println!("ud_e_p_pruning_table : {:?}", pruning_tables.ud_e_p_pruning_table);
-    // println!("uds_e_sorted_pruning_table : {:?}", pruning_tables.uds_e_sorted_pruning_table);
-
-    // for i in 0..pruning_tables.ud_e_p_pruning_table.len() {
-    //     if  pruning_tables.ud_e_p_pruning_table[i] > 8 {
-    //         println!("depth = {}",  pruning_tables.ud_e_p_pruning_table[i]);
-    //     }
-    // }
-
     let input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));

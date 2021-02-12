@@ -1,10 +1,8 @@
-extern crate rubik;
-
 use std::path::Path;
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-use super::file_utils::{write_u8_vec, read_u8_vec};
+use super::file_utils::{write_u8_vec, read_u8_vec, get_current_path, create_dir};
 
 const N_TWIST: i32 = 2187;  // 3^7 possible corner orientations in phase 1
 const N_FLIP: i32 = 2048;  // 2^11 possible edge orientations in phase 1
@@ -27,23 +25,26 @@ pub struct Pruning {
 
 impl Pruning {
     pub fn new() -> Pruning {
+        let path: &str = &format!("{}{}" , get_current_path(), "/pruning-tables");
+        create_dir(path);
         return Pruning {
             // phase 1
-            twist_pruning_table: Self::create_twist(),
-            flip_pruning_table: Self::create_flip(),
-            uds_e_location_pruning_table: Self::create_uds_e_location(),
+            twist_pruning_table: Self::create_twist(path),
+            flip_pruning_table: Self::create_flip(path),
+            uds_e_location_pruning_table: Self::create_uds_e_location(path),
             // phase 2
-            c_p_pruning_table: Self::create_c_p(),
-            ud_e_p_pruning_table: Self::create_ud_e_p(),
-            uds_e_sorted_pruning_table: Self::create_uds_e_sorted(),
+            c_p_pruning_table: Self::create_c_p(path),
+            ud_e_p_pruning_table: Self::create_ud_e_p(path),
+            uds_e_sorted_pruning_table: Self::create_uds_e_sorted(path),
         };
     }
 
-    pub fn create_twist() -> Vec<u8> {
+    pub fn create_twist(path: &str) -> Vec<u8> {
         let mut twist_pruning_table: Vec<u8> = Vec::new();
-        if Path::new("pruning_twist.pr").exists() {
-            twist_pruning_table = read_u8_vec("./pruning_twist.pr");
+        if Path::new(&format!("{}{}" , path, "/pruning_twist.pr")).exists() {
+            twist_pruning_table = read_u8_vec(&format!("{}{}" , path, "/pruning_twist.pr"));
         } else {
+            println!("[pruning-tables] pruning_twist.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
@@ -68,16 +69,18 @@ impl Pruning {
                 }
                 depth += 1;
             }
-            write_u8_vec("./pruning_twist.pr", &twist_pruning_table);
+            write_u8_vec(&format!("{}{}" , path, "/pruning_twist.pr"), &twist_pruning_table);
+            println!("[pruning-tables] pruning_twist.pr created!");
         }
         return twist_pruning_table;
     }
 
-    pub fn create_flip() -> Vec<u8> {
+    pub fn create_flip(path: &str) -> Vec<u8> {
         let mut flip_pruning_table: Vec<u8> = Vec::new();
-        if Path::new("pruning_flip.pr").exists() {
-            flip_pruning_table = read_u8_vec("./pruning_flip.pr");
+        if Path::new(&format!("{}{}" , path, "/pruning_flip.pr")).exists() {
+            flip_pruning_table = read_u8_vec(&format!("{}{}" , path, "/pruning_flip.pr"));
         } else {
+            println!("[pruning-tables] pruning_flip.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
@@ -102,16 +105,18 @@ impl Pruning {
                 }
                 depth += 1;
             }
-            write_u8_vec("./pruning_flip.pr", &flip_pruning_table);
+            write_u8_vec(&format!("{}{}" , path, "/pruning_flip.pr"), &flip_pruning_table);
+            println!("[pruning-tables] pruning_flip.pr created!");
         }
         return flip_pruning_table;
     }
 
-    pub fn create_uds_e_location() -> Vec<u8> {
+    pub fn create_uds_e_location(path: &str) -> Vec<u8> {
         let mut uds_e_location_pruning_table: Vec<u8> = Vec::new();
-        if Path::new("pruning_uds_e_location.pr").exists() {
-            uds_e_location_pruning_table = read_u8_vec("./pruning_uds_e_location.pr");
+        if Path::new(&format!("{}{}" , path, "/pruning_uds_e_location.pr")).exists() {
+            uds_e_location_pruning_table = read_u8_vec(&format!("{}{}" , path, "/pruning_uds_e_location.pr"));
         } else {
+            println!("[pruning-tables] pruning_uds_e_location.pr.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
@@ -136,16 +141,18 @@ impl Pruning {
                 }
                 depth += 1;
             }
-            write_u8_vec("./pruning_uds_e_location.pr", &uds_e_location_pruning_table);
+            write_u8_vec(&format!("{}{}" , path, "/pruning_uds_e_location.pr"), &uds_e_location_pruning_table);
+            println!("[pruning-tables] pruning_uds_e_location.pr created!");
         }
         return uds_e_location_pruning_table;
     }
 
-    pub fn create_c_p() -> Vec<u8> {
+    pub fn create_c_p(path: &str) -> Vec<u8> {
         let mut c_p_pruning_table: Vec<u8> = Vec::new();
-        if Path::new("pruning_c_p.pr").exists() {
-            c_p_pruning_table = read_u8_vec("./pruning_c_p.pr");
+        if Path::new(&format!("{}{}" , path, "/pruning_c_p.pr")).exists() {
+            c_p_pruning_table = read_u8_vec(&format!("{}{}" , path, "/pruning_c_p.pr"));
         } else {
+            println!("[pruning-tables] pruning_c_p.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
@@ -170,16 +177,18 @@ impl Pruning {
                 }
                 depth += 1;
             }
-            write_u8_vec("./pruning_c_p.pr", &c_p_pruning_table);
+            write_u8_vec(&format!("{}{}" , path, "/pruning_c_p.pr"), &c_p_pruning_table);
+            println!("[pruning-tables] pruning_c_p.pr created!");
         }
         return c_p_pruning_table;
     }
 
-    pub fn create_ud_e_p() -> Vec<u8> {
+    pub fn create_ud_e_p(path: &str) -> Vec<u8> {
         let mut ud_e_p_pruning_table: Vec<u8> = Vec::new();
-        if Path::new("pruning_ud_e_p.pr").exists() {
-            ud_e_p_pruning_table = read_u8_vec("./pruning_ud_e_p.pr");
+        if Path::new(&format!("{}{}" , path, "/pruning_ud_e_p.pr")).exists() {
+            ud_e_p_pruning_table = read_u8_vec(&format!("{}{}" , path, "/pruning_ud_e_p.pr"));
         } else {
+            println!("[pruning-tables] pruning_ud_e_p.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
@@ -206,16 +215,18 @@ impl Pruning {
                 }
                 depth += 1;
             }
-            write_u8_vec("./pruning_ud_e_p.pr", &ud_e_p_pruning_table);
+            write_u8_vec(&format!("{}{}" , path, "/pruning_ud_e_p.pr"), &ud_e_p_pruning_table);
+            println!("[pruning-tables] pruning_ud_e_p.pr created!");
         }
         return ud_e_p_pruning_table;
     }
 
-    pub fn create_uds_e_sorted() -> Vec<u8> {
+    pub fn create_uds_e_sorted(path: &str) -> Vec<u8> {
         let mut uds_e_sorted_pruning_table: Vec<u8> = Vec::new();
-        if Path::new("pruning_uds_e_sorted.pr").exists() {
-            uds_e_sorted_pruning_table = read_u8_vec("./pruning_uds_e_sorted.pr");
+        if Path::new(&format!("{}{}" , path, "/pruning_uds_e_sorted.pr")).exists() {
+            uds_e_sorted_pruning_table = read_u8_vec(&format!("{}{}" , path, "/pruning_uds_e_sorted.pr"));
         } else {
+            println!("[pruning-tables] pruning_uds_e_sorted.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
@@ -242,7 +253,8 @@ impl Pruning {
                 }
                 depth += 1;
             }
-            write_u8_vec("./pruning_uds_e_sorted.pr", &uds_e_sorted_pruning_table);
+            write_u8_vec(&format!("{}{}" , path, "/pruning_uds_e_sorted.pr"), &uds_e_sorted_pruning_table);
+            println!("[pruning-tables] pruning_uds_e_sorted.pr created!");
         }
         return uds_e_sorted_pruning_table;
     }

@@ -1,7 +1,7 @@
-extern crate rubik;
+extern crate rubik_lib;
+use rubik_lib::rubik::enums::{ACTIONS_STR_LIST};
 
 use super::args::{Config};
-use rubik::enums::{ACTIONS_STR_LIST};
 
 pub fn parse_inputs(config: &Config) -> Vec<usize> {
 	let mut input_sequence: Vec<usize> = Vec::new();

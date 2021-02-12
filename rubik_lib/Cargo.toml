@@ -1,0 +1,8 @@
+[package]
+name = "rubik_lib"
+version = "0.1.0"
+authors = ["sgalasso, nvienot"]
+
+[lib]
+name = "rubik_lib"
+path = "src/lib.rs"

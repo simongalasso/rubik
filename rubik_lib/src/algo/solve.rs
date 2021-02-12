@@ -1,7 +1,5 @@
-extern crate rubik;
 
-use crate::pruning::pruning::{Pruning};
-
+use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
