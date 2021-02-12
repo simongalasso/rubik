@@ -57,6 +57,10 @@
             <button class="btn" onclick="applySequence('B\'')">B'</button>
         </div>
         <div class="container">
+            <input type="text" id="sequence-parser" name="sequence-parser">
+            <button class="btn" onclick="parseSequence()">Set sequence</button>
+        </div>
+        <div class="container">
             <button class="btn" onclick="nextmove()">Launch</button>
             <button class="btn" onclick="clearSequence()">Clear queue</button>
         </div>
@@ -82,6 +86,11 @@
                 applySequence(res);
                 nextmove();
             })
+        }
+
+        const parseSequence = () => {
+            const seq = document.getElementById("sequence-parser").value;
+            applySequence(seq);
         }
     </script>
 </body>

@@ -14,6 +14,11 @@ const enqueue = (element) => {
     queue.push(element);
 }
 
+const ACTIONS_STR_LIST = [
+    "U", "U2", "U'", "R", "R2", "R'", "F", "F2", "F'",
+    "D", "D2", "D'", "L", "L2", "L'", "B", "B2", "B'"
+];
+
 const dequeue = () => { 
     if (queue.length == 0) 
         console.log("Queue is empty!")
@@ -80,8 +85,22 @@ function createCubes(scene) {
 const applySequence = (sequence) => {
     console.log("APPLYING SEQUENCE", sequence)
     const moves = sequence.split(" ");
+    var wtf = false;
     moves.map((letter) => {
-        enqueue(letter);
+        if (!ACTIONS_STR_LIST.includes(letter)) {
+            console.log("Error in input sequence!");
+            wtf = true;
+        }
+    })
+    if (wtf)
+        return;
+    moves.map((letter) => {
+        if (letter[1] == '2') {
+            enqueue(letter[0]);
+            enqueue(letter[0]);
+        } else {
+            enqueue(letter);
+        }
     })
     showAction();
 }
