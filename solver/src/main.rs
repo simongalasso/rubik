@@ -20,7 +20,12 @@ pub const ANGLES: [f32; 3] = [90.0, 180.0, -90.0];
 fn main() {
     let config: Config = Config::new();
     let pruning_tables: Pruning = Pruning::new();
-    
+    println!("{:?}", pruning_tables.uds_e_sorted_pruning_table);
+    for i in 0..pruning_tables.ud_e_p_pruning_table.len() {
+        if pruning_tables.ud_e_p_pruning_table[i] > 11 {
+            println!("i = {}", pruning_tables.ud_e_p_pruning_table[i]);
+        }
+    }
     let input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));

@@ -7,6 +7,11 @@ const GREEN = 0x26b143;
 const BLUE = 0x2f55cf;
 const YELLOW = 0xe6e621;
 
+const ACTIONS_STR_LIST = [
+    "U", "U2", "U'", "R", "R2", "R'", "F", "F2", "F'",
+    "D", "D2", "D'", "L", "L2", "L'", "B", "B2", "B'"
+];
+
 // QUEUE
 var queue = []
 
@@ -14,10 +19,6 @@ const enqueue = (element) => {
     queue.push(element);
 }
 
-const ACTIONS_STR_LIST = [
-    "U", "U2", "U'", "R", "R2", "R'", "F", "F2", "F'",
-    "D", "D2", "D'", "L", "L2", "L'", "B", "B2", "B'"
-];
 
 const dequeue = () => { 
     if (queue.length == 0) 
@@ -88,12 +89,13 @@ const applySequence = (sequence) => {
     var wtf = false;
     moves.map((letter) => {
         if (!ACTIONS_STR_LIST.includes(letter)) {
-            console.log("Error in input sequence!");
             wtf = true;
         }
     })
-    if (wtf)
+    if (wtf) {
+        console.log("Error in input sequence!");
         return;
+    }
     moves.map((letter) => {
         if (letter[1] == '2') {
             enqueue(letter[0]);
