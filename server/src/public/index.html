@@ -168,6 +168,23 @@
             document.getElementById('loader').style.visibility = "visible";
         }
 
+        const solve = (sequence) => {
+            clearSequence();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    document.getElementById('loader').style.visibility = "hidden";
+                    obj = JSON.parse(xmlHttp.responseText);
+                    applySequence(obj.solution);
+                    nextmove();
+                }
+            }
+            xmlHttp.open("POST", "/solver", true);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xmlHttp.send(JSON.stringify({ "sequence": `${get_total_sequence().join(" ")}` }));
+            document.getElementById('loader').style.visibility = "visible";
+        }
+
         const parseSequence = () => {
             const seq = document.getElementById("sequence-parser").value;
             applySequence(seq);
