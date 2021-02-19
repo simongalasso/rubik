@@ -60,7 +60,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(
                 Cors::new()
-                .allowed_origin("http://localhost:3000")
+                .allowed_origin("http://localhost:8080")
                 .allowed_methods(vec!["GET", "POST"])
                 .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
                 .allowed_header(http::header::CONTENT_TYPE)
