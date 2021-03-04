@@ -32,11 +32,11 @@ fn main() {
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
     const LOOPS: usize = 100;
-    const MAX_SCRAMBLE: usize = 50;
+    const MAX_SCRAMBLE: usize = 20;
 
-    for _ in 0..LOOPS {
+    for loop_idx in 0..LOOPS {
         let input_sequence: Vec<usize> = (0..rand::thread_rng().gen_range(1, MAX_SCRAMBLE)).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
-        eprintln!("---\ninput_sequence: {:?}", input_sequence);
+        eprintln!("- {} --\ninput_sequence: {:?}", loop_idx, input_sequence);
         let mut cb_cube: CubieCube = CubieCube::new_solved();
         cb_cube.apply_sequence(&input_sequence);
         let very_start_time: std::time::Instant = Instant::now();
