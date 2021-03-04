@@ -4,7 +4,7 @@ use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-const MAX_DEPTH: u8 = 20;
+const MAX_DEPTH: u8 = 24;
 
 // this version stops at the first solution found
 pub fn solve(state: &mut CubieCube, ptables: &Pruning) -> Option<Vec<usize>> {
@@ -24,7 +24,7 @@ fn search_phase1(state: &CubieCube, depth: u8, bound: u8, sequence: &mut Vec<usi
     if depth == bound {
         if state.is_part_of_g1() /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
             // println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
-            print!("#");
+            print!("[{}]", sequence.len());
             io::stdout().flush().unwrap();
             for bound_phase2 in 0..(MAX_DEPTH - depth) {
                 if search_phase2(state, 0, bound_phase2, sequence, &ptables) {
