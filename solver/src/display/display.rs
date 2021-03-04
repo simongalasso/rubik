@@ -17,6 +17,11 @@ pub const C_YELLOW: (f32, f32, f32) = (1.0, 1.0, 0.0);
 pub const C_ORANGE: (f32, f32, f32) = (1.0, 0.4, 0.1);
 pub const C_BLACK: (f32, f32, f32) = (0.0, 0.0, 0.0);
 
+pub const STATUS_ORDERED: u8 = 0;
+pub const STATUS_SCRAMBLING: u8 = 1;
+pub const STATUS_SCRAMBLED: u8 = 2;
+pub const STATUS_ORDERING: u8 = 3;
+
 pub struct Display {
     pub window: Window,
     pub camera: ArcBall,
@@ -24,7 +29,8 @@ pub struct Display {
     pub rotating: bool,
     pub animating: bool,
     pub speed: f32,
-    pub moves: usize
+    pub moves: usize,
+    pub status: u8
 }
 
 impl Display {
@@ -49,7 +55,8 @@ impl Display {
                 "fast" => 6.0,
                 _ => 6.0
             },
-            moves: 0
+            moves: 0,
+            status: STATUS_ORDERED
         }
     }
 
