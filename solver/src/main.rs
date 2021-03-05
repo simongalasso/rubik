@@ -5,6 +5,8 @@ use rand::Rng;
 use rubik_lib::rubik::cubie_cube::{CubieCube};
 use rubik_lib::rubik::enums::*;
 use rubik_lib::pruning::pruning::{Pruning};
+use rubik_lib::pruning::moves::{Moves};
+
 use rubik_lib::algo::solve::*;
 use rubik_lib::rubik::enums::{ACTIONS_STR_LIST};
 use nalgebra::{Vector3, Point3, Point2, UnitQuaternion, Unit};
@@ -25,7 +27,7 @@ pub const ANGLES: [f32; 3] = [90.0, 180.0, -90.0];
 fn main() {
     let config: Config = Config::new();
     let pruning_tables: Pruning = Pruning::new();
-    
+    let moves: Moves = Moves::new();
     let input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));

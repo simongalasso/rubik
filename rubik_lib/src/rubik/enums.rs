@@ -98,6 +98,7 @@ pub const ACTIONS_LIST: [(CubieCube, u8); 18] = [
     (D, 1), (D, 2), (D, 3), (L, 1), (L, 2), (L, 3), (B, 1), (B, 2), (B, 3)
 ];
 
+
 /// The indexes of the list of actions
 pub const ACTIONS: [usize; 18] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
@@ -106,3 +107,7 @@ pub const ACTION_INVERSE: [usize; 18] = [9, 10, 11, 12, 13, 14, 15, 16, 17, 0, 1
 
 /// The indexes of the list of G1 actions
 pub const G1_ACTIONS: [usize; 10] = [0, 1, 2, 4, 7, 9, 10, 11, 13, 16];
+
+pub const BASIC_ACTIONS_LIST: [CubieCube; 6] = [
+    U, R, F, D, L, B
+];
