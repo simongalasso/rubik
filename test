@@ -1,0 +1,4 @@
+./solver "U R F D' F' U D L2 R U D" // 49s
+./solver "L B2 D B' L' F' B' R B U2 L' D' L' R U2 R2 L' D B2 F L' B' L' F2 D" // 17s
+./solver "L B L' F2 L' D' L R' D' R' B' L' R B2 D R' B2 R U2 R2 B2 U L' D F'" // 52s
+./solver "F U F2 D B U R F L D R U L U B D2 R F U2 D2" // 19s
