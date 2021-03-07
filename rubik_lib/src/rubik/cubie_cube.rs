@@ -208,6 +208,7 @@ impl CubieCube {
             }
             ud_e_p_coord = (j + 1) * ud_e_p_coord + k;
         }
+        eprintln!("E");
         return ud_e_p_coord;
     }
 
@@ -293,10 +294,5 @@ impl CubieCube {
     /// Returns true if this state is part of G1 group
     pub fn is_part_of_g1(&self) -> bool {
         return self.get_twist_coord() == 0 && self.get_flip_coord() == 0 && self.get_uds_e_location_coord() == 0;
-    }
-
-    /// Returns true if this state is the solved state (valid if is part of G1 group)
-    pub fn is_solved(&self) -> bool {
-        return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
     }
 }

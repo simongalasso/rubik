@@ -27,8 +27,8 @@ pub const ANGLES: [f32; 3] = [90.0, 180.0, -90.0];
 fn main() {
     let config: Config = Config::new();
     let pruning_tables: Pruning = Pruning::new();
-    let moves: Moves = Moves::new();
-    let input_sequence: Vec<usize> = parse_inputs(&config);
+    let moves_tables: Moves = Moves::new();
+    let mut input_sequence: Vec<usize> = parse_inputs(&config);
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
@@ -36,13 +36,12 @@ fn main() {
     const MAX_SCRAMBLE: usize = 20;
 
     for loop_idx in 0..LOOPS {
-        let input_sequence: Vec<usize> = (0..rand::thread_rng().gen_range(1, MAX_SCRAMBLE)).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
         eprintln!("- {} --\ninput_sequence: {:?}", loop_idx, input_sequence);
         let mut cb_cube: CubieCube = CubieCube::new_solved();
         cb_cube.apply_sequence(&input_sequence);
         let very_start_time: std::time::Instant = Instant::now();
         let mut solution: Vec<usize> = Vec::new();
-        match solve(&mut cb_cube, &pruning_tables) {
+        match solve(&mut cb_cube, &pruning_tables, &moves_tables) {
             Some(s) => {
                 eprintln!("solution: {}", s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
                 eprintln!("duration: {:?}", very_start_time.elapsed());
@@ -94,5 +93,6 @@ fn main() {
                 }
             }
         }
+        input_sequence = (0..rand::thread_rng().gen_range(1, MAX_SCRAMBLE)).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
     }
 }
