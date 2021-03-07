@@ -208,7 +208,6 @@ impl CubieCube {
             }
             ud_e_p_coord = (j + 1) * ud_e_p_coord + k;
         }
-        eprintln!("E");
         return ud_e_p_coord;
     }
 
