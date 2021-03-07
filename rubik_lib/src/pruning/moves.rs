@@ -18,10 +18,10 @@ pub struct Moves {
     // moves
     pub twist_moves: Vec<u32>,
     pub flip_moves: Vec<u32>,
-    pub uds_e_sorted_moves: Vec<u32>,
-    pub ud_e_p_moves: Vec<u32>,
     pub uds_e_location_moves: Vec<u32>,
     pub c_p_moves: Vec<u32>,
+    pub ud_e_p_moves: Vec<u32>,
+    pub uds_e_sorted_moves: Vec<u32>,
 }
 
 impl Moves {

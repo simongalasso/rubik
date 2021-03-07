@@ -133,7 +133,6 @@ impl CubieCube {
     pub fn get_uds_e_location_coord(&self) -> usize {
         let mut uds_e_sorted: usize = 0;
         let mut x: usize = 0;
-        // FOR LOOP ONLY BETWEEN FR AND BR INSTEAD?
         for i in (UR..(BR + 1)).rev() {
             if FR <= self.e_p[i] && self.e_p[i] <= BR {
                 uds_e_sorted += c_nk(11 - i, x + 1);
@@ -148,9 +147,7 @@ impl CubieCube {
         let slice_edge = [FR, FL, BL, BR];
         let other_edge = [UR, UF, UL, UB, DR, DF, DL, DB];
         let mut a: i32 = index as i32;
-        for i in 0..EDGES_NB {
-            self.e_p[i] = 12; // Invalidate all edge positions
-        }
+        self.e_p = [12; EDGES_NB]; // Invalidate every edge positions
         let mut x: usize = 4;
         for j in 0..EDGES_NB {
             if a - c_nk(11 - j, x) as i32 >= 0 {
@@ -194,7 +191,7 @@ impl CubieCube {
                 k -= 1;
             }
         }
-        for i in 0..8 {
+        for i in 0..CORNERS_NB {
             self.c_p[i] = perm[i];
         }
     }
@@ -202,7 +199,6 @@ impl CubieCube {
     /// Returns as a number from 0 to 40319 the permutation of every U edges and every D edges (undefined in phase1)
     pub fn get_ud_e_p_coord(&self) -> usize {
         let mut perm: Vec<usize> = Vec::from(&self.e_p[..8]);
-        
         let mut ud_e_p_coord: usize = 0;
         for j in ((UR + 1)..(DB + 1)).rev() {
             let mut k: usize = 0;
@@ -229,7 +225,7 @@ impl CubieCube {
                 k -= 1;
             }
         }
-        for i in 0..8 {
+        for i in 0..12 {
             self.e_p[i] = perm[i];
         }
     }
@@ -238,7 +234,7 @@ impl CubieCube {
     pub fn get_uds_e_sorted_coord(&self) -> usize {
         let mut a: usize = 0;
         let mut x: usize = 0;
-        let mut edge4: Vec<usize> = Vec::from(&[UR; 4][..]); // FIXME, stupid init, refactor
+        let mut edge4: Vec<usize> = vec![0; 4];
         // First compute the index a < (12 choose 4) and the permutation array perm
         for j in (UR..(BR + 1)).rev() {
             if FR <= self.e_p[j] && self.e_p[j] <= BR {
@@ -264,13 +260,9 @@ impl CubieCube {
     pub fn set_uds_e_sorted_coord(&mut self, index: usize) {
         let mut slice_edge: Vec<usize> = vec![FR, FL, BL, BR];
         let other_edge: Vec<usize> = vec![UR, UF, UL, UB, DR, DF, DL, DB];
-        let mut a: usize = index / 24;
         let mut b: usize = index % 24;
-        
-        for i in 0..EDGES_NB {
-            self.e_p[i] = EDGES_NB;
-        }
-        
+        let mut a: usize = index / 24;
+        self.e_p = [EDGES_NB; EDGES_NB]; // Invalidate all edge positions
         let mut l: usize = 1;
         while l < 4 {
             let mut k: usize = b % (l + 1);
@@ -281,19 +273,14 @@ impl CubieCube {
             }
             l += 1;
         }
-        
-        // FIXME, dumb implementation, but kociemba's implementation is not working (liar?)
         let mut x: usize = 4;
         for j in 0..EDGES_NB {
-            if FR <= j && j <= BR {
-                if a as i32 - c_nk(11 - j, x) as i32 >= 0 {
-                    self.e_p[j] = slice_edge[4 - x];
-                    a -= c_nk(11 - j, x);
-                    x -= 1;
-                }
+            if a as i32 - c_nk(11 - j, x) as i32 >= 0 {
+                self.e_p[j] = slice_edge[4 - x];
+                a -= c_nk(11 - j, x);
+                x -= 1;
             }
         }
-
         x = 0;
         for j in 0..EDGES_NB {
             if self.e_p[j] == EDGES_NB {
@@ -306,10 +293,5 @@ impl CubieCube {
     /// Returns true if this state is part of G1 group
     pub fn is_part_of_g1(&self) -> bool {
         return self.get_twist_coord() == 0 && self.get_flip_coord() == 0 && self.get_uds_e_location_coord() == 0;
-    }
-
-    /// Returns true if this state is the solved state (valid if is part of G1 group)
-    pub fn is_solved(&self) -> bool {
-        return self.get_c_p_coord() == 0 && self.get_ud_e_p_coord() == 0 && self.get_uds_e_sorted_coord() == 0;
     }
 }

@@ -37,7 +37,7 @@ async fn solver(req: Json<Request>) -> impl Responder {
 
     cb_cube.apply_sequence(&input_sequence);
     let mut solution: Vec<usize> = Vec::new();
-    match solve(&mut cb_cube, pruning_tables) {
+    match solve(&mut cb_cube, &pruning_tables) {
         Some(s) => 
             return HttpResponse::Ok().json(Response {
             solution: s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned(),
