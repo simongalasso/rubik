@@ -88,32 +88,40 @@ function createCubes(scene) {
 }
 
 const applySequence = (sequence) => {
-    console.log("APPLYING SEQUENCE", sequence)
-    const moves = sequence.split(" ");
-    var wtf = false;
-    moves.map((letter) => {
-        if (!ACTIONS_STR_LIST.includes(letter)) {
-            wtf = true;
+    if (!moving) {
+        console.log("APPLYING SEQUENCE", sequence)
+        const moves = sequence.split(" ");
+        var wtf = false;
+        moves.map((letter) => {
+            if (!ACTIONS_STR_LIST.includes(letter)) {
+                wtf = true;
+            }
+        })
+        if (wtf) {
+            console.log("Error in input sequence!");
+            return;
         }
-    })
-    if (wtf) {
-        console.log("Error in input sequence!");
-        return;
+        moves.map((letter) => {
+            if (letter[1] == '2') {
+                enqueue(letter[0]);
+                enqueue(letter[0]);
+            } else {
+                enqueue(letter);
+            }
+        })
+        showAction();
+    } else {
+        alert("Cube is moving!");
     }
-    moves.map((letter) => {
-        if (letter[1] == '2') {
-            enqueue(letter[0]);
-            enqueue(letter[0]);
-        } else {
-            enqueue(letter);
-        }
-    })
-    showAction();
 }
 
 const clearSequence = () => {
-    queue = [];
-    showAction();
+    if (!moving) {
+        queue = [];
+        showAction();
+    } else {
+        alert("Cube is moving!");
+    }
 }
 
 const showAction = () => {
