@@ -14,11 +14,15 @@ const ACTIONS_STR_LIST = [
 
 // QUEUE
 var queue = []
+var total_sequence = []
+
+const get_total_sequence = () => {
+    return total_sequence;
+}
 
 const enqueue = (element) => {
     queue.push(element);
 }
-
 
 const dequeue = () => { 
     if (queue.length == 0) 
@@ -175,6 +179,7 @@ const nextmove = () => {
         setCubes(front());
         selectPivot();
         moving = true;
+        total_sequence.push(front());
     }
 }
 
