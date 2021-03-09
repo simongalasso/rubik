@@ -8,6 +8,7 @@ use rubik_lib::rubik::cubie_cube::{CubieCube};
 use rubik_lib::pruning::pruning::{Pruning};
 use rubik_lib::algo::solve::*;
 use rubik_lib::rubik::enums::{ACTIONS_STR_LIST};
+use rubik_lib::pruning::moves::{Moves};
 
 mod parsing;
 
@@ -32,12 +33,13 @@ async fn scramble() -> impl Responder {
 #[post("/solver")]
 async fn solver(req: Json<Request>) -> impl Responder {
     let pruning_tables: Pruning = Pruning::new();
+    let moves_tables: Moves = Moves::new();
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     let input_sequence: Vec<usize> = parse_inputs(&req.sequence);
 
     cb_cube.apply_sequence(&input_sequence);
     let mut solution: Vec<usize> = Vec::new();
-    match solve(&mut cb_cube, &pruning_tables) {
+    match solve(&mut cb_cube, &pruning_tables, &moves_tables) {
         Some(s) => 
             return HttpResponse::Ok().json(Response {
             solution: s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned(),
