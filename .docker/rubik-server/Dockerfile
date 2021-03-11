@@ -27,5 +27,4 @@ FROM scratch
 EXPOSE 8080
 COPY --from=builder /usr/local/cargo/bin/server .
 COPY ./server/src/public ./public
-USER 1000
 ENTRYPOINT ["./server"]
