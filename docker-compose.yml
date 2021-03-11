@@ -1,0 +1,12 @@
+version: "3"
+services:
+  rubik-server:
+    build:
+      context: .
+      dockerfile: .docker/rubik-server/Dockerfile
+    container_name: rubik-server
+    ports:
+      - "80:8080"
+    restart: always
+    volumes:
+      - ./server/src/public:/public
