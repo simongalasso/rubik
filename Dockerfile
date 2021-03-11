@@ -24,6 +24,7 @@ RUN cargo install --target x86_64-unknown-linux-musl --path ./rubik_server
 
 # 2: Copy the exe and extra files if needed to an empty Docker image
 FROM scratch
+EXPOSE 8080
 COPY --from=builder /usr/local/cargo/bin/server .
 COPY ./server/src/public ./public
 USER 1000
