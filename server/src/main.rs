@@ -60,7 +60,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(
                 Cors::new()
-                .allowed_origin("http://martinico.co:8080")
+                .allowed_origin("https://rubik.nicolasvienot.co")
                 .allowed_origin("http://localhost:8080")
                 .allowed_origin("http://0.0.0.0:8080")
                 .allowed_methods(vec!["GET", "POST"])
