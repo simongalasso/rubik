@@ -8,6 +8,19 @@
         body {
             margin: 0;
         }
+        .fullcontainer {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: fixed;
+            display: block;
+            opacity: 0.5;
+            background-color: #fff;
+            z-index: 99;
+            text-align: center;
+            visibility: hidden;
+        }
         .maincontainer {
             position: absolute;
             top: 10px;
@@ -28,6 +41,25 @@
         .btn:hover {
             cursor: pointer;
         }
+        .loader {
+            position: absolute;
+            z-index: 100;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            opacity: 1;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -35,6 +67,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.101.1/examples/js/controls/OrbitControls.js"></script>
     <script src="/js/rubiks-three.js" ></script>
+    <div id="loader" class="fullcontainer">
+        <div class="loader"></div>
+    </div>
     <div class="maincontainer">
         <div class="container">
             <button class="btn" onclick="scramble()">Scramble</button>
@@ -68,6 +103,9 @@
             <p>Queue: </p>
             <p id="sequence" class="seq">No action</p>
         </div>
+        <div class="container">
+            <button class="btn" onclick="solve('L B2 D B\' L\' F\' B\' R B U2 L\' D\' L\' R U2 R2 L\' D B2 F L\' B\' L\' F2 D')">Solve!</button>
+        </div>
     </div>
     <script>
         function httpGetAsync(theUrl, callback) {
@@ -81,11 +119,36 @@
         }
 
         const scramble = () => {
-            httpGetAsync('/scramble', (res) => {
+            if (!moving) {
+                httpGetAsync('/scramble', (res) => {
+                    clearSequence();
+                    applySequence(res);
+                    nextmove();
+                })
+            } else {
+                alert("Cube is moving!");
+            }
+        }
+
+        const solve = (sequence) => {
+            if (!moving) {
                 clearSequence();
-                applySequence(res);
-                nextmove();
-            })
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        document.getElementById('loader').style.visibility = "hidden";
+                        obj = JSON.parse(xmlHttp.responseText);
+                        applySequence(obj.solution);
+                        nextmove();
+                    }
+                }
+                xmlHttp.open("POST", "/solver", true);
+                xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xmlHttp.send(JSON.stringify({ "sequence": `${get_total_sequence().join(" ")}` }));
+                document.getElementById('loader').style.visibility = "visible";
+            } else {
+                alert("Cube is moving!");
+            }
         }
 
         const parseSequence = () => {
