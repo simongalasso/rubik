@@ -23,7 +23,7 @@ impl CoordState {
             twist: state.get_twist_coord(),
             flip: state.get_flip_coord(),
             uds_e_l: state.get_uds_e_location_coord(),
-            c_p: 0, ud_e_p: 0, uds_e_s: 0
+            c_p: 1, ud_e_p: 1, uds_e_s: 1
         }
     }
 }
@@ -45,10 +45,12 @@ pub fn solve(state: &mut CubieCube, ptables: &Pruning, moves_tables: &Moves) -> 
 }
 
 fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> bool {
+    println!("[{}] = [{}]", depth, bound);
     if depth == bound {
+        println!("depth == bound");
+        // print!("[{}]", depth);
+        io::stdout().flush().unwrap();
         if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
-            println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
-            print!("[{}]", sequence.len());
             io::stdout().flush().unwrap();
             for bound_phase2 in 0..(MAX_DEPTH - depth) {
                 if search_phase2(coord_state, 0, bound_phase2, sequence, ptables, mtables) {
@@ -63,6 +65,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         &&
         (bound - depth) >= ptables.uds_e_location_pruning_table[coord_state.uds_e_l]
     {
+        println!("ptables passed");
         for action in ACTIONS.iter() {
             if sequence.last().is_none() || (
                 ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
