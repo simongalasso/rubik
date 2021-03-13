@@ -45,10 +45,10 @@ pub fn solve(state: &mut CubieCube, ptables: &Pruning, moves_tables: &Moves) -> 
 }
 
 fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> bool {
-    println!("[{}] = [{}]", depth, bound);
+    // println!("P1 - [{}] = [{}]", depth, bound);
     if depth == bound {
-        println!("depth == bound");
-        // print!("[{}]", depth);
+        // println!("depth == bound");
+        print!("[{}]", depth);
         io::stdout().flush().unwrap();
         if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
             io::stdout().flush().unwrap();
@@ -65,7 +65,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         &&
         (bound - depth) >= ptables.uds_e_location_pruning_table[coord_state.uds_e_l]
     {
-        println!("ptables passed");
+        // println!("P1 ptables passed");
         for action in ACTIONS.iter() {
             if sequence.last().is_none() || (
                 ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
@@ -88,6 +88,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
 }
 
 fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> bool {
+    // println!("P2 - [{}] = [{}]", depth, bound);
     if depth == bound {
         if coord_state.c_p == 0 && coord_state.ud_e_p == 0 && coord_state.uds_e_s == 0 {
             return true;
@@ -99,6 +100,7 @@ fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         &&
         (bound - depth) >= ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]
     {
+        // println!("P2 ptables passed");
         for action in G1_ACTIONS.iter() {
             if sequence.last().is_none() || (
                 ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0

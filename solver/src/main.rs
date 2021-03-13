@@ -32,7 +32,7 @@ fn main() {
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
-    const LOOPS: usize = 10;
+    const LOOPS: usize = 1;
     const MAX_SCRAMBLE: usize = 50;
 
     let very_start_time: std::time::Instant = Instant::now();
