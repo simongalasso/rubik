@@ -15,4 +15,7 @@ Cargo.lock
 
 # Pruning tables
 pruning-tables/
-pruning_*
+*.pr
+
+# Moves tables
+moves-tables/
