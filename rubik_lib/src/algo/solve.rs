@@ -48,10 +48,11 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
     // println!("P1 - [{}] = [{}]", depth, bound);
     if depth == bound {
         // println!("depth == bound");
-        print!("[{}]", depth);
-        io::stdout().flush().unwrap();
+        // print!("[{}]", depth);
+        // io::stdout().flush().unwrap();
         if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
-            io::stdout().flush().unwrap();
+            println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+            // io::stdout().flush().unwrap();
             for bound_phase2 in 0..(MAX_DEPTH - depth) {
                 if search_phase2(coord_state, 0, bound_phase2, sequence, ptables, mtables) {
                     return true;

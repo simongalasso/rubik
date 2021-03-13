@@ -32,6 +32,13 @@ fn main() {
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
+    // for i in 0..moves_tables.ud_e_p_moves.len() {
+    //     if moves_tables.ud_e_p_moves[i] == 0 {
+    //         println!("error");
+    //     }
+    // }
+
+    
     const LOOPS: usize = 1;
     const MAX_SCRAMBLE: usize = 50;
 

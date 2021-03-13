@@ -125,15 +125,19 @@ impl Moves {
             println!("[moves-tables] ud_e_p_moves.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             for _ in 0..(N_UD_EDGES * N_MOVE) {
-                ud_e_p_moves.push(0);
+                ud_e_p_moves.push(50000);
             }
             for i in 0..N_UD_EDGES {
                 cb_cube.set_ud_e_p_coord(i as usize);
                 for j in 0..6 {
                     for k in 0..3 {
                         cb_cube.edge_multiply(&BASIC_ACTIONS_LIST[j]);
-                        // TO CHECK -> Only moves for R F L B and one rotation
-                        if j != 0 && j != 3 && k == 1 {
+                        // if j == 0 || j == 3 || j == 1 && k == 1 || j == 2 && k == 1 || j == 4 && k == 1 || j == 5 && k == 1 {
+                        //     ud_e_p_moves[N_MOVE as usize * i as usize + 3 * j + k] = cb_cube.get_ud_e_p_coord() as u32;
+                        // }
+                        if j == 1 && k != 1 || j == 2 && k != 1 || j == 4 && k != 1 || j == 5 && k != 1 {
+                            println!("ignored");
+                        } else {
                             ud_e_p_moves[N_MOVE as usize * i as usize + 3 * j + k] = cb_cube.get_ud_e_p_coord() as u32;
                         }
                     }
