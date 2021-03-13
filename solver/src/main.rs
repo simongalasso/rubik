@@ -38,6 +38,16 @@ fn main() {
     //     }
     // }
 
+    // let mut cb_cube: CubieCube = CubieCube::new_solved();
+    // cb_cube.multiply(&ACTIONS_LIST[2].0, ACTIONS_LIST[2].1);
+    // cb_cube.multiply(&ACTIONS_LIST[2].0, ACTIONS_LIST[2].1);
+    // cb_cube.multiply(&ACTIONS_LIST[6].0, ACTIONS_LIST[6].1);
+    // cb_cube.multiply(&ACTIONS_LIST[2].0, ACTIONS_LIST[2].1);
+    // cb_cube.multiply(&ACTIONS_LIST[2].0, ACTIONS_LIST[2].1);
+
+    // println!("test.c_p = {}, test.ud_e_p = {}, test.uds_e_s = {}", cb_cube.get_c_p_coord(), cb_cube.get_ud_e_p_coord(), cb_cube.get_uds_e_sorted_coord());
+    // println!("test.c_p = {}, test.ud_e_p = {}, test.uds_e_s = {}", cb_cube.get_c_p_coord(), cb_cube.get_ud_e_p_coord(), cb_cube.get_uds_e_sorted_coord());
+
     const LOOPS: usize = 1;
     const MAX_SCRAMBLE: usize = 50;
 
