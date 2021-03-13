@@ -38,7 +38,54 @@ fn main() {
     //     }
     // }
 
-    
+    for i in 0..40320 {
+        let mut cb_cube: CubieCube = CubieCube::new_solved();
+        cb_cube.set_ud_e_p_coord(i);
+        if (cb_cube.get_ud_e_p_coord() != i) {
+            println!("EEERRRRRRORRRRRRR");
+        }
+    }
+
+    for i in 0..24 {
+        let mut cb_cube: CubieCube = CubieCube::new_solved();
+        cb_cube.set_uds_e_sorted_coord(i);
+        if (cb_cube.get_uds_e_sorted_coord() != i) {
+            println!("EEERRRRRRORRRRRRR");
+        }
+    }
+
+    for i in 0..40320 {
+        let mut cb_cube: CubieCube = CubieCube::new_solved();
+        cb_cube.set_c_p_coord(i);
+        if (cb_cube.get_c_p_coord() != i) {
+            println!("EEERRRRRRORRRRRRR");
+        }
+    }
+
+    for i in 0..495 {
+        let mut cb_cube: CubieCube = CubieCube::new_solved();
+        cb_cube.set_uds_e_location_coord(i);
+        if (cb_cube.get_uds_e_location_coord() != i) {
+            println!("EEERRRRRRORRRRRRR");
+        }
+    }
+
+    for i in 0..2048 {
+        let mut cb_cube: CubieCube = CubieCube::new_solved();
+        cb_cube.set_flip_coord(i);
+        if (cb_cube.get_flip_coord() != i) {
+            println!("EEERRRRRRORRRRRRR");
+        }
+    }
+
+    for i in 0..2187 {
+        let mut cb_cube: CubieCube = CubieCube::new_solved();
+        cb_cube.set_twist_coord(i);
+        if (cb_cube.get_twist_coord() != i) {
+            println!("EEERRRRRRORRRRRRR");
+        }
+    }
+
     const LOOPS: usize = 1;
     const MAX_SCRAMBLE: usize = 50;
 

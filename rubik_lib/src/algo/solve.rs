@@ -75,9 +75,9 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
             {
                 sequence.push(action.clone());
                 let mut new_coord_state: CoordState = coord_state.clone();
-                new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + ACTIONS_LIST[*action].1 as usize - 1] as usize;
-                new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + ACTIONS_LIST[*action].1 as usize - 1] as usize;
-                new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + ACTIONS_LIST[*action].1 as usize - 1] as usize;
+                new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+                new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+                new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
                 if search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables) {
                     return true;
                 }
@@ -110,9 +110,9 @@ fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
             {
                 sequence.push(action.clone());
                 let mut new_coord_state: CoordState = coord_state.clone();
-                new_coord_state.c_p = mtables.c_p_moves[18 * coord_state.c_p + 3 * (action / 3) + ACTIONS_LIST[*action].1 as usize - 1] as usize;
-                new_coord_state.ud_e_p = mtables.ud_e_p_moves[18 * coord_state.ud_e_p + 3 * (action / 3) + ACTIONS_LIST[*action].1 as usize - 1] as usize;
-                new_coord_state.uds_e_s = mtables.uds_e_sorted_moves[18 * coord_state.uds_e_s + 3 * (action / 3) + ACTIONS_LIST[*action].1 as usize - 1] as usize;
+                new_coord_state.c_p = mtables.c_p_moves[18 * coord_state.c_p + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+                new_coord_state.ud_e_p = mtables.ud_e_p_moves[18 * coord_state.ud_e_p + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+                new_coord_state.uds_e_s = mtables.uds_e_sorted_moves[18 * coord_state.uds_e_s + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
                 if search_phase2(&new_coord_state, depth + 1, bound, sequence, ptables, mtables) {
                     return true;
                 }

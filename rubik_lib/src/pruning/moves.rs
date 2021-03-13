@@ -125,7 +125,7 @@ impl Moves {
             println!("[moves-tables] ud_e_p_moves.pr doesn't exist, creating it...");
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             for _ in 0..(N_UD_EDGES * N_MOVE) {
-                ud_e_p_moves.push(50000);
+                ud_e_p_moves.push(0);
             }
             for i in 0..N_UD_EDGES {
                 cb_cube.set_ud_e_p_coord(i as usize);
