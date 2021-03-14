@@ -3,9 +3,7 @@ use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-const MIN_P1_DEPTH: u8 = 9;
 const MAX_P1_DEPTH: u8 = 10;
-const MIN_P2_DEPTH: u8 = 12;
 const MAX_P2_DEPTH: u8 = 15;
 
 #[derive(Clone)]
@@ -31,25 +29,21 @@ impl CoordState {
 
 // this version stops at the first solution found
 pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Option<Vec<usize>> {
-    let mut min_p1_depth: u8 = MIN_P1_DEPTH;
     let mut max_p1_depth: u8 = MAX_P1_DEPTH;
-    let mut min_p2_depth: u8 = MIN_P2_DEPTH;
     let mut max_p2_depth: u8 = MAX_P2_DEPTH;
     loop { // set a timeout condition
         let coord_state: CoordState = CoordState::from_cb_cube_p1(state);
         let mut sequence: Vec<usize> = vec![];
         let mut bound: u8 = ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
-        for _ in min_p1_depth..max_p1_depth {
-            match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), min_p2_depth, max_p2_depth) {
+        while bound < max_p1_depth {
+            match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), max_p2_depth) {
                 None => return Some(sequence),
                 Some(cost) => bound = cost
             }
             eprintln!("new bound: {}", bound);
         }
-        // check if no negative
-        min_p1_depth -= 1;
+        // check if no over very max
         max_p1_depth += 1;
-        min_p2_depth -= 1;
         max_p2_depth += 1;
         eprintln!("depth min max updated");
     }
@@ -57,7 +51,7 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Opti
     return None;
 }
 
-fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube, min_p2_depth: u8, max_p2_depth: u8) -> Option<u8> {
+fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube, max_p2_depth: u8) -> Option<u8> {
     let cost = depth + ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
     if cost > bound {
         return Some(cost);
@@ -71,7 +65,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         new_coord_state.ud_e_p = cb_cube.get_ud_e_p_coord();
         new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
         let mut bound_phase2: u8 = ptables.c_p_pruning_table[coord_state.c_p].max(ptables.ud_e_p_pruning_table[coord_state.ud_e_p]).max(ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]);
-        for _ in min_p2_depth..max_p2_depth {
+        while bound_phase2 < max_p2_depth {
             match search_phase2(&new_coord_state, 0, bound_phase2, sequence, ptables, mtables) {
                 None => { return None },
                 Some(cost) => bound_phase2 = cost
@@ -90,7 +84,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
             new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
             new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
             new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-            match search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state, min_p2_depth, max_p2_depth) {
+            match search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state, max_p2_depth) {
                 None => { return None },
                 Some(cost_ret) => if cost_ret < min {
                     min = cost_ret
