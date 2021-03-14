@@ -45,10 +45,12 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Opti
                     eprintln!();
                     return Some(sequence)
                 },
-                Some(cost) => bound = cost
+                Some(cost) => {
+                    bound = cost;
+                    eprint!("[{}]", bound);
+                    io::stdout().flush().unwrap();
+                }
             }
-            eprint!("[{}]", bound);
-            io::stdout().flush().unwrap();
         }
         eprintln!();
         // check if no over very max
@@ -81,10 +83,12 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
                     eprintln!();
                     return None
                 },
-                Some(cost) => bound_phase2 = cost
+                Some(cost) => {
+                    bound_phase2 = cost;
+                    eprint!("[{}]", bound_phase2);
+                    io::stdout().flush().unwrap();
+                }
             }
-            eprint!("[{}]", bound_phase2);
-            io::stdout().flush().unwrap();
         }
         eprintln!();
     }
