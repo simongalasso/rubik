@@ -20,6 +20,10 @@ const get_total_sequence = () => {
     return total_sequence;
 }
 
+const reset_total_sequence = () => {
+    total_sequence = [];
+}
+
 const enqueue = (element) => {
     queue.push(element);
 }
@@ -41,9 +45,13 @@ const front = () => {
 
 var pivot = new THREE.Object3D();
 var moving = false;
-var speed = 0.03;
+var speed = 0.05;
 var cubes = [];
 var action = {};
+
+const setSpeed = (value) => {
+    speed = value;
+}
 
 function createCubes(scene) {
     var cubes = [];
@@ -89,7 +97,7 @@ function createCubes(scene) {
 
 const applySequence = (sequence) => {
     if (!moving) {
-        console.log("APPLYING SEQUENCE", sequence)
+        console.log("Applying sequence : ", sequence)
         const moves = sequence.split(" ");
         var wtf = false;
         moves.map((letter) => {
@@ -134,6 +142,7 @@ const showAction = () => {
 
 const resetCube = () => {
     clearSequence();
+    reset_total_sequence();
     moving = false;
     scene.remove.apply(scene, scene.children);
     scene.add(light);
@@ -160,13 +169,9 @@ function onWindowResize() {
 const light = new THREE.AmbientLight(0xFFFFFF, 0.8);
 scene.add(light);
 
-// var group = new THREE.Group();
-// scene.add(group);
-
 cubes = createCubes(scene);
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
-// controls.addEventListener( 'change', render );
 controls.target.set(0, 0, 0);
 controls.enableKeys = false;
 controls.enablePan = false;
@@ -176,9 +181,6 @@ controls.update()
 
 camera.position.set(-30, 30, 50);
 controls.update();
-
-// const sequence = "R F R F R F R F";
-// applySequence(sequence);
 
 const nextmove = () => {
     if (queue.length == 0 || moving) {
@@ -190,8 +192,6 @@ const nextmove = () => {
         total_sequence.push(front());
     }
 }
-
-nextmove();
 
 function setCubes(face) {
     switch (face) {
@@ -326,7 +326,6 @@ function stop() {
 
 var render = function() {
     requestAnimationFrame(render);
-    // console.log(scene.position)
     if (moving)
         move();
     renderer.render(scene, camera);

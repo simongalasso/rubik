@@ -72,6 +72,13 @@
     </div>
     <div class="maincontainer">
         <div class="container">
+            <select id="speed" onchange="updateSpeed(this)">
+                <option value="0.01">Speed 1</option>
+                <option value="0.03">Speed 2</option>
+                <option value="0.05" selected>Speed 3</option>
+            </select>
+        </div>
+        <div class="container">
             <button class="btn" onclick="scramble()">Scramble</button>
             <button class="btn" onclick="resetCube()">Reset</button>
         </div>
@@ -104,7 +111,7 @@
             <p id="sequence" class="seq">No action</p>
         </div>
         <div class="container">
-            <button class="btn" onclick="solve('L B2 D B\' L\' F\' B\' R B U2 L\' D\' L\' R U2 R2 L\' D B2 F L\' B\' L\' F2 D')">Solve!</button>
+            <button class="btn" onclick="solve()">Solve!</button>
         </div>
     </div>
     <script>
@@ -130,7 +137,7 @@
             }
         }
 
-        const solve = (sequence) => {
+        const solve = () => {
             if (!moving) {
                 clearSequence();
                 var xmlHttp = new XMLHttpRequest();
@@ -154,6 +161,13 @@
         const parseSequence = () => {
             const seq = document.getElementById("sequence-parser").value;
             applySequence(seq);
+            document.getElementById("sequence-parser").value = "";
+        }
+
+        const updateSpeed = (element) => {
+            var idx = element.selectedIndex;
+            var val = element.options[idx].value;
+            setSpeed(val);
         }
     </script>
 </body>
