@@ -3,7 +3,10 @@ use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-const MAX_DEPTH: u8 = 24;
+const MIN_P1_DEPTH: u8 = 9;
+const MAX_P1_DEPTH: u8 = 10;
+const MIN_P2_DEPTH: u8 = 12;
+const MAX_P2_DEPTH: u8 = 15;
 
 #[derive(Clone)]
 struct CoordState {
@@ -27,90 +30,106 @@ impl CoordState {
 }
 
 // this version stops at the first solution found
-pub fn solve(state: &mut CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Option<Vec<usize>> {
-    let coord_state: CoordState = CoordState::from_cb_cube_p1(state);
-    let mut sequence: Vec<usize> = vec![];
-    for bound in 0..MAX_DEPTH {
-        if search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, state) {
-            return Some(sequence);
+pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Option<Vec<usize>> {
+    let mut min_p1_depth: u8 = MIN_P1_DEPTH;
+    let mut max_p1_depth: u8 = MAX_P1_DEPTH;
+    let mut min_p2_depth: u8 = MIN_P2_DEPTH;
+    let mut max_p2_depth: u8 = MAX_P2_DEPTH;
+    loop { // set a timeout condition
+        let coord_state: CoordState = CoordState::from_cb_cube_p1(state);
+        let mut sequence: Vec<usize> = vec![];
+        let mut bound: u8 = ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
+        for _ in min_p1_depth..max_p1_depth {
+            match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), min_p2_depth, max_p2_depth) {
+                None => return Some(sequence),
+                Some(cost) => bound = cost
+            }
+            eprintln!("new bound: {}", bound);
         }
+        // check if no negative
+        min_p1_depth -= 1;
+        max_p1_depth += 1;
+        min_p2_depth -= 1;
+        max_p2_depth += 1;
+        eprintln!("depth min max updated");
     }
+    panic!("FUCK"); // TODEL
     return None;
 }
 
-fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube) -> bool {
-    if depth == bound {
-        if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
-            println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
-            let mut cb_cube: CubieCube = state.clone();
-            cb_cube.apply_sequence(&sequence);
-            let mut new_coord_state: CoordState = coord_state.clone();
-            new_coord_state.c_p = cb_cube.get_c_p_coord();
-            new_coord_state.ud_e_p = cb_cube.get_ud_e_p_coord();
-            new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
-            for bound_phase2 in 0..(MAX_DEPTH - depth) {
-                if search_phase2(&new_coord_state, 0, bound_phase2, sequence, ptables, mtables) {
-                    return true;
-                }
-            }
-        }
-    } else if
-        (bound - depth) >= ptables.twist_pruning_table[coord_state.twist]
-        &&
-        (bound - depth) >= ptables.flip_pruning_table[coord_state.flip]
-        &&
-        (bound - depth) >= ptables.uds_e_location_pruning_table[coord_state.uds_e_l]
-    {
-        for action in ACTIONS.iter() {
-            if sequence.last().is_none() || (
-                ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
-                &&
-                ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[(*action as f32 / 3.0).floor() as usize]].0)
-            {
-                sequence.push(action.clone());
-                let mut new_coord_state: CoordState = coord_state.clone();
-                new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                if search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state) {
-                    return true;
-                }
-                sequence.pop();
+fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube, min_p2_depth: u8, max_p2_depth: u8) -> Option<u8> {
+    let cost = depth + ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
+    if cost > bound {
+        return Some(cost);
+    }
+    if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
+        println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+        let mut cb_cube: CubieCube = state.clone();
+        cb_cube.apply_sequence(&sequence);
+        let mut new_coord_state: CoordState = coord_state.clone();
+        new_coord_state.c_p = cb_cube.get_c_p_coord();
+        new_coord_state.ud_e_p = cb_cube.get_ud_e_p_coord();
+        new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
+        let mut bound_phase2: u8 = ptables.c_p_pruning_table[coord_state.c_p].max(ptables.ud_e_p_pruning_table[coord_state.ud_e_p]).max(ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]);
+        for _ in min_p2_depth..max_p2_depth {
+            match search_phase2(&new_coord_state, 0, bound_phase2, sequence, ptables, mtables) {
+                None => { return None },
+                Some(cost) => bound_phase2 = cost
             }
         }
     }
-    return false;
+    let mut min: u8 = std::u8::MAX;
+    for action in ACTIONS.iter() {
+        if sequence.last().is_none() || (
+            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
+            &&
+            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[(*action as f32 / 3.0).floor() as usize]].0)
+        {
+            sequence.push(action.clone());
+            let mut new_coord_state: CoordState = coord_state.clone();
+            new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+            new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+            new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+            match search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state, min_p2_depth, max_p2_depth) {
+                None => { return None },
+                Some(cost_ret) => if cost_ret < min {
+                    min = cost_ret
+                },
+            }
+            sequence.pop();
+        }
+    }
+    return Some(min);
 }
 
-fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> bool {
-    if depth == bound {
-        if coord_state.c_p == 0 && coord_state.ud_e_p == 0 && coord_state.uds_e_s == 0 {
-            return true;
-        }
-    } else if
-        (bound - depth) >= ptables.c_p_pruning_table[coord_state.c_p]
-        &&
-        (bound - depth) >= ptables.ud_e_p_pruning_table[coord_state.ud_e_p]
-        &&
-        (bound - depth) >= ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]
-    {
-        for action in G1_ACTIONS.iter() {
-            if sequence.last().is_none() || (
-                ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
-                &&
-                ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[(*action as f32 / 3.0).floor() as usize]].0)
-            {
-                sequence.push(action.clone());
-                let mut new_coord_state: CoordState = coord_state.clone();
-                new_coord_state.c_p = mtables.c_p_moves[18 * coord_state.c_p + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                new_coord_state.ud_e_p = mtables.ud_e_p_moves[18 * coord_state.ud_e_p + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                new_coord_state.uds_e_s = mtables.uds_e_sorted_moves[18 * coord_state.uds_e_s + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                if search_phase2(&new_coord_state, depth + 1, bound, sequence, ptables, mtables) {
-                    return true;
-                }
-                sequence.pop();
+fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> Option<u8> {
+    let cost = depth + ptables.c_p_pruning_table[coord_state.c_p].max(ptables.ud_e_p_pruning_table[coord_state.ud_e_p]).max(ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]);
+    if cost > bound {
+        return Some(cost);
+    }
+    if coord_state.c_p == 0 && coord_state.ud_e_p == 0 && coord_state.uds_e_s == 0 {
+        return None;
+    }
+    let mut min: u8 = std::u8::MAX;
+    for action in G1_ACTIONS.iter() {
+        if sequence.last().is_none() || (
+            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
+            &&
+            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[(*action as f32 / 3.0).floor() as usize]].0)
+        {
+            sequence.push(action.clone());
+            let mut new_coord_state: CoordState = coord_state.clone();
+            new_coord_state.c_p = mtables.c_p_moves[18 * coord_state.c_p + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+            new_coord_state.ud_e_p = mtables.ud_e_p_moves[18 * coord_state.ud_e_p + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+            new_coord_state.uds_e_s = mtables.uds_e_sorted_moves[18 * coord_state.uds_e_s + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
+            match search_phase2(&new_coord_state, depth + 1, bound, sequence, ptables, mtables) {
+                None => { return None },
+                Some(cost_ret) => if cost_ret < min {
+                    min = cost_ret
+                },
             }
+            sequence.pop();
         }
     }
-    return false;
+    return Some(min);
 }
