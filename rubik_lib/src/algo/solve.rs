@@ -1,5 +1,3 @@
-use std::io::{self, Write};
-
 use pruning::moves::{Moves};
 use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
@@ -23,7 +21,7 @@ impl CoordState {
             twist: state.get_twist_coord(),
             flip: state.get_flip_coord(),
             uds_e_l: state.get_uds_e_location_coord(),
-            c_p: 1, ud_e_p: 1, uds_e_s: 1
+            c_p: 0, ud_e_p: 0, uds_e_s: 0
         }
     }
 }
@@ -32,29 +30,26 @@ impl CoordState {
 pub fn solve(state: &mut CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Option<Vec<usize>> {
     let coord_state: CoordState = CoordState::from_cb_cube_p1(state);
     let mut sequence: Vec<usize> = vec![];
-    print!("G1: ");
-    io::stdout().flush().unwrap();
     for bound in 0..MAX_DEPTH {
-        if search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables) {
-            println!("");
+        if search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, state) {
             return Some(sequence);
         }
     }
-    println!("");
     return None;
 }
 
-fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> bool {
-    // println!("P1 - [{}] = [{}]", depth, bound);
+fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube) -> bool {
     if depth == bound {
-        // println!("depth == bound");
-        // print!("[{}]", depth);
-        // io::stdout().flush().unwrap();
         if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
             println!("to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
-            // io::stdout().flush().unwrap();
+            let mut cb_cube: CubieCube = state.clone();
+            cb_cube.apply_sequence(&sequence);
+            let mut new_coord_state: CoordState = coord_state.clone();
+            new_coord_state.c_p = cb_cube.get_c_p_coord();
+            new_coord_state.ud_e_p = cb_cube.get_ud_e_p_coord();
+            new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
             for bound_phase2 in 0..(MAX_DEPTH - depth) {
-                if search_phase2(coord_state, 0, bound_phase2, sequence, ptables, mtables) {
+                if search_phase2(&new_coord_state, 0, bound_phase2, sequence, ptables, mtables) {
                     return true;
                 }
             }
@@ -66,7 +61,6 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         &&
         (bound - depth) >= ptables.uds_e_location_pruning_table[coord_state.uds_e_l]
     {
-        // println!("P1 ptables passed");
         for action in ACTIONS.iter() {
             if sequence.last().is_none() || (
                 ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
@@ -78,7 +72,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
                 new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
                 new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
                 new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-                if search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables) {
+                if search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state) {
                     return true;
                 }
                 sequence.pop();
@@ -89,7 +83,6 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
 }
 
 fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves) -> bool {
-    // println!("P2 - [{}] = [{}]", depth, bound);
     if depth == bound {
         if coord_state.c_p == 0 && coord_state.ud_e_p == 0 && coord_state.uds_e_s == 0 {
             return true;
@@ -101,7 +94,6 @@ fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         &&
         (bound - depth) >= ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]
     {
-        // println!("P2 ptables passed");
         for action in G1_ACTIONS.iter() {
             if sequence.last().is_none() || (
                 ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0

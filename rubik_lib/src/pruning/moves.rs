@@ -132,14 +132,10 @@ impl Moves {
                 for j in 0..6 {
                     for k in 0..3 {
                         cb_cube.edge_multiply(&BASIC_ACTIONS_LIST[j]);
-                        // if j == 0 || j == 3 || j == 1 && k == 1 || j == 2 && k == 1 || j == 4 && k == 1 || j == 5 && k == 1 {
-                        //     ud_e_p_moves[N_MOVE as usize * i as usize + 3 * j + k] = cb_cube.get_ud_e_p_coord() as u32;
-                        // }
                         if j == 1 && k != 1 || j == 2 && k != 1 || j == 4 && k != 1 || j == 5 && k != 1 {
-                            println!("ignored");
-                        } else {
-                            ud_e_p_moves[N_MOVE as usize * i as usize + 3 * j + k] = cb_cube.get_ud_e_p_coord() as u32;
+                            continue;
                         }
+                        ud_e_p_moves[N_MOVE as usize * i as usize + 3 * j + k] = cb_cube.get_ud_e_p_coord() as u32;
                     }
                     cb_cube.edge_multiply(&BASIC_ACTIONS_LIST[j]);
                 }

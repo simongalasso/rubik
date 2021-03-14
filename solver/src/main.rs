@@ -3,7 +3,6 @@ extern crate rand;
 use rand::Rng;
 
 use rubik_lib::rubik::cubie_cube::{CubieCube};
-use rubik_lib::rubik::enums::*;
 use rubik_lib::pruning::pruning::{Pruning};
 use rubik_lib::pruning::moves::{Moves};
 
@@ -43,7 +42,7 @@ fn main() {
 
     let very_start_time: std::time::Instant = Instant::now();
     for loop_idx in 0..LOOPS {
-        eprintln!("- {} --\ninput_sequence: {:?}", loop_idx, input_sequence);
+        eprintln!("- {} -\ninput_sequence: {:?}", loop_idx, input_sequence);
         let mut cb_cube: CubieCube = CubieCube::new_solved();
         cb_cube.apply_sequence(&input_sequence);
         let start_time: std::time::Instant = Instant::now();
