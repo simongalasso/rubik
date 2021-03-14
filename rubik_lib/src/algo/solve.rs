@@ -5,8 +5,8 @@ use rubik::enums::*;
 
 use std::io::{self, Write};
 
-const MAX_P1_DEPTH: u8 = 7;
-const MAX_P2_DEPTH: u8 = 10;
+const MAX_P1_DEPTH: u8 = 0;
+const MAX_P2_DEPTH: u8 = 0;
 
 #[derive(Clone)]
 struct CoordState {
@@ -37,26 +37,22 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Opti
         let coord_state: CoordState = CoordState::from_cb_cube_p1(state);
         let mut sequence: Vec<usize> = vec![];
         let mut bound: u8 = ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
-        eprint!("P(1) > bounds: ");
-        io::stdout().flush().unwrap();
         while bound < max_p1_depth {
             match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), max_p2_depth) {
-                None => {
-                    eprintln!();
-                    return Some(sequence)
-                },
+                None => return Some(sequence),
                 Some(cost) => {
                     bound = cost;
-                    eprint!("[{}]", bound);
-                    io::stdout().flush().unwrap();
+                    println!("P(1) bound: {}", bound);
                 }
             }
         }
-        eprintln!();
-        // check if no over very max
-        max_p1_depth += 1;
-        max_p2_depth += 1;
-        eprintln!("P(0) > max depths updated");
+        if max_p1_depth < 12 {
+            max_p1_depth += 1;
+        }
+        if max_p2_depth < 18 {
+            max_p2_depth += 1;
+        }
+        println!("- - - - - - -\n# new max depths ({}) ({})", max_p1_depth, max_p2_depth);
     }
     return None;
 }
@@ -67,9 +63,6 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         return Some(cost);
     }
     if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 /*&& !G1_ACTIONS.contains(sequence.last().unwrap())*/ {
-        println!("P(1) > to G1: {}", sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
-        eprint!("P(2) > bounds: ");
-        io::stdout().flush().unwrap();
         let mut cb_cube: CubieCube = state.clone();
         cb_cube.apply_sequence(&sequence);
         let mut new_coord_state: CoordState = coord_state.clone();
@@ -77,20 +70,22 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         new_coord_state.ud_e_p = cb_cube.get_ud_e_p_coord();
         new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
         let mut bound_phase2: u8 = ptables.c_p_pruning_table[coord_state.c_p].max(ptables.ud_e_p_pruning_table[coord_state.ud_e_p]).max(ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]);
+        print!("P(2) bound: ");
         while bound_phase2 < max_p2_depth {
+            print!("[{}]", bound_phase2);
+            io::stdout().flush().unwrap();
             match search_phase2(&new_coord_state, 0, bound_phase2, sequence, ptables, mtables) {
                 None => {
-                    eprintln!();
+                    println!();
                     return None
                 },
                 Some(cost) => {
                     bound_phase2 = cost;
-                    eprint!("[{}]", bound_phase2);
                     io::stdout().flush().unwrap();
                 }
             }
         }
-        eprintln!();
+        println!();
     }
     let mut min: u8 = std::u8::MAX;
     for action in ACTIONS.iter() {

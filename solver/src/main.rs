@@ -36,7 +36,7 @@ fn main() {
 
     let very_start_time: std::time::Instant = Instant::now();
     for loop_idx in 0..LOOPS {
-        println!("- {} -\ninput_sequence: {}", loop_idx, input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+        println!("\n= TURN {} =\ninput_sequence: {}", loop_idx, input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
         let mut cb_cube: CubieCube = CubieCube::new_solved();
         cb_cube.apply_sequence(&input_sequence);
         let start_time: std::time::Instant = Instant::now();
