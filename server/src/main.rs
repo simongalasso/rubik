@@ -1,8 +1,12 @@
 extern crate env_logger;
+extern crate rand;
+
+use std::time::{Instant};
 use actix_cors::Cors;
 use actix_web::{middleware, http, get, post, web::{Json}, App,  HttpResponse, HttpServer, Responder};
 use serde::{Serialize, Deserialize};
 use actix_files::Files;
+use rand::Rng;
 
 use rubik_lib::rubik::cubie_cube::{CubieCube};
 use rubik_lib::pruning::pruning::{Pruning};
@@ -26,7 +30,8 @@ struct Response {
 
 #[get("/scramble")]
 async fn scramble() -> impl Responder {
-    let shuffle: String = "U R F D L B".to_string();
+    let mut input_sequence: Vec<usize> = (0..20).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
+    let shuffle: String = input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned();
     HttpResponse::Ok().body(shuffle)
 }
 
@@ -36,9 +41,11 @@ async fn solver(req: Json<Request>) -> impl Responder {
     let moves_tables: Moves = Moves::new();
     let mut cb_cube: CubieCube = CubieCube::new_solved();
     let input_sequence: Vec<usize> = parse_inputs(&req.sequence);
+    let very_start_time: std::time::Instant = Instant::now();
+    let start_time: std::time::Instant = Instant::now();
 
     cb_cube.apply_sequence(&input_sequence);
-    match solve(&mut cb_cube, &pruning_tables, &moves_tables) {
+    match solve(&mut cb_cube, &pruning_tables, &moves_tables, very_start_time, start_time, 0) {
         Some(s) => 
             return HttpResponse::Ok().json(Response {
             solution: s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned(),
