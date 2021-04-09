@@ -31,20 +31,21 @@ fn main() {
     println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
     println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
 
-    const LOOPS: usize = 1;
+    const LOOPS: usize = 100;
     const MAX_SCRAMBLE: usize = 50;
 
     let very_start_time: std::time::Instant = Instant::now();
     for loop_idx in 0..LOOPS {
-        eprintln!("- {} -\ninput_sequence: {:?}", loop_idx, input_sequence);
+        println!("\n= TURN {} =\ninput_sequence: {}", loop_idx, input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
         let mut cb_cube: CubieCube = CubieCube::new_solved();
         cb_cube.apply_sequence(&input_sequence);
         let start_time: std::time::Instant = Instant::now();
         let mut solution: Vec<usize> = Vec::new();
-        match solve(&mut cb_cube, &pruning_tables, &moves_tables) {
+        match solve(&mut cb_cube, &pruning_tables, &moves_tables, very_start_time, start_time, loop_idx) {
             Some(s) => {
                 eprintln!("solution: {}", s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
                 eprintln!("duration: {:?}", start_time.elapsed());
+                eprintln!("total duration: {:?}", very_start_time.elapsed());
                 solution = s.clone();
             },
             None => println!("Search timed out without finding any solution")
@@ -95,5 +96,4 @@ fn main() {
         }
         input_sequence = (0..rand::thread_rng().gen_range(1, MAX_SCRAMBLE)).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
     }
-    eprintln!("total duration: {:?}", very_start_time.elapsed());
 }
