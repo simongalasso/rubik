@@ -5,8 +5,8 @@ use rubik::enums::*;
 
 use std::io::{self, Write};
 
-const MAX_P1_DEPTH: u8 = 0;
-const MAX_P2_DEPTH: u8 = 0;
+const MAX_P1_DEPTH: u8 = 10;
+const MAX_P2_DEPTH: u8 = 10;
 
 #[derive(Clone)]
 struct CoordState {
@@ -30,7 +30,7 @@ impl CoordState {
 }
 
 // this version stops at the first solution found
-pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Option<Vec<usize>> {
+pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves, very_start_time: std::time::Instant, start_time: std::time::Instant, turn: usize) -> Option<Vec<usize>> {
     let mut max_p1_depth: u8 = MAX_P1_DEPTH;
     let mut max_p2_depth: u8 = MAX_P2_DEPTH;
     loop { // set a timeout condition
@@ -38,11 +38,11 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Opti
         let mut sequence: Vec<usize> = vec![];
         let mut bound: u8 = ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
         while bound < max_p1_depth {
-            match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), max_p2_depth) {
+            match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), max_p2_depth, very_start_time, start_time, turn) {
                 None => return Some(sequence),
                 Some(cost) => {
                     bound = cost;
-                    println!("P(1) bound: {}", bound);
+                    println!("T{} | {:.2?}s | {:.2?}s | P(1) bound: {}", turn, very_start_time.elapsed().as_secs(), start_time.elapsed().as_secs(), bound);
                 }
             }
         }
@@ -57,7 +57,7 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves) -> Opti
     return None;
 }
 
-fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube, max_p2_depth: u8) -> Option<u8> {
+fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube, max_p2_depth: u8, very_start_time: std::time::Instant, start_time: std::time::Instant, turn: usize) -> Option<u8> {
     let cost = depth + ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
     if cost > bound {
         return Some(cost);
@@ -70,7 +70,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         new_coord_state.ud_e_p = cb_cube.get_ud_e_p_coord();
         new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
         let mut bound_phase2: u8 = ptables.c_p_pruning_table[coord_state.c_p].max(ptables.ud_e_p_pruning_table[coord_state.ud_e_p]).max(ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]);
-        print!("P(2) bound: ");
+        print!("T{} | {:.2?}s | {:.2?}s | P(2) bound: ", turn, very_start_time.elapsed().as_secs(), start_time.elapsed().as_secs());
         while bound_phase2 < max_p2_depth {
             print!("[{}]", bound_phase2);
             io::stdout().flush().unwrap();
@@ -99,7 +99,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
             new_coord_state.twist = mtables.twist_moves[18 * coord_state.twist + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
             new_coord_state.flip = mtables.flip_moves[18 * coord_state.flip + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
             new_coord_state.uds_e_l = mtables.uds_e_location_moves[18 * coord_state.uds_e_l + 3 * (action / 3) + (ACTIONS_LIST[*action].1 as usize - 1)] as usize;
-            match search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state, max_p2_depth) {
+            match search_phase1(&new_coord_state, depth + 1, bound, sequence, ptables, mtables, state, max_p2_depth, very_start_time, start_time, turn) {
                 None => { return None },
                 Some(cost_ret) => if cost_ret < min {
                     min = cost_ret
