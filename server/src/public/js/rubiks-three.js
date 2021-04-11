@@ -45,7 +45,7 @@ const front = () => {
 
 var pivot = new THREE.Object3D();
 var moving = false;
-var speed = 0.05;
+var speed = 0.1;
 var cubes = [];
 var action = {};
 
@@ -96,17 +96,21 @@ function createCubes(scene) {
 }
 
 const applySequence = (sequence) => {
+    if (sequence.length == 0) {
+        return;
+    }
     if (!moving) {
         console.log("Applying sequence : ", sequence)
         const moves = sequence.split(" ");
         var wtf = false;
         moves.map((letter) => {
+            console.log("+" + letter + "+")
             if (!ACTIONS_STR_LIST.includes(letter)) {
                 wtf = true;
             }
         })
         if (wtf) {
-            console.log("Error in input sequence!");
+            alert("Error in input sequence!");
             return;
         }
         moves.map((letter) => {
@@ -141,13 +145,17 @@ const showAction = () => {
 }
 
 const resetCube = () => {
-    clearSequence();
-    reset_total_sequence();
-    moving = false;
-    scene.remove.apply(scene, scene.children);
-    scene.add(light);
-    cubes = [];
-    cubes = createCubes(scene);
+    if (!moving) {
+        clearSequence();
+        reset_total_sequence();
+        moving = false;
+        scene.remove.apply(scene, scene.children);
+        scene.add(light);
+        cubes = [];
+        cubes = createCubes(scene);
+    } else {
+        alert("Cube is moving!");
+    }
 }
 
 var scene = new THREE.Scene();
