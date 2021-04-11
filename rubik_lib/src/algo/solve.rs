@@ -3,8 +3,6 @@ use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-// use std::io::{self, Write};
-
 const MAX_P1_DEPTH: u8 = 10;
 const MAX_P2_DEPTH: u8 = 10;
 
@@ -33,7 +31,7 @@ impl CoordState {
 pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves, start_time: std::time::Instant) -> Result<Vec<usize>, String> {
     let mut max_p1_depth: u8 = MAX_P1_DEPTH;
     let mut max_p2_depth: u8 = MAX_P2_DEPTH;
-    loop /* && set a timeout condition */ {
+    loop {
         let coord_state: CoordState = CoordState::from_cb_cube_p1(state);
         let mut sequence: Vec<usize> = vec![];
         let mut bound: u8 = ptables.twist_pruning_table[coord_state.twist].max(ptables.flip_pruning_table[coord_state.flip]).max(ptables.uds_e_location_pruning_table[coord_state.uds_e_l]);
@@ -51,9 +49,7 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves, start_t
         if max_p2_depth < 18 {
             max_p2_depth += 1;
         }
-        // println!("- - - - - - -\n# new max depths ({}) ({})", max_p1_depth, max_p2_depth);
     }
-    // return Err(String::from("Search timed out without finding any solution"));
 }
 
 fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut Vec<usize>, ptables: &Pruning, mtables: &Moves, state: &mut CubieCube, max_p2_depth: u8, start_time: std::time::Instant) -> Option<u8> {
@@ -70,27 +66,18 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         new_coord_state.uds_e_s = cb_cube.get_uds_e_sorted_coord();
         let mut bound_phase2: u8 = ptables.c_p_pruning_table[coord_state.c_p].max(ptables.ud_e_p_pruning_table[coord_state.ud_e_p]).max(ptables.uds_e_sorted_pruning_table[coord_state.uds_e_s]);
         while bound_phase2 < max_p2_depth {
-            // print!("[{}]", bound_phase2);
-            // io::stdout().flush().expect("error: can't flush stdout");
             match search_phase2(&new_coord_state, 0, bound_phase2, sequence, ptables, mtables) {
-                None => {
-                    // println!();
-                    return None
-                },
-                Some(cost) => {
-                    bound_phase2 = cost;
-                    // io::stdout().flush().expect("error: can't flush stdout");
-                }
+                None => return None,
+                Some(cost) => bound_phase2 = cost
             }
         }
-        // println!();
     }
     let mut min: u8 = std::u8::MAX;
     for action in ACTIONS.iter() {
         if sequence.last().is_none() || (
             ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
             &&
-            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[(*action as f32 / 3.0).floor() as usize]].0)
+            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*action]].0)
         {
             sequence.push(action.clone());
             let mut new_coord_state: CoordState = coord_state.clone();
@@ -122,7 +109,7 @@ fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         if sequence.last().is_none() || (
             ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
             &&
-            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[(*action as f32 / 3.0).floor() as usize]].0)
+            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*action]].0)
         {
             sequence.push(action.clone());
             let mut new_coord_state: CoordState = coord_state.clone();

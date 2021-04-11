@@ -19,7 +19,10 @@ fn main() {
         Ok(input_sequence) => {
             let pruning_tables: Pruning = Pruning::new();
             let moves_tables: Moves = Moves::new();
-            println!("visualisator: {}{}", config.visualisator, if config.visualisator { format!(" | speed: {}", config.speed_selection) } else { String::from("") });
+            println!("visualisator: {}{}", config.visualisator, match config.visualisator {
+                true => format!(" | speed: {}", config.speed_selection),
+                _ => String::from("")
+            });
             println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             cb_cube.apply_sequence(&input_sequence);
