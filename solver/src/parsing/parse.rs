@@ -5,7 +5,7 @@ use rand::Rng;
 use rubik_lib::rubik::enums::*;
 use super::args::{Config};
 
-const MAX_SCRAMBLE: u8 = 50;
+const MAX_SCRAMBLE: u8 = 25;
 
 pub fn parse_inputs(config: &Config) -> Result<Vec<usize>, String> {
 	match &config.input {
