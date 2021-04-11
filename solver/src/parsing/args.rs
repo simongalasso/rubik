@@ -30,7 +30,7 @@ impl Config {
                 .takes_value(true)
                 .help("speed selection, choose from 'slow', 'normal' or 'fast'"))
             .get_matches();
-        return Config { // TODO : quit if bad speed value
+        return Self {
             input: matches.value_of("input_sequence").unwrap_or("").to_string(),
             visualisator: matches.is_present("visualisator"),
             speed_selection: matches.value_of("speed_selection").unwrap_or("normal").to_string(),

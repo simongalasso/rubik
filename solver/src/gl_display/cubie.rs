@@ -1,6 +1,6 @@
 use nalgebra::{Translation3, Point3, Vector3, UnitQuaternion};
 use kiss3d::scene::{SceneNode};
-use crate::display::display::*;
+use crate::gl_display::gl_display::*;
 
 #[derive(Clone)]
 pub struct Cubie {
@@ -9,8 +9,8 @@ pub struct Cubie {
 }
 
 impl Cubie {
-    pub fn new(rubik: &mut SceneNode, size: f32, pos: Point3<f32>, gap: f32) -> Cubie {
-        let mut cubie: Cubie = Cubie {
+    pub fn new(rubik: &mut SceneNode, size: f32, pos: Point3<f32>, gap: f32) -> Self {
+        let mut cubie: Self = Self {
             node: rubik.add_group(),
             gap: gap
         };
