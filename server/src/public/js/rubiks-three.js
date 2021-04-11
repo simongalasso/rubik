@@ -104,7 +104,6 @@ const applySequence = (sequence) => {
         const moves = sequence.split(" ");
         var wtf = false;
         moves.map((letter) => {
-            console.log("+" + letter + "+")
             if (!ACTIONS_STR_LIST.includes(letter)) {
                 wtf = true;
             }
