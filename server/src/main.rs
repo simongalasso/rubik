@@ -32,7 +32,7 @@ struct Response {
 #[get("/scramble")]
 async fn scramble() -> impl Responder {
     println!("Request from /scramble");
-    let input_sequence: Vec<usize> = (0..25).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
+    let input_sequence: Vec<usize> = (0..15).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
     let shuffle: String = input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned();
     HttpResponse::Ok().body(shuffle)
 }
@@ -40,21 +40,31 @@ async fn scramble() -> impl Responder {
 #[post("/solver")]
 async fn solver(req: Json<Request>) -> impl Responder {
     println!("Request from /solver: {:?}", req.sequence);
-    let pruning_tables: Pruning = Pruning::new();
-    let moves_tables: Moves = Moves::new();
-    let mut cb_cube: CubieCube = CubieCube::new_solved();
-    let input_sequence: Vec<usize> = parse_inputs(&req.sequence);
-    let start_time: std::time::Instant = Instant::now();
-
-    cb_cube.apply_sequence(&input_sequence);
-    match solve(&mut cb_cube, &pruning_tables, &moves_tables, start_time) {
-        Ok(s) => {
-            println!("solution: {}", s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
-            println!("duration: {:?}", start_time.elapsed());
-            return HttpResponse::Ok().json(Response {
-                status: "Ok".to_string(),
-                solution: s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned(),
-            })
+    
+    match parse_inputs(&req.sequence) {
+        Ok(input_sequence) => {
+            let pruning_tables: Pruning = Pruning::new();
+            let moves_tables: Moves = Moves::new();
+            let mut cb_cube: CubieCube = CubieCube::new_solved();
+            cb_cube.apply_sequence(&input_sequence);
+            let start_time: std::time::Instant = Instant::now();
+            match solve(&mut cb_cube, &pruning_tables, &moves_tables, start_time) {
+                Ok(s) => {
+                    println!("solution: {}", s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+                    println!("duration: {:?}", start_time.elapsed());
+                    return HttpResponse::Ok().json(Response {
+                        status: "Ok".to_string(),
+                        solution: s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned(),
+                    })
+                },
+                Err(error) => {
+                    println!("error: {}", error.to_string());
+                    return HttpResponse::InternalServerError().json(Response {
+                        status: error.to_string(),
+                        solution: "".to_string(),
+                    })
+                }
+            }
         },
         Err(error) => {
             println!("error: {}", error.to_string());
