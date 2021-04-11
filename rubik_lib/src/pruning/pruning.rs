@@ -4,8 +4,8 @@ use rubik::enums::*;
 
 use super::file_utils::{write_u8_vec, read_u8_vec, get_current_path, create_dir};
 
-const N_TWIST: i32 = 2187;  // 3^7 possible corner orientations in phase 1
-const N_FLIP: i32 = 2048;  // 2^11 possible edge orientations in phase 1
+const N_TWIST: i32 = 2187;
+const N_FLIP: i32 = 2048;
 const N_UDS_E_LOCATION: i32 = 495;
 const N_C_P: i32 = 40320;
 const N_UD_E_P: i32 = 40320;
@@ -20,14 +20,14 @@ pub struct Pruning {
     // phase 2
     pub c_p_pruning_table: Vec<u8>,
     pub ud_e_p_pruning_table: Vec<u8>,
-    pub uds_e_sorted_pruning_table: Vec<u8>,
+    pub uds_e_sorted_pruning_table: Vec<u8>
 }
 
 impl Pruning {
-    pub fn new() -> Pruning {
+    pub fn new() -> Self {
         let path: &str = &format!("{}{}" , get_current_path(), "/pruning-tables");
         create_dir(path);
-        return Pruning {
+        return Self {
             // phase 1
             twist_pruning_table: Self::create_twist(path),
             flip_pruning_table: Self::create_flip(path),
@@ -48,7 +48,6 @@ impl Pruning {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
-
             for _ in 0..N_TWIST {
                 twist_pruning_table.push(255);
             }
@@ -84,7 +83,6 @@ impl Pruning {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
-
             for _ in 0..N_FLIP {
                 flip_pruning_table.push(255);
             }
@@ -120,7 +118,6 @@ impl Pruning {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
-
             for _ in 0..N_UDS_E_LOCATION {
                 uds_e_location_pruning_table.push(255);
             }
@@ -156,7 +153,6 @@ impl Pruning {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
-
             for _ in 0..N_C_P {
                 c_p_pruning_table.push(255);
             }
@@ -192,7 +188,6 @@ impl Pruning {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
-
             for _ in 0..N_UD_E_P {
                 ud_e_p_pruning_table.push(255);
             }
@@ -230,7 +225,6 @@ impl Pruning {
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             let mut depth: u8 = 0;
             let mut done: i32 = 0;
-
             for _ in 0..N_UDS_E_SORTED {
                 uds_e_sorted_pruning_table.push(255);
             }

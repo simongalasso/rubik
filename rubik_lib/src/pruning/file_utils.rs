@@ -14,20 +14,20 @@ pub fn get_current_path() -> String {
 
 pub fn create_dir(path: &str) {
     match fs::create_dir_all(path) {
-        Err(e) => panic!(e),
+        Err(_) => panic!("error: could not create {}", path),
         _ => (),
     }
 }
 
 pub fn write_u8_vec(filename: &str, v: &[u8]) {
-    let mut f: File = File::create(filename).unwrap();
-    f.write_all(v).unwrap();
+    let mut f: File = File::create(filename).expect(&format!("error: could not create {}", filename));
+    f.write_all(v).expect(&format!("error: could not write all {}", filename));
 }
 
 pub fn read_u8_vec(filename: &str) -> Vec<u8> {
-    let mut f: File = File::open(filename).unwrap();
+    let mut f: File = File::open(filename).expect(&format!("error: could not open {}", filename));
     let mut bytes: Vec<u8> = Vec::new();
-    f.read_to_end(&mut bytes).unwrap();
+    f.read_to_end(&mut bytes).expect(&format!("error: could not read to end {}", filename));
     return bytes
 }
 
@@ -41,17 +41,14 @@ fn from_u8(v: Vec<u8>) -> Vec<u32> {
     let len = v.len();
     let capacity = v.capacity();
     let element_size = mem::size_of::<u32>();
-
     // Make sure we have a proper amount of capacity (may be overkill)
-    assert_eq!(capacity % element_size, 0);
+    assert_eq!(capacity % element_size, 0, "error: does not have a proper amount of capacity");
     // Make sure we are going to read a full chunk of stuff
-    assert_eq!(len % element_size, 0);
-
+    assert_eq!(len % element_size, 0, "error: chunk to read not full");
     unsafe {
         // Don't allow the current vector to be dropped
         // (which would invalidate the memory)
         mem::forget(v);
-
         Vec::from_raw_parts(
             data as *mut u32,
             len / element_size,
@@ -61,15 +58,15 @@ fn from_u8(v: Vec<u8>) -> Vec<u32> {
 }
 
 pub fn write_u32_vec(filename: &str, v: &[u32]) {
-    let mut f: File = File::create(filename).unwrap();
-    f.write_all(as_u8_slice(v)).unwrap();
+    let mut f: File = File::create(filename).expect(&format!("error: could not create {}", filename));
+    f.write_all(as_u8_slice(v)).expect(&format!("error: could not write all {}", filename));
 }
 
 pub fn read_u32_vec(filename: &str) -> Vec<u32> {
-    let mut f: File = File::open(filename).unwrap();
+    let mut f: File = File::open(filename).expect(&format!("error: could not open {}", filename));
     let mut bytes: Vec<u8> = Vec::new();
 
-    f.read_to_end(&mut bytes).unwrap();
+    f.read_to_end(&mut bytes).expect(&format!("error: could not read to end {}", filename));
 
     return from_u8(bytes)
 }

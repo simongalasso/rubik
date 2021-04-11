@@ -10,11 +10,10 @@ pub struct GlRubik {
 }
 
 impl GlRubik {
-    pub fn new(window: &mut Window) -> GlRubik {
+    pub fn new(window: &mut Window) -> Self {
         let mut rubik: SceneNode = window.add_group();
         let mut cubies: Vec<Cubie> = Vec::new();
         let gap: f32 = 0.05;
-    
         for x in -1..2 {
             for y in -1..2 {
                 for z in -1..2 {
@@ -22,8 +21,7 @@ impl GlRubik {
                 }
             }
         }
-
-        return GlRubik {
+        return Self {
             scene_node: rubik,
             cubies: cubies
         }

@@ -11,8 +11,8 @@ pub struct CubieCube {
 
 impl CubieCube {
     /// Creates a new solved CubieCube
-    pub fn new_solved() -> CubieCube {
-        return CubieCube {
+    pub fn new_solved() -> Self {
+        return Self {
             c_p: [URF, UFL, ULB, UBR, DFR, DLF, DBL, DRB],
             c_o: [0, 0, 0, 0, 0, 0, 0, 0],
             e_p: [UR, UF, UL, UB, DR, DF, DL, DB, FR, FL, BL, BR],
@@ -28,8 +28,8 @@ impl CubieCube {
     }
 
     /// Creates a CubieCube by multiplying itself with another CubieCube
-    pub fn multiply(&self, b: &CubieCube, repeat: u8) -> CubieCube {
-        let mut new_cb_cube: CubieCube = self.clone();
+    pub fn multiply(&self, b: &Self, repeat: u8) -> Self {
+        let mut new_cb_cube: Self = self.clone();
         for _ in 0..repeat {
             new_cb_cube.corner_multiply(b);
             new_cb_cube.edge_multiply(b);
@@ -38,7 +38,7 @@ impl CubieCube {
     }
 
     /// Multiplies itself with another CubieCube (edges not affected)
-    pub fn corner_multiply(&mut self, b: &CubieCube) { // FIXME, refactor, opti
+    pub fn corner_multiply(&mut self, b: &Self) { // FIXME, refactor, opti
         let mut c_p_tmp: [usize; 8] = [0; 8];
         let mut c_o_tmp: [u8; 8] = [0; 8];
         let mut ori: i32 = 0;
@@ -76,7 +76,7 @@ impl CubieCube {
     }
 
     /// Multiply itself with another CubieCube (corners not affected)
-    pub fn edge_multiply(&mut self, b: &CubieCube) {
+    pub fn edge_multiply(&mut self, b: &Self) {
         let mut e_p_tmp: [usize; 12] = [0; 12];
         let mut e_o_tmp: [u8; 12] = [0; 12];
         for i in 0..12 {

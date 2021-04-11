@@ -4,18 +4,17 @@ use rubik::enums::*;
 
 use super::file_utils::{write_u32_vec, read_u32_vec, get_current_path, create_dir};
 
-const N_TWIST: i32 = 2187;  // 3^7 possible corner orientations in phase 1
-const N_FLIP: i32 = 2048;  // 2^11 possible edge orientations in phase 1
-const N_SLICE_SORTED: i32 = 11880;  // 12*11*10*9 possible positions of the FR, FL, BL, BR edges in phase 1
-const N_UD_EDGES: i32 = 40320;  // 8! permutations of the edges in the U-face and D-face in phase 2
-const N_CORNERS: i32 = 40320;  // # 8! corner permutations in phase 2
+const N_TWIST: i32 = 2187;
+const N_FLIP: i32 = 2048;
+const N_SLICE_SORTED: i32 = 11880;
+const N_UD_EDGES: i32 = 40320;
+const N_CORNERS: i32 = 40320;
 const N_UDS_E_LOCATION: i32 = 495;
 const N_MOVE: i32 = 18;
 
 
 #[derive(Debug)]
 pub struct Moves {
-    // moves
     pub twist_moves: Vec<u32>,
     pub flip_moves: Vec<u32>,
     pub uds_e_location_moves: Vec<u32>,
@@ -25,11 +24,10 @@ pub struct Moves {
 }
 
 impl Moves {
-    pub fn new() -> Moves {
+    pub fn new() -> Self {
         let path: &str = &format!("{}{}" , get_current_path(), "/moves-tables");
         create_dir(path);
-        return Moves {
-            // moves
+        return Self {
             twist_moves: Self::create_twist_moves(path),
             flip_moves: Self::create_flip_moves(path),
             uds_e_sorted_moves: Self::create_uds_e_sorted_moves(path),
