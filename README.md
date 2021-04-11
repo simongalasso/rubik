@@ -4,6 +4,9 @@ This is a 42 school project <strong>[Final grade: work in progress]</strong>
 
 ---
 ## Demo
+
+Online demo : [Rubik's online](https://rubik.nicolasvienot.co/)
+
 <img src="demo.gif" height="250"/>
 
 ---
@@ -17,6 +20,12 @@ Then you can build the project
 ```
 > cargo build --release
 ```
+To setup the server with docker, you can launch:
+```
+> docker-compose up
+```
+You can then access `localhost:8080`
+
 
 ---
 ## Usage
