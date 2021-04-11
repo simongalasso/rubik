@@ -27,19 +27,19 @@ impl GlRubik {
         }
     }
 
-    pub fn get_face_cubies(&self, face: &str) -> Vec<Cubie> { // FIXME, optimisations
-        match &face[0..1] {
-            "U" => self.cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().y) == 1.0).collect::<Vec<Cubie>>(),
-            "R" => self.cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == -1.0).collect::<Vec<Cubie>>(),
-            "F" => self.cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().z) == -1.0).collect::<Vec<Cubie>>(),
-            "D" => self.cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().y) == -1.0).collect::<Vec<Cubie>>(),
-            "L" => self.cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().x) == 1.0).collect::<Vec<Cubie>>(),
-            _ => self.cubies.iter().cloned().filter(|cubie| f32::round(cubie.node.data().local_translation().z) == 1.0).collect::<Vec<Cubie>>()
-        }
+    pub fn get_face_cubies(&self, face: &str) -> Vec<Cubie> {
+        return self.cubies.iter().cloned().filter(|cubie| match &face[0..1] {
+            "U" => f32::round(cubie.node.data().local_translation().y) == 1.0,
+            "R" => f32::round(cubie.node.data().local_translation().x) == -1.0,
+            "F" => f32::round(cubie.node.data().local_translation().z) == -1.0,
+            "D" => f32::round(cubie.node.data().local_translation().y) == -1.0,
+            "L" => f32::round(cubie.node.data().local_translation().x) == 1.0,
+            _ => f32::round(cubie.node.data().local_translation().z) == 1.0
+        }).collect::<Vec<Cubie>>();
     }
     
     pub fn get_face_axis(&self, face: &str) -> Unit::<Vector3::<f32>> {
-        match &face[0..1] {
+        return match &face[0..1] {
             "U" => -Vector3::<f32>::y_axis(),
             "R" => Vector3::<f32>::x_axis(),
             "F" => Vector3::<f32>::z_axis(),

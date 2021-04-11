@@ -57,7 +57,7 @@ impl GlDisplay {
             started: false,
             rotating: true,
             animating: false,
-            speed: match &config.speed_selection[..] { // doit impérativement être un diviseur de 180
+            speed: match &config.speed_selection[..] { // has to be a divider of 180
                 "slow" => 1.0,
                 "normal" => 3.0,
                 "fast" => 6.0,
@@ -105,7 +105,7 @@ impl GlDisplay {
             if !self.started {
                 self.window.draw_text(&format!("press [enter] to {}", match self.status {
                     STATUS_ORDERED => "launch the shuffle sequence",
-                    _ => "order the rubik's cub"
+                    _ => "solve the rubik's cube"
                 }), &Point2::new(15.0, 15.0), 38.0, &font, &Point3::new(1.0, 1.0, 1.0));
             } else {
                 self.window.draw_text("waiting...", &Point2::new(15.0, 15.0), 38.0, &font, &Point3::new(1.0, 1.0, 1.0));

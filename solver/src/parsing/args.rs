@@ -2,7 +2,7 @@ use clap::{Arg, App};
 
 #[derive(Debug, PartialEq)]
 pub struct Config {
-    pub input: String,
+    pub input: Option<String>,
     pub visualisator: bool,
     pub speed_selection: String,
 }
@@ -14,8 +14,8 @@ impl Config {
             .author("Simon Galasso <simon.galasso@hotmail.fr>")
             .about("Solve a rubik")
             .arg(Arg::with_name("input_sequence")
-                .required(true)
-                .index(1)
+                .required(false)
+                .takes_value(true)
                 .help("The sequence to shuffle a rubik"))
             .arg(Arg::with_name("visualisator")
                 .required(false)
@@ -25,13 +25,16 @@ impl Config {
                 .help("enable the visualisator"))
             .arg(Arg::with_name("speed_selection")
                 .required(false)
-                .short("s")
-                .long("speed")
+                .short("m")
+                .long("mode")
                 .takes_value(true)
                 .help("speed selection, choose from 'slow', 'normal' or 'fast'"))
             .get_matches();
         return Self {
-            input: matches.value_of("input_sequence").unwrap_or("").to_string(),
+            input: match matches.value_of("input_sequence") {
+                Some(val) => Some(val.to_string()),
+                None => None
+            },
             visualisator: matches.is_present("visualisator"),
             speed_selection: matches.value_of("speed_selection").unwrap_or("normal").to_string(),
         };
