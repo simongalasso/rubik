@@ -59,7 +59,7 @@ async fn solver(req: Json<Request>) -> impl Responder {
                 },
                 Err(error) => {
                     println!("error: {}", error.to_string());
-                    return HttpResponse::InternalServerError().json(Response {
+                    return HttpResponse::Ok().json(Response {
                         status: error.to_string(),
                         solution: "".to_string(),
                     })
@@ -68,7 +68,7 @@ async fn solver(req: Json<Request>) -> impl Responder {
         },
         Err(error) => {
             println!("error: {}", error.to_string());
-            return HttpResponse::InternalServerError().json(Response {
+            return HttpResponse::Ok().json(Response {
                 status: error.to_string(),
                 solution: "".to_string(),
             })
