@@ -23,13 +23,13 @@ fn main() {
                 true => format!(" | speed: {}", config.speed_selection),
                 _ => String::from("")
             });
-            println!("sequence: {}", input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+            println!("sequence: ({}) {}", input_sequence.len(), input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
             let mut cb_cube: CubieCube = CubieCube::new_solved();
             cb_cube.apply_sequence(&input_sequence);
             let start_time: std::time::Instant = Instant::now();
             match solve(&mut cb_cube, &pruning_tables, &moves_tables, start_time) {
                 Ok(s) => {
-                    println!("solution: {}", s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
+                    println!("solution: ({}) {}", s.len(), s.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" "));
                     println!("duration: {:?}", start_time.elapsed());
                     if config.visualisator {
                         let mut gl_display: GlDisplay = GlDisplay::new(&config);
