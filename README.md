@@ -3,7 +3,7 @@ A Rubik's Cube solver, written in Rust<br/>
 This is a 42 school project <strong>[Final grade: work in progress]</strong>
 
 ---
-## Used algorihm - Kociemba's TwoPhaseSolver mind healthier version
+## Kociemba's TwoPhaseSolver mind healthier version
 We actually tried to simplify the two phase solver algorihm. Know that we did not implemented every optimisation features for sanity so we lack perfs compared to the base version. Some features still need to be simplified, it will be done in further version.
 
 In this version we stops at the first found solution (rapidity criteria from school subject), so we used a statistic config for being on the better solution area on the tree ! (MAX_P1_DEPTH: 10, MAX_P2_DEPTH: 12)
