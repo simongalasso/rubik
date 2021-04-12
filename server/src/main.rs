@@ -11,12 +11,14 @@ use rand::Rng;
 use rubik_lib::rubik::cubie_cube::{CubieCube};
 use rubik_lib::pruning::pruning::{Pruning};
 use rubik_lib::algo::solve::*;
-use rubik_lib::rubik::enums::{ACTIONS_STR_LIST};
+use rubik_lib::rubik::enums::*;
 use rubik_lib::pruning::moves::{Moves};
 
 mod parsing;
 
 use parsing::parse::{parse_inputs};
+
+const NB_SCRAMBLE: u8 = 15;
 
 #[derive(Deserialize)]
 struct Request {
@@ -32,8 +34,17 @@ struct Response {
 #[get("/scramble")]
 async fn scramble() -> impl Responder {
     println!("Request from /scramble");
-    let input_sequence: Vec<usize> = (0..15).map(|_| rand::thread_rng().gen_range(0, 17)).collect();
-    let shuffle: String = input_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned();
+    let mut random_sequence: Vec<usize> = vec![];
+    for _ in 0..NB_SCRAMBLE {
+        let available_actions: Vec<usize> = (0..18).filter(|i| {
+            random_sequence.last().is_none() || (
+                ACTIONS_LIST[*random_sequence.last().unwrap()].0 != ACTIONS_LIST[*i].0
+                && ACTIONS_LIST[*random_sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*i]].0)
+        }).collect();
+        let rand_action: usize = available_actions[rand::thread_rng().gen_range(0, available_actions.len())];
+        random_sequence.push(rand_action);
+    }
+    let shuffle: String = random_sequence.iter().map(|a| ACTIONS_STR_LIST[*a]).collect::<Vec<&str>>().join(" ").to_owned();
     HttpResponse::Ok().body(shuffle)
 }
 
