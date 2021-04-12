@@ -76,8 +76,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
     for action in ACTIONS.iter() {
         if sequence.last().is_none() || (
             ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
-            &&
-            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*action]].0)
+            && ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*action]].0)
         {
             sequence.push(action.clone());
             let mut new_coord_state: CoordState = coord_state.clone();
@@ -108,8 +107,7 @@ fn search_phase2(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
     for action in G1_ACTIONS.iter() {
         if sequence.last().is_none() || (
             ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[*action].0
-            &&
-            ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*action]].0)
+            && ACTIONS_LIST[*sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*action]].0)
         {
             sequence.push(action.clone());
             let mut new_coord_state: CoordState = coord_state.clone();

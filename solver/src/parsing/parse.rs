@@ -34,7 +34,9 @@ pub fn parse_inputs(config: &Config) -> Result<Vec<usize>, String> {
 			let mut random_sequence: Vec<usize> = vec![];
 			for _ in 0..rand::thread_rng().gen_range(1, MAX_SCRAMBLE) {
 				let available_actions: Vec<usize> = (0..18).filter(|i| {
-					random_sequence.last().is_none() || (ACTIONS_LIST[*random_sequence.last().unwrap()].0 != ACTIONS_LIST[*i].0 && ACTIONS_LIST[*random_sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*i]].0)
+					random_sequence.last().is_none() || (
+						ACTIONS_LIST[*random_sequence.last().unwrap()].0 != ACTIONS_LIST[*i].0
+						&& ACTIONS_LIST[*random_sequence.last().unwrap()].0 != ACTIONS_LIST[ACTION_INVERSE[*i]].0)
 				}).collect();
 				let rand_action: usize = available_actions[rand::thread_rng().gen_range(0, available_actions.len())];
 				random_sequence.push(rand_action);
