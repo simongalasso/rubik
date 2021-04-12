@@ -4,9 +4,17 @@
 <head>
     <meta charset="utf-8">
     <title>Rubik's</title>
+    <link href='https://fonts.googleapis.com/css?family=Press Start 2P' rel='stylesheet'>
     <style>
         body {
+            font-family: 'Press Start 2p';
             margin: 0;
+            outline: 0;
+        }
+        *:focus {outline:none !important}
+        .text-select {
+            font-family: 'Press Start 2p';
+            padding: 2px 1px;
         }
         .fullcontainer {
             width: 100%;
@@ -27,19 +35,26 @@
             left: 10px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             display: flex;
             flex-direction: row;
+            align-items: center;
+            max-width: fit-content;
+        }
+        .container-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: fit-content;
         }
         .text {
             color: white;
         }
         .seq {
             margin-left: 10px;
-        }
-        .btn:hover {
-            cursor: pointer;
         }
         .loader {
             position: absolute;
@@ -55,7 +70,34 @@
             opacity: 1;
             animation: spin 2s linear infinite;
         }
-
+        .start-btn{
+            font-family: 'Press Start 2p';
+            font-size: 12pt;
+            text-align: center;
+            display: inline-block;
+            font-weight: bold;
+            padding: 10px 10px 10px 10px;
+            background-color: lightgray;
+            text-shadow: -1px -1px black, 1px 1px white;
+            color: gray;
+            -webkit-border-radius: 7px;
+            -moz-border-radius: 7px;
+            -o-border-radius: 7px;
+            border-radius: 7px;
+            box-shadow: 0 .2em gray; 
+            cursor: pointer;
+            margin: 10px 10px;
+        }
+        .start-btn:active {
+            box-shadow: none;
+            position: relative;
+            top: .2em;
+        }
+        #sequence {
+            word-break: break-word;
+            text-align: center;
+            margin-top: 2px;
+        }
         @keyframes spin {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -72,46 +114,29 @@
     </div>
     <div class="maincontainer">
         <div class="container">
-            <select id="speed" onchange="updateSpeed(this)">
-                <option value="0.01">Speed 1</option>
-                <option value="0.03">Speed 2</option>
-                <option value="0.05" selected>Speed 3</option>
+            <div class="text">
+                <a>Speed:&nbsp</a> 
+            </div>
+            <select class="text-select" id="speed" onchange="updateSpeed(this)">
+                <option value="0.05">Medium</option>
+                <option value="0.1"selected>High</option>
+                <option value="0.15">Ultra High</option>
             </select>
         </div>
         <div class="container">
-            <button class="btn" onclick="scramble()">Scramble</button>
-            <button class="btn" onclick="resetCube()">Reset</button>
+            <button class="start-btn" onclick="scramble()">Scramble</button>
+            <button class="start-btn" onclick="resetCube()">Reset</button>
+        </div>
+        <div class="container-column">
+            <input class="text-select" type="text" id="sequence-parser" name="sequence-parser" placeholder="Insert sequence">
+            <button class="start-btn" onclick="parseAndLaunchSequence()">Launch sequence</button>
         </div>
         <div class="container">
-            <button class="btn" onclick="applySequence('U')">U</button>
-            <button class="btn" onclick="applySequence('R')">R</button>
-            <button class="btn" onclick="applySequence('F')">F</button>
-            <button class="btn" onclick="applySequence('D')">D</button>
-            <button class="btn" onclick="applySequence('L')">L</button>
-            <button class="btn" onclick="applySequence('B')">B</button>
+            <button class="start-btn" onclick="solve()">Solve</button>
         </div>
-        <div class="container">
-            <button class="btn" onclick="applySequence('U\'')">U'</button>
-            <button class="btn" onclick="applySequence('R\'')">R'</button>
-            <button class="btn" onclick="applySequence('F\'')">F'</button>
-            <button class="btn" onclick="applySequence('D\'')">D'</button>
-            <button class="btn" onclick="applySequence('L\'')">L'</button>
-            <button class="btn" onclick="applySequence('B\'')">B'</button>
-        </div>
-        <div class="container">
-            <input type="text" id="sequence-parser" name="sequence-parser">
-            <button class="btn" onclick="parseSequence()">Set sequence</button>
-        </div>
-        <div class="container">
-            <button class="btn" onclick="nextmove()">Launch</button>
-            <button class="btn" onclick="clearSequence()">Clear queue</button>
-        </div>
-        <div class="container text">
-            <p>Queue: </p>
-            <p id="sequence" class="seq">No action</p>
-        </div>
-        <div class="container">
-            <button class="btn" onclick="solve()">Solve!</button>
+        <div class="container-column text" style="margin-top: 10px;">
+            <a>Queue: </a>
+            <a id="sequence" class="seq">No action</a>
         </div>
     </div>
     <script>
@@ -158,10 +183,15 @@
             }
         }
 
-        const parseSequence = () => {
-            const seq = document.getElementById("sequence-parser").value;
-            applySequence(seq);
-            document.getElementById("sequence-parser").value = "";
+        const parseAndLaunchSequence = () => {
+            if (!moving) {
+                const seq = document.getElementById("sequence-parser").value;
+                applySequence(seq);
+                document.getElementById("sequence-parser").value = "";
+                nextmove();
+            } else {
+                alert("Cube is moving!");
+            }
         }
 
         const updateSpeed = (element) => {
