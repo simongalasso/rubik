@@ -4,7 +4,7 @@ use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
 const MAX_P1_DEPTH: u8 = 10;
-const MAX_P2_DEPTH: u8 = 10;
+const MAX_P2_DEPTH: u8 = 12;
 
 #[derive(Clone)]
 struct CoordState {
