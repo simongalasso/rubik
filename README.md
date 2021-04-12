@@ -3,6 +3,12 @@ A Rubik's Cube solver, written in Rust<br/>
 This is a 42 school project <strong>[Final grade: work in progress]</strong>
 
 ---
+## Used algorihm - Kociemba's TwoPhaseSolver mind healthier version
+We actually tried to simplify the two phase solver algorihm. Know that we did not implemented every optimisation features for sanity so we lack perfs compared to the base version. Some features still need to be simplified, it will be done in further version.
+
+In this version we stops at the first found solution (rapidity criteria from school subject), so we used a statistic config for being on the better solution area on the tree ! (MAX_P1_DEPTH: 10, MAX_P2_DEPTH: 12)
+
+---
 ## Demo
 
 Online demo : [Rubik's online](https://rubik.nicolasvienot.co/)
@@ -30,7 +36,7 @@ You can then access `localhost:8080`
 ---
 ## Usage
 ```
-> ./target/release/solve [FLAGS] [OPTIONS] <input_sequence>
+> ./target/release/solver [FLAGS] [OPTIONS] [input_sequence]
 ```
 
 ### Flags
@@ -42,23 +48,23 @@ You can then access `localhost:8080`
 
 ### Options
 ```
--s, --speed <speed_selection>    visualisator speed selection, choose from 'slow', 'normal' or 'fast'
+-m, --mode <speed_selection>    speed selection, choose from 'slow', 'normal' or 'fast'
 ```
 
 ### Args
 ```
-<input_sequence>    The sequence to shuffle a rubik
+<input_sequence>    The sequence to shuffle a rubik (random if empty)
 ```
 
 ### Sequence format
 An action is defined by a face and a rotation
 ```
+U -> up
 F -> front
 R -> right
-U -> up
+D -> down
 B -> back
 L -> left
-D -> down
 
 nothing -> turn right
 ' -> turn left
