@@ -113,12 +113,7 @@ const applySequence = (sequence) => {
             return;
         }
         moves.map((letter) => {
-            if (letter[1] == '2') {
-                enqueue(letter[0]);
-                enqueue(letter[0]);
-            } else {
                 enqueue(letter);
-            }
         })
         showAction();
     } else {
@@ -202,88 +197,64 @@ const nextmove = () => {
 
 function setCubes(face) {
     switch (face) {
-        case 'U':
-            action = {
-                selectedCubes: cubes.filter(cube => cube.y == 1),
-                axis: "y",
-                direction: -1
-            }
-            break;
         case 'R':
+        case 'R2':
+        case 'R\'':
             action = {
                 selectedCubes: cubes.filter(cube => cube.x == -1),
                 axis: "x",
-                direction: 1
+                direction: face.length == 2 && face[1] == "'" ? -1 : 1,
+                double: face.length == 2 && face[1] == "2",
             }
             break;
         case 'F':
+        case 'F2':
+        case 'F\'':
             action = {
                 selectedCubes: cubes.filter(cube => cube.z == -1),
                 axis: "z",
-                direction: 1
+                direction: face.length == 2 && face[1] == "'" ? -1 : 1,
+                double: face.length == 2 && face[1] == "2",
             }
             break;
         case 'D':
+        case 'D2':
+        case 'D\'':
             action = {
                 selectedCubes: cubes.filter(cube => cube.y == -1),
                 axis: "y",
-                direction: 1
+                direction: face.length == 2 && face[1] == "'" ? -1 : 1,
+                double: face.length == 2 && face[1] == "2",
             }
             break;
-        case 'L':
-            action = { 
-                selectedCubes: cubes.filter(cube => cube.x == 1),
-                axis: "x",
-                direction: -1
-            }
-            break;
-        case 'B':
-            action = {
-                selectedCubes: cubes.filter(cube => cube.z == 1),
-                axis: "z",
-                direction: -1
-            }
-            break;
-        case "U'":
+        case 'U':
+        case 'U2':
+        case 'U\'':
             action = {
                 selectedCubes: cubes.filter(cube => cube.y == 1),
                 axis: "y",
-                direction: 1
+                direction: face.length == 2 && face[1] == "'" ? 1 : -1,
+                double: face.length == 2 && face[1] == "2",
             }
             break;
-        case "R'":
-            action = {
-                selectedCubes: cubes.filter(cube => cube.x == -1),
-                axis: "x",
-                direction: -1
-            }
-            break;
-        case "F'":
-            action = {
-                selectedCubes: cubes.filter(cube => cube.z == -1),
-                axis: "z",
-                direction: -1
-            }
-            break;
-        case "D'":
-            action = {
-                selectedCubes: cubes.filter(cube => cube.y == -1),
-                axis: "y",
-                direction: -1
-            }
-            break;
-        case "L'":
+        case 'L':
+        case 'L2':
+        case 'L\'':
             action = { 
                 selectedCubes: cubes.filter(cube => cube.x == 1),
                 axis: "x",
-                direction: 1
+                direction: face.length == 2 && face[1] == "'" ? 1 : -1,
+                double: face.length == 2 && face[1] == "2",
             }
             break;
-        case "B'":
+        case 'B':
+        case 'B2':
+        case 'B\'':
             action = {
                 selectedCubes: cubes.filter(cube => cube.z == 1),
                 axis: "z",
-                direction: 1
+                direction: face.length == 2 && face[1] == "'" ? 1 : -1,
+                double: face.length == 2 && face[1] == "2",
             }
             break;
         default:
@@ -302,14 +273,26 @@ function selectPivot() {
 
 
 function move() {
-    if (pivot.rotation[action.axis] >= Math.PI / 2) {
-       pivot.rotation[action.axis] = Math.PI / 2;
-       stop();
-    } else if (pivot.rotation[action.axis] <= Math.PI / -2) {
-       pivot.rotation[action.axis] = Math.PI / -2;
-       stop();
+    if (action.double) {
+        if (pivot.rotation[action.axis] >= Math.PI) {
+            pivot.rotation[action.axis] = Math.PI;
+            stop();
+        } else if (pivot.rotation[action.axis] <= -Math.PI) {
+            pivot.rotation[action.axis] = -Math.PI;
+            stop();
+        } else {
+            pivot.rotation[action.axis] += speed * action.direction;
+        }
     } else {
-       pivot.rotation[action.axis] += speed * action.direction;
+        if (pivot.rotation[action.axis] >= Math.PI / 2) {
+            pivot.rotation[action.axis] = Math.PI / 2;
+            stop();
+        } else if (pivot.rotation[action.axis] <= Math.PI / -2) {
+            pivot.rotation[action.axis] = Math.PI / -2;
+            stop();
+        } else {
+            pivot.rotation[action.axis] += speed * action.direction;
+        }
     }
 }
 
@@ -325,8 +308,14 @@ function stop() {
         action.selectedCubes[i].z = Math.round(action.selectedCubes[i].position.z / 4);
     }
     pivot = new THREE.Object3D();
+    var test = false;
+    if (queue.length >= 2) {
+        if (queue[0] == queue[1]) {
+            test = true;
+        }
+    }
     dequeue();
-    showAction();
+    showAction(test);
     action = {};
     nextmove();
 }
