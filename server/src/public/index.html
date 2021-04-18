@@ -14,6 +14,7 @@
         *:focus {outline:none !important}
         .text-select {
             font-family: 'Press Start 2p';
+            font-size: 12pt;
             padding: 2px 1px;
         }
         .fullcontainer {
@@ -29,10 +30,18 @@
             text-align: center;
             visibility: hidden;
         }
-        .maincontainer {
+        .topcontainer {
             position: absolute;
             top: 10px;
             left: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .middlecontainer {
+            width: 100%;
+            position: absolute;
+            bottom: 25px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -43,6 +52,7 @@
             flex-direction: row;
             align-items: center;
             max-width: fit-content;
+            margin: 5px 0px;
         }
         .container-column {
             display: flex;
@@ -76,7 +86,7 @@
             text-align: center;
             display: inline-block;
             font-weight: bold;
-            padding: 10px 10px 10px 10px;
+            padding: 8px 8px;
             background-color: lightgray;
             text-shadow: -1px -1px black, 1px 1px white;
             color: gray;
@@ -86,7 +96,6 @@
             border-radius: 7px;
             box-shadow: 0 .2em gray; 
             cursor: pointer;
-            margin: 10px 10px;
         }
         .start-btn:active {
             box-shadow: none;
@@ -112,7 +121,7 @@
     <div id="loader" class="fullcontainer">
         <div class="loader"></div>
     </div>
-    <div class="maincontainer">
+    <div class="topcontainer">
         <div class="container">
             <div class="text">
                 <a>Speed:&nbsp</a> 
@@ -124,15 +133,17 @@
             </select>
         </div>
         <div class="container">
-            <button class="start-btn" onclick="scramble()">Scramble</button>
-            <button class="start-btn" onclick="resetCube()">Reset</button>
-        </div>
-        <div class="container-column">
             <input class="text-select" type="text" id="sequence-parser" name="sequence-parser" placeholder="Insert sequence">
-            <button class="start-btn" onclick="parseAndLaunchSequence()">Launch sequence</button>
         </div>
+        <div class="container" style="width: 100%;">
+            <button class="start-btn" onclick="parseAndLaunchSequence()">Launch</button>
+        </div>
+    </div>
+    <div class="middlecontainer">
         <div class="container">
-            <button class="start-btn" onclick="solve()">Solve</button>
+            <button class="start-btn" style="margin: 0px 5px;" onclick="scramble()">Scramble</button>
+            <button class="start-btn" style="margin: 0px 5px;" onclick="solve()">Solve</button>
+            <button class="start-btn" style="margin: 0px 5px;" onclick="resetCube()">Reset</button>
         </div>
         <div class="container-column text" style="margin-top: 10px;">
             <a>Queue: </a>
