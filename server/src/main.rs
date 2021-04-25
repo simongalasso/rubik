@@ -5,7 +5,6 @@ use std::time::{Instant};
 use actix_cors::Cors;
 use actix_web::{middleware, http, get, post, web::{Json}, App,  HttpResponse, HttpServer, Responder};
 use serde::{Serialize, Deserialize};
-use actix_files::Files;
 use rand::Rng;
 
 use rubik_lib::rubik::cubie_cube::{CubieCube};
@@ -87,6 +86,20 @@ async fn solver(req: Json<Request>) -> impl Responder {
     }
 }
 
+#[get("/")]
+pub async fn load_html() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("./public/index.html").to_string())
+}
+
+#[get("/js/rubiks-three.js")]
+pub async fn load_js() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("./public/js/rubiks-three.js").to_string())
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
@@ -107,7 +120,8 @@ async fn main() -> std::io::Result<()> {
                 .finish())
             .service(scramble)
             .service(solver)
-            .service(Files::new("/", "./public").index_file("index.html"))
+            .service(load_html)
+            .service(load_js)
     })
     .bind("0.0.0.0:8080")?
     .run()
