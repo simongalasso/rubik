@@ -1,6 +1,6 @@
-# rubik (work in progress)
+# rubik
 A Rubik's Cube solver, written in Rust<br/>
-This is a 42 school project <strong>[Final grade: work in progress]</strong>
+This is a 42 school project <strong>[Final grade: 115%]</strong>
 
 ---
 ## Kociemba's TwoPhaseSolver mind healthier version
