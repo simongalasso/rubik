@@ -11,8 +11,6 @@ In this version we stops at the first found solution (rapidity criteria from sch
 ---
 ## Demo
 
-Online demo : [Rubik's online](https://rubik.nicolasvienot.co/)
-
 <img src="demo.gif" height="250"/>
 
 ---
