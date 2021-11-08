@@ -3,8 +3,8 @@ use pruning::pruning::{Pruning};
 use rubik::cubie_cube::{CubieCube};
 use rubik::enums::*;
 
-const MAX_P1_DEPTH: u8 = 10;
-const MAX_P2_DEPTH: u8 = 12;
+const MAX_P1_DEPTH: u8 = 13;
+const MAX_P2_DEPTH: u8 = 19;
 
 #[derive(Clone)]
 struct CoordState {
@@ -39,6 +39,7 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves, start_t
             match search_phase1(&coord_state, 0, bound, &mut sequence, ptables, moves_tables, &mut state.clone(), max_p2_depth, start_time) {
                 None => return Ok(sequence),
                 Some(cost) => {
+                    eprintln!("bound: {}", bound);
                     bound = cost;
                 }
             }
@@ -58,6 +59,7 @@ fn search_phase1(coord_state: &CoordState, depth: u8, bound: u8, sequence: &mut 
         return Some(cost);
     }
     if coord_state.twist == 0 && coord_state.flip == 0 && coord_state.uds_e_l == 0 {
+        eprintln!("FOUND: {}", bound);
         let mut cb_cube: CubieCube = state.clone();
         cb_cube.apply_sequence(&sequence);
         let mut new_coord_state: CoordState = coord_state.clone();
