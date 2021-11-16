@@ -44,10 +44,10 @@ pub fn solve(state: &CubieCube, ptables: &Pruning, moves_tables: &Moves, start_t
                 }
             }
         }
-        if max_p1_depth < 12 {
+        if max_p1_depth < MAX_P1_DEPTH {
             max_p1_depth += 1;
         }
-        if max_p2_depth < 18 {
+        if max_p2_depth < MAX_P2_DEPTH {
             max_p2_depth += 1;
         }
     }
