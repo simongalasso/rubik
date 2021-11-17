@@ -38,7 +38,7 @@ impl CubieCube {
     }
 
     /// Multiplies itself with another CubieCube (edges not affected)
-    pub fn corner_multiply(&mut self, b: &Self) { // FIXME, refactor, opti
+    pub fn corner_multiply(&mut self, b: &Self) {
         let mut c_p_tmp: [usize; 8] = [0; 8];
         let mut c_o_tmp: [u8; 8] = [0; 8];
         let mut ori: i32 = 0;

@@ -103,7 +103,7 @@ pub const ACTIONS_LIST: [(CubieCube, u8); 18] = [
 pub const ACTIONS: [usize; 18] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
 /// The indexes of the list of actions inverses
-pub const ACTION_INVERSE: [usize; 18] = [9, 10, 11, 12, 13, 14, 15, 16, 17, 0, 1, 2, 3, 4, 5, 6, 7, 8]; // FIXME, can optimise by turn function
+pub const ACTION_INVERSE: [usize; 18] = [9, 10, 11, 12, 13, 14, 15, 16, 17, 0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 /// The indexes of the list of G1 actions
 pub const G1_ACTIONS: [usize; 10] = [0, 1, 2, 4, 7, 9, 10, 11, 13, 16];
